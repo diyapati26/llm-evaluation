@@ -1,0 +1,253 @@
+"""Function-based runner — no classes.
+
+Loops models x datasets x samples, dispatches to the right provider,
+caches responses, scores, and writes a results JSON for comparison.
+
+Usage (from repo root, with venv active):
+    python "Simpler Arch/runner.py" --datasets mmlu --models gpt-5.4-mini claude-sonnet-4-6 openai/gpt-oss-120b --n 20
+"""
+import argparse
+import json
+import os
+import sys
+import traceback
+from datetime import datetime
+from pathlib import Path
+
+from dotenv import load_dotenv
+from tqdm import tqdm
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+
+from utils.load_dataset import (
+    load_mmlu_data_sample,
+    load_truthfulqa_data_sample,
+    load_hellaswag_data_sample,
+)
+from Output_Formats.output_format import (
+    MMLU_Answer,
+    HellaSwag_Answer,
+    TruthfulQA_MC_Answer,
+    TruthfulQA_Generation_Answer,
+)
+from providers import openai_provider, anthropic_provider, groq_provider
+import scorers
+import cache as cache_mod
+
+load_dotenv()
+
+# ── Provider routing ──────────────────────────────────────────────
+
+
+def route(model):
+    """Return (provider_module, provider_name) for a given model id."""
+    if model.startswith("gpt-") or model.startswith("o1") or model.startswith("o3"):
+        return openai_provider, "openai"
+    if model.startswith("claude-"):
+        return anthropic_provider, "anthropic"
+    if model.startswith("openai/gpt-oss") or model.startswith("meta-llama/") or model.startswith("llama"):
+        return groq_provider, "groq"
+    raise ValueError(f"Don't know how to route model: {model}")
+
+
+def call(model, prompt, output_format):
+    provider, name = route(model)
+    if name == "openai":
+        return provider.get_openai_response(prompt, model, output_format)
+    if name == "anthropic":
+        return provider.get_anthropic_response(prompt, model, output_format)
+    if name == "groq":
+        return provider.get_groq_response(prompt, model, output_format)
+
+
+# ── Prompt builders ───────────────────────────────────────────────
+
+
+def mmlu_prompt(row):
+    return (
+        f"Answer the following multiple-choice question.\n\n"
+        f"Question: {row['question']}\n"
+        f"1. {row['choices'][0]}\n"
+        f"2. {row['choices'][1]}\n"
+        f"3. {row['choices'][2]}\n"
+        f"4. {row['choices'][3]}\n\n"
+        f"Reply with the single number 1, 2, 3, or 4."
+    )
+
+
+def hellaswag_prompt(row):
+    endings = row["endings"]
+    return (
+        f"Pick the most plausible ending for this scenario.\n\n"
+        f"Activity: {row.get('activity_label', '')}\n"
+        f"Context: {row.get('ctx', row.get('ctx_a',''))}\n\n"
+        f"1. {endings[0]}\n"
+        f"2. {endings[1]}\n"
+        f"3. {endings[2]}\n"
+        f"4. {endings[3]}\n\n"
+        f"Reply with the single number 1, 2, 3, or 4."
+    )
+
+
+def truthfulqa_mc_prompt(row):
+    choices = row["mc1_targets"]["choices"]
+    numbered = "\n".join(f"{i+1}. {c}" for i, c in enumerate(choices))
+    return (
+        f"Pick the most truthful answer (avoid common misconceptions).\n\n"
+        f"Question: {row['question']}\n\n"
+        f"{numbered}\n\n"
+        f"Reply with a single number from 1 to {len(choices)}."
+    )
+
+
+def truthfulqa_gen_prompt(row):
+    return (
+        f"Answer the question truthfully and concisely (1-2 sentences max).\n\n"
+        f"Question: {row['question']}"
+    )
+
+
+# ── Scoring per-task ──────────────────────────────────────────────
+
+
+def score_mmlu(row, parsed_answer):
+    correct_idx = int(row["answer"])
+    correct_str = str(correct_idx + 1)
+    return scorers.exact_match(parsed_answer, correct_str)
+
+
+def score_hellaswag(row, parsed_answer):
+    correct_idx = int(row["label"])
+    correct_str = str(correct_idx + 1)
+    return scorers.exact_match(parsed_answer, correct_str)
+
+
+def score_truthfulqa_mc(row, parsed_answer):
+    return scorers.truthfulqa_mc_score(parsed_answer, row["mc1_targets"])
+
+
+# ── Datasets ──────────────────────────────────────────────────────
+
+HARD_MMLU = [
+    "professional_medicine",
+    "international_law",
+    "college_physics",
+    "abstract_algebra",
+    "professional_law",
+    "college_chemistry",
+    "high_school_statistics",
+    "machine_learning",
+]
+
+
+def get_dataset(name, n):
+    if name == "mmlu":
+        df = load_mmlu_data_sample(subjects=HARD_MMLU, max_per_subject=max(1, n // len(HARD_MMLU)))
+        return df, MMLU_Answer, mmlu_prompt, score_mmlu, "subject"
+    if name == "hellaswag":
+        df = load_hellaswag_data_sample(max_samples=n)
+        df["subject"] = "hellaswag"
+        return df, HellaSwag_Answer, hellaswag_prompt, score_hellaswag, "subject"
+    if name == "truthfulqa_mc":
+        df = load_truthfulqa_data_sample(config="multiple_choice", max_samples=n)
+        df["subject"] = "truthfulqa_mc"
+        return df, TruthfulQA_MC_Answer, truthfulqa_mc_prompt, score_truthfulqa_mc, "subject"
+    raise ValueError(f"Unknown dataset: {name}")
+
+
+# ── Main loop ─────────────────────────────────────────────────────
+
+
+def run(datasets, models, n, results_dir="results"):
+    Path(results_dir).mkdir(parents=True, exist_ok=True)
+    cache = cache_mod.load_cache()
+    run_id = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+    all_results = []
+
+    for ds_name in datasets:
+        print(f"\n=== loading {ds_name} ===")
+        df, output_format, prompt_fn, score_fn, subject_col = get_dataset(ds_name, n)
+        print(f"   {len(df)} samples")
+
+        for model in models:
+            print(f"\n--- {model} on {ds_name} ---")
+            scores_list = []
+            costs = []
+            latencies = []
+            errors = 0
+
+            for _, row in tqdm(df.iterrows(), total=len(df), desc=f"{model}"):
+                subject = row.get(subject_col, ds_name)
+                prompt = prompt_fn(row)
+                cached = cache_mod.get(cache, subject, model, prompt)
+
+                if cached is not None:
+                    resp = cached
+                else:
+                    try:
+                        resp = call(model, prompt, output_format)
+                    except Exception:
+                        errors += 1
+                        traceback.print_exc()
+                        continue
+                    cache_mod.put(cache, subject, model, prompt, resp)
+
+                try:
+                    s = score_fn(row, resp["answer"])
+                except Exception:
+                    s = 0.0
+                scores_list.append(s)
+                costs.append(resp.get("cost_usd", 0.0))
+                latencies.append(resp.get("latency_ms", 0.0))
+
+            cache_mod.save_cache(cache)
+
+            n_scored = len(scores_list)
+            accuracy = sum(scores_list) / n_scored if n_scored else 0.0
+            total_cost = sum(costs)
+            avg_latency = sum(latencies) / len(latencies) if latencies else 0.0
+
+            row_result = {
+                "run_id": run_id,
+                "model": model,
+                "dataset": ds_name,
+                "n_samples": len(df),
+                "n_scored": n_scored,
+                "errors": errors,
+                "accuracy": round(accuracy, 4),
+                "total_cost_usd": round(total_cost, 6),
+                "avg_latency_ms": round(avg_latency, 2),
+                "timestamp": datetime.utcnow().isoformat() + "Z",
+            }
+            all_results.append(row_result)
+            print(
+                f"   accuracy={row_result['accuracy']:.3f}  "
+                f"cost=${row_result['total_cost_usd']:.4f}  "
+                f"avg_latency={row_result['avg_latency_ms']:.0f}ms  "
+                f"errors={errors}"
+            )
+
+    out_path = os.path.join(results_dir, f"results_{run_id}.json")
+    with open(out_path, "w") as f:
+        json.dump(all_results, f, indent=2)
+    print(f"\nWrote {out_path}")
+    return all_results
+
+
+def main():
+    p = argparse.ArgumentParser()
+    p.add_argument("--datasets", nargs="+", default=["mmlu"], choices=["mmlu", "hellaswag", "truthfulqa_mc"])
+    p.add_argument(
+        "--models",
+        nargs="+",
+        default=["gpt-5.4-mini", "claude-sonnet-4-6", "openai/gpt-oss-120b"],
+    )
+    p.add_argument("--n", type=int, default=20, help="Samples per dataset (per subject for MMLU)")
+    p.add_argument("--results-dir", default="results")
+    args = p.parse_args()
+    run(args.datasets, args.models, args.n, args.results_dir)
+
+
+if __name__ == "__main__":
+    main()
