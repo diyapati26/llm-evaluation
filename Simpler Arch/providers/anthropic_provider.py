@@ -60,3 +60,34 @@ def get_anthropic_response(prompt, model, output_format, max_tokens=256, tempera
         "cost_usd": round(cost, 6),
         "latency_ms": round(latency_ms, 2),
     }
+
+
+def get_anthropic_chat(messages, model, max_tokens=512, temperature=0.0):
+    """Multi-turn free-form chat — no Pydantic, returns text + metadata.
+    Used for manipulation testing where the model gives reasoned letter answers.
+    """
+    client = _get_client()
+    start = time.monotonic()
+
+    response = client.messages.create(
+        model=model,
+        max_tokens=max_tokens,
+        temperature=temperature,
+        messages=messages,
+    )
+
+    latency_ms = (time.monotonic() - start) * 1000
+    text = response.content[0].text.strip()
+    input_tokens = response.usage.input_tokens
+    output_tokens = response.usage.output_tokens
+    cost = estimate_cost(model, input_tokens, output_tokens)
+
+    return {
+        "provider": "anthropic",
+        "model": model,
+        "text": text,
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
+        "cost_usd": round(cost, 6),
+        "latency_ms": round(latency_ms, 2),
+    }

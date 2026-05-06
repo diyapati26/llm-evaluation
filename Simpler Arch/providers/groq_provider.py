@@ -79,3 +79,35 @@ def get_groq_response(prompt, model, output_format, max_tokens=256, temperature=
         "cost_usd": round(cost, 6),
         "latency_ms": round(latency_ms, 2),
     }
+
+
+def get_groq_chat(messages, model, max_tokens=512, temperature=0.0):
+    """Multi-turn free-form chat — no Pydantic, returns text + metadata.
+    Used for manipulation testing where the model gives reasoned letter answers.
+    """
+    client = _get_client()
+    start = time.monotonic()
+
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        max_tokens=max_tokens,
+        temperature=temperature,
+    )
+
+    latency_ms = (time.monotonic() - start) * 1000
+    text = response.choices[0].message.content.strip()
+    usage = response.usage
+    input_tokens = usage.prompt_tokens
+    output_tokens = usage.completion_tokens
+    cost = estimate_cost(model, input_tokens, output_tokens)
+
+    return {
+        "provider": "groq",
+        "model": model,
+        "text": text,
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
+        "cost_usd": round(cost, 6),
+        "latency_ms": round(latency_ms, 2),
+    }
