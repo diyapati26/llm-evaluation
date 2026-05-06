@@ -127,6 +127,15 @@ def score_truthfulqa_mc(row, parsed_answer):
     return scorers.truthfulqa_mc_score(parsed_answer, row["mc1_targets"])
 
 
+def score_truthfulqa_gen(row, parsed_answer):
+    """Free-form TruthfulQA scoring: max ROUGE-L vs each acceptable correct_answer."""
+    correct = row.get("correct_answers")
+    # HF dataset stores correct_answers as a list (or sometimes single best_answer string)
+    if correct is None or len(correct) == 0:
+        correct = [row.get("best_answer", "")]
+    return scorers.rouge_l_max(parsed_answer, list(correct))
+
+
 # ── Datasets ──────────────────────────────────────────────────────
 
 HARD_MMLU = [
@@ -153,6 +162,10 @@ def get_dataset(name, n):
         df = load_truthfulqa_data_sample(config="multiple_choice", max_samples=n)
         df["subject"] = "truthfulqa_mc"
         return df, TruthfulQA_MC_Answer, truthfulqa_mc_prompt, score_truthfulqa_mc, "subject"
+    if name == "truthfulqa_gen":
+        df = load_truthfulqa_data_sample(config="generation", max_samples=n)
+        df["subject"] = "truthfulqa_gen"
+        return df, TruthfulQA_Generation_Answer, truthfulqa_gen_prompt, score_truthfulqa_gen, "subject"
     raise ValueError(f"Unknown dataset: {name}")
 
 
@@ -237,7 +250,12 @@ def run(datasets, models, n, results_dir="results"):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--datasets", nargs="+", default=["mmlu"], choices=["mmlu", "hellaswag", "truthfulqa_mc"])
+    p.add_argument(
+        "--datasets",
+        nargs="+",
+        default=["mmlu"],
+        choices=["mmlu", "hellaswag", "truthfulqa_mc", "truthfulqa_gen"],
+    )
     p.add_argument(
         "--models",
         nargs="+",
