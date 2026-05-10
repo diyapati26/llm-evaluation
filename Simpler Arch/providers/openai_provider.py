@@ -1,6 +1,7 @@
 """OpenAI provider — function-based, no classes.
 
-Uses OpenAI's structured-output: client.beta.chat.completions.parse(response_format=PydanticModel).
+Uses the new Responses API (matches the notebook):
+    client.responses.parse(model, input, text_format=PydanticModel)
 """
 import os
 import time
@@ -32,23 +33,23 @@ def estimate_cost(model, input_tokens, output_tokens):
 
 
 def get_openai_response(prompt, model, output_format, max_tokens=256, temperature=0.0):
-    """Call OpenAI with a Pydantic response_format. Returns dict with parsed answer + metadata."""
+    """Call OpenAI Responses API with a Pydantic text_format. Returns dict with parsed answer + metadata."""
     client = _get_client()
     start = time.monotonic()
 
-    response = client.beta.chat.completions.parse(
+    response = client.responses.parse(
         model=model,
-        messages=[{"role": "user", "content": prompt}],
-        response_format=output_format,
-        max_completion_tokens=max_tokens,
+        input=[{"role": "user", "content": prompt}],
+        text_format=output_format,
+        max_output_tokens=max_tokens,
         temperature=temperature,
     )
 
     latency_ms = (time.monotonic() - start) * 1000
-    parsed = response.choices[0].message.parsed
+    parsed = response.output_parsed
     usage = response.usage
-    input_tokens = usage.prompt_tokens
-    output_tokens = usage.completion_tokens
+    input_tokens = usage.input_tokens
+    output_tokens = usage.output_tokens
     cost = estimate_cost(model, input_tokens, output_tokens)
 
     return {
@@ -66,22 +67,23 @@ def get_openai_response(prompt, model, output_format, max_tokens=256, temperatur
 def get_openai_chat(messages, model, max_tokens=512, temperature=0.0):
     """Multi-turn free-form chat — no Pydantic, returns text + metadata.
     Used for manipulation testing where the model gives reasoned letter answers.
+    Responses API accepts the same role/content message list via `input`.
     """
     client = _get_client()
     start = time.monotonic()
 
-    response = client.chat.completions.create(
+    response = client.responses.create(
         model=model,
-        messages=messages,
-        max_completion_tokens=max_tokens,
+        input=messages,
+        max_output_tokens=max_tokens,
         temperature=temperature,
     )
 
     latency_ms = (time.monotonic() - start) * 1000
-    text = response.choices[0].message.content.strip()
+    text = (response.output_text or "").strip()
     usage = response.usage
-    input_tokens = usage.prompt_tokens
-    output_tokens = usage.completion_tokens
+    input_tokens = usage.input_tokens
+    output_tokens = usage.output_tokens
     cost = estimate_cost(model, input_tokens, output_tokens)
 
     return {
