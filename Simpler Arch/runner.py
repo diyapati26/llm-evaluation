@@ -28,6 +28,7 @@ from Output_Formats.output_format import (
 )
 from providers import (
     anthropic_provider,
+    gemini_provider,
     groq_provider,
     openai_provider,
     openrouter_provider,
@@ -48,6 +49,7 @@ _EXPLICIT_PROVIDERS = {
     "anthropic":  (anthropic_provider,  "anthropic"),
     "groq":       (groq_provider,       "groq"),
     "openrouter": (openrouter_provider, "openrouter"),
+    "gemini":     (gemini_provider,     "gemini"),
 }
 
 
@@ -77,6 +79,8 @@ def route(model):
         return openai_provider, "openai", model
     if model.startswith("claude-"):
         return anthropic_provider, "anthropic", model
+    if model.startswith("gemini-"):
+        return gemini_provider, "gemini", model
     if model.startswith(("openai/gpt-oss", "meta-llama/", "llama")):
         return groq_provider, "groq", model
     raise ValueError(
@@ -95,6 +99,8 @@ def call(model, prompt, output_format):
         return provider.get_groq_response(prompt, real_model, output_format)
     if name == "openrouter":
         return provider.get_openrouter_response(prompt, real_model, output_format)
+    if name == "gemini":
+        return provider.get_gemini_response(prompt, real_model, output_format)
     raise ValueError(f"Unknown provider name from route(): {name!r}")
 
 

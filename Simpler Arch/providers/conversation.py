@@ -21,9 +21,12 @@ Factory:
 import json
 import time
 
+from google.genai import types as gemini_types
+
 from Output_Formats.output_format import ProviderResponse
 from providers import (
     anthropic_provider,
+    gemini_provider,
     groq_provider,
     openai_provider,
     openrouter_provider,
@@ -179,6 +182,63 @@ class AnthropicConversation(Conversation):
         )
 
 
+# ── Gemini: client-side contents list, native response_schema ─────
+
+
+class GeminiConversation(Conversation):
+    provider = "gemini"
+
+    def __init__(self, model):
+        super().__init__(model)
+        self.client = gemini_provider._get_client()
+        # Gemini contents list: [{"role": "user"|"model", "parts": [{"text": ...}]}]
+        self.contents = []
+
+    def send(self, message, schema, max_tokens=None, temperature=0.0):
+        start = time.monotonic()
+        self.contents.append({"role": "user", "parts": [{"text": message}]})
+
+        config_kwargs = {
+            "response_mime_type": "application/json",
+            "response_schema": schema,
+            "temperature": temperature,
+        }
+        if max_tokens is not None:
+            config_kwargs["max_output_tokens"] = max_tokens
+
+        response = self.client.models.generate_content(
+            model=self.model,
+            contents=self.contents,
+            config=gemini_types.GenerateContentConfig(**config_kwargs),
+        )
+
+        latency_ms = (time.monotonic() - start) * 1000
+        parsed = response.parsed
+
+        # Append model turn (JSON text) so next call sees full history
+        self.contents.append({
+            "role": "model",
+            "parts": [{"text": parsed.model_dump_json() if hasattr(parsed, "model_dump_json") else (response.text or "")}],
+        })
+
+        usage = response.usage_metadata
+        in_tok = usage.prompt_token_count or 0
+        out_tok = usage.candidates_token_count or 0
+        cost = gemini_provider.estimate_cost(self.model, in_tok, out_tok)
+        self._accumulate(cost, in_tok, out_tok, latency_ms)
+
+        return ProviderResponse(
+            provider="gemini",
+            model=self.model,
+            answer=parsed,
+            raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
+            input_tokens=in_tok,
+            output_tokens=out_tok,
+            cost_usd=round(cost, 6),
+            latency_ms=round(latency_ms, 2),
+        )
+
+
 # ── Generic OpenAI-compatible chat completions (Groq + OpenRouter) ─
 
 
@@ -277,6 +337,8 @@ def _resolve(model):
         return "openai", model
     if model.startswith("claude-"):
         return "anthropic", model
+    if model.startswith("gemini-"):
+        return "gemini", model
     if model.startswith(("openai/gpt-oss", "meta-llama/", "llama")):
         return "groq", model
     raise ValueError(
@@ -300,6 +362,8 @@ def chat(model, messages, max_tokens=None, temperature=0.0):
         return groq_provider.get_groq_chat(messages, real_model, max_tokens=max_tokens, temperature=temperature)
     if provider_name == "openrouter":
         return openrouter_provider.get_openrouter_chat(messages, real_model, max_tokens=max_tokens, temperature=temperature)
+    if provider_name == "gemini":
+        return gemini_provider.get_gemini_chat(messages, real_model, max_tokens=max_tokens, temperature=temperature)
     raise ValueError(f"Unknown provider '{provider_name}'")
 
 
@@ -325,4 +389,6 @@ def start_conversation(model):
             client=openrouter_provider._get_client(),
             pricing_fn=openrouter_provider.estimate_cost,
         )
+    if provider_name == "gemini":
+        return GeminiConversation(real_model)
     raise ValueError(f"Unknown provider '{provider_name}'")
