@@ -10,6 +10,7 @@ import argparse
 import json
 import os
 import traceback
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
 
@@ -19,19 +20,19 @@ from tqdm import tqdm
 import cache as cache_mod
 import scorers
 from load_config import load_config, models_from_config
-from Output_Formats.output_format import (
-    HellaSwag_Answer,
-    MMLU_Answer,
-    ProviderResponse,
-    TruthfulQA_Generation_Answer,
-    TruthfulQA_MC_Answer,
-)
 from providers import (
     anthropic_provider,
     gemini_provider,
     groq_provider,
     openai_provider,
     openrouter_provider,
+)
+from schemas import (
+    HellaSwag_Answer,
+    MMLU_Answer,
+    ProviderResponse,
+    TruthfulQA_Generation_Answer,
+    TruthfulQA_MC_Answer,
 )
 from utils.load_dataset import (
     load_hellaswag_data_sample,
@@ -172,18 +173,14 @@ def score_truthfulqa_mc(row, parsed_answer):
 
 def score_truthfulqa_gen(row, parsed_answer):
     """Free-form TruthfulQA scoring: max ROUGE-L vs each acceptable correct_answer."""
-    correct = row.get("correct_answers")
-    # HF dataset stores correct_answers as a list (or sometimes single best_answer string)
-    if correct is None or len(correct) == 0:
-        correct = [row.get("best_answer", "")]
-    return scorers.rouge_l_max(parsed_answer, list(correct))
+    return scorers.rouge_l_max(parsed_answer, list(row["correct_answers"]))
 
 
 # ── Datasets ──────────────────────────────────────────────────────
 
-_DS_CFG = load_config().get("dataset", {})
-HARD_MMLU = _DS_CFG.get("hard_mmlu", [])
-RANDOM_STATE = _DS_CFG.get("random_state", 42)
+_DS_CFG = load_config()["dataset"]
+HARD_MMLU = _DS_CFG["hard_mmlu"]
+RANDOM_STATE = _DS_CFG["random_state"]
 
 
 def get_dataset(name, n):
@@ -212,7 +209,7 @@ def get_dataset(name, n):
 # ── Main loop ─────────────────────────────────────────────────────
 
 
-def run(datasets, models, n, results_dir="results"):
+def run(datasets, models, n, results_dir="results", concurrency=1):
     Path(results_dir).mkdir(parents=True, exist_ok=True)
     cache = cache_mod.load_cache()
     run_id = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
@@ -224,44 +221,53 @@ def run(datasets, models, n, results_dir="results"):
         print(f"   {len(df)} samples")
 
         for model in models:
-            print(f"\n--- {model} on {ds_name} ---")
+            print(f"\n--- {model} on {ds_name}  (concurrency={concurrency}) ---")
             scores_list = []
             costs = []
             latencies = []
             errors = 0
 
-            for _, row in tqdm(df.iterrows(), total=len(df), desc=f"{model}"):
-                subject = row.get(subject_col, ds_name)
-                prompt = prompt_fn(row)
-                cached = cache_mod.get(cache, subject, model, prompt)
-
+            def process_one(row, _model=model, _output_format=output_format,
+                            _prompt_fn=prompt_fn, _score_fn=score_fn,
+                            _subject_col=subject_col, _ds_name=ds_name):
+                """One sample → (score, cost, latency) or None on error.
+                Default-arg trick binds loop-vars into the closure so threads
+                see the right model/dataset/etc. even if the outer loop continues.
+                """
+                subject = row.get(_subject_col, _ds_name)
+                prompt = _prompt_fn(row)
+                cached = cache_mod.get(cache, subject, _model, prompt)
                 if cached is not None:
-                    # Cache stores plain dicts (JSON-friendly). Wrap back into
-                    # ProviderResponse so attribute access works downstream.
-                    resp = ProviderResponse(**cached) if isinstance(cached, dict) else cached
+                    resp = ProviderResponse(**cached)
                 else:
                     try:
-                        resp = call(model, prompt, output_format)
+                        resp = call(_model, prompt, _output_format)
                     except Exception:
-                        errors += 1
                         traceback.print_exc()
-                        continue
-                    # Store keyed by the API-returned model_version (dated snapshot)
-                    # so different snapshots auto-invalidate instead of colliding.
+                        return None
                     cache_mod.put(
-                        cache, subject, model, prompt,
+                        cache, subject, _model, prompt,
                         resp.model_dump(),
                         model_version=resp.model_version,
                     )
+                s = _score_fn(row, resp.answer)
+                return s, resp.cost_usd, resp.latency_ms
 
-                try:
-                    s = score_fn(row, resp.answer)
-                except Exception:
-                    s = 0.0
-                scores_list.append(s)
-                costs.append(resp.cost_usd)
-                latencies.append(resp.latency_ms)
+            rows = [row for _, row in df.iterrows()]
+            with ThreadPoolExecutor(max_workers=concurrency) as pool:
+                futures = [pool.submit(process_one, row) for row in rows]
+                for f in tqdm(as_completed(futures), total=len(futures), desc=f"{model}"):
+                    result = f.result()
+                    if result is None:
+                        errors += 1
+                        continue
+                    s, cost, lat = result
+                    scores_list.append(s)
+                    costs.append(cost)
+                    latencies.append(lat)
 
+            # Save once per model (after all sample threads finish) — avoids
+            # serializing the whole cache mid-loop.
             cache_mod.save_cache(cache)
 
             n_scored = len(scores_list)
@@ -303,21 +309,22 @@ def main():
     p.add_argument("--models", nargs="+", default=None)
     p.add_argument("--n", type=int, default=None,
                    help="Samples per dataset (per subject for MMLU)")
+    p.add_argument("--concurrency", type=int, default=None,
+                   help="Threads in the inner sample loop (default 10)")
     p.add_argument("--results-dir", default=None)
     args = p.parse_args()
 
     # Config-driven defaults; CLI overrides.
     cfg = load_config()
-    bench = cfg.get("benchmark", {})
+    bench = cfg["benchmark"]
 
-    datasets = args.datasets or bench.get("datasets") or ["mmlu"]
-    models = args.models or models_from_config(cfg) or [
-        "gpt-5.4-mini", "claude-sonnet-4-6", "openai/gpt-oss-120b"
-    ]
-    n = args.n if args.n is not None else bench.get("n", 20)
-    results_dir = args.results_dir or cfg.get("results_dir", "results")
+    datasets = args.datasets or bench["datasets"]
+    models = args.models or models_from_config(cfg)
+    n = args.n if args.n is not None else bench["n"]
+    concurrency = args.concurrency if args.concurrency is not None else bench["concurrency"]
+    results_dir = args.results_dir or cfg["results_dir"]
 
-    run(datasets, models, n, results_dir)
+    run(datasets, models, n, results_dir, concurrency=concurrency)
 
 
 if __name__ == "__main__":

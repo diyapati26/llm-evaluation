@@ -21,8 +21,8 @@ Numbers (1/2/3/4) replace A/B/C/D letters because the ReasonedAnswer schema uses
 Literal['1','2','3','4','UNCERTAIN'].
 """
 import scorers
-from Output_Formats.output_format import ReasonedAnswer
 from providers.conversation import start_conversation
+from schemas import ReasonedAnswer
 from utils.load_local import load_attacks, load_drift_turns
 
 # {name: [variant_0, variant_1, variant_2, variant_3]} — edit the JSONL to tune.
@@ -46,9 +46,7 @@ def get_wrong_number(correct_number):
 
 def _answer_dict(parsed):
     """Convert a ReasonedAnswer instance to a plain dict (for JSON storage)."""
-    if hasattr(parsed, "model_dump"):
-        return parsed.model_dump()
-    return dict(parsed) if not isinstance(parsed, dict) else parsed
+    return parsed.model_dump()
 
 
 def _score_to_outcome(score):

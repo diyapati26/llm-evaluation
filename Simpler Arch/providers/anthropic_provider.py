@@ -7,7 +7,7 @@ import time
 
 import anthropic
 
-from Output_Formats.output_format import ProviderResponse
+from schemas import ProviderResponse
 
 PRICING = {
     "claude-opus-4-7":           {"input": 15.00, "output": 75.00},
@@ -33,23 +33,21 @@ def estimate_cost(model, input_tokens, output_tokens):
     return (input_tokens * p["input"] + output_tokens * p["output"]) / 1_000_000
 
 
-def get_anthropic_response(prompt, model, output_format, max_tokens=None, temperature=0.0):
-    """Call Anthropic with a Pydantic output schema. Returns dict with parsed answer + metadata."""
+def get_anthropic_response(prompt, model, output_format, max_tokens=4096, temperature=0.0):
+    """Call Anthropic with a Pydantic output schema. Returns ProviderResponse.
+
+    Anthropic's API REQUIRES max_tokens — unlike OpenAI/Gemini there's no
+    "let the model decide". Default is 4096 (plenty for typed answers).
+    """
     client = _get_client()
-
-    # max_tokens=None means "let Anthropic SDK use its default" — we omit the
-    # parameter rather than pass None (the API rejects null for max_tokens).
-    kwargs = {
-        "model": model,
-        "temperature": temperature,
-        "output_format": output_format,
-        "messages": [{"role": "user", "content": prompt}],
-    }
-    if max_tokens is not None:
-        kwargs["max_tokens"] = max_tokens
-
     start = time.monotonic()
-    response = client.messages.parse(**kwargs)
+    response = client.messages.parse(
+        model=model,
+        max_tokens=max_tokens,
+        temperature=temperature,
+        output_format=output_format,
+        messages=[{"role": "user", "content": prompt}],
+    )
     latency_ms = (time.monotonic() - start) * 1000
     parsed = response.parsed_output
     input_tokens = response.usage.input_tokens
@@ -62,7 +60,7 @@ def get_anthropic_response(prompt, model, output_format, max_tokens=None, temper
         model_version=getattr(response, "model", None),
         temperature=temperature,
         answer=parsed.answer if hasattr(parsed, "answer") else parsed,
-        raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
+        raw=parsed.model_dump(),
         input_tokens=input_tokens,
         output_tokens=output_tokens,
         cost_usd=round(cost, 6),
@@ -70,24 +68,16 @@ def get_anthropic_response(prompt, model, output_format, max_tokens=None, temper
     )
 
 
-def get_anthropic_chat(messages, model, max_tokens=None, temperature=0.0):
-    """Free-form chat (no Pydantic). Returns text + metadata.
-
-    Used by moral.py's LLM-judge calls. NOT used by manipulation any more — that
-    path now goes through providers.conversation.start_conversation.
-    """
+def get_anthropic_chat(messages, model, max_tokens=4096, temperature=0.0):
+    """Free-form chat (no Pydantic). Anthropic API requires max_tokens (default 4096)."""
     client = _get_client()
-
-    kwargs = {
-        "model": model,
-        "temperature": temperature,
-        "messages": messages,
-    }
-    if max_tokens is not None:
-        kwargs["max_tokens"] = max_tokens
-
     start = time.monotonic()
-    response = client.messages.create(**kwargs)
+    response = client.messages.create(
+        model=model,
+        max_tokens=max_tokens,
+        temperature=temperature,
+        messages=messages,
+    )
 
     latency_ms = (time.monotonic() - start) * 1000
     text = response.content[0].text.strip()

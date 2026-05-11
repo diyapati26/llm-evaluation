@@ -14,9 +14,16 @@ First-time use of an alias misses (no mapping yet); subsequent calls hit.
 """
 import json
 import os
+import threading
 
 DEFAULT_PATH = "AI_Cache.json"
 VERSIONS_KEY = "_versions"  # special key inside the cache dict: {alias: model_version}
+
+# Single lock guarding the cache dict's write-side. Reads (dict.get) are atomic
+# under the GIL so we don't need to lock them. Writes (put + the JSON snapshot
+# in save_cache) MUST be under the lock to avoid "dictionary changed size
+# during iteration" and corrupted file flushes.
+_lock = threading.Lock()
 
 
 def load_cache(path=DEFAULT_PATH):
@@ -27,8 +34,12 @@ def load_cache(path=DEFAULT_PATH):
 
 
 def save_cache(cache, path=DEFAULT_PATH):
+    # Snapshot under lock so iteration is consistent; write file outside the
+    # lock to keep the critical section short.
+    with _lock:
+        snapshot = json.dumps(cache, indent=2)
     with open(path, "w") as f:
-        json.dump(cache, f, indent=2)
+        f.write(snapshot)
 
 
 def make_key(dataset, model_version, question):
@@ -56,10 +67,13 @@ def put(cache, dataset, model_alias, question, value, model_version=None):
 
     If model_version is missing (some providers may not return one), key by
     the alias instead — preserves cacheability at the cost of reproducibility.
+
+    Lock-protected so multiple threads can call this concurrently.
     """
     version = model_version or model_alias
-    cache[make_key(dataset, version, question)] = value
-    if model_version:
-        versions = cache.setdefault(VERSIONS_KEY, {})
-        versions[model_alias] = model_version
+    with _lock:
+        cache[make_key(dataset, version, question)] = value
+        if model_version:
+            versions = cache.setdefault(VERSIONS_KEY, {})
+            versions[model_alias] = model_version
     return cache

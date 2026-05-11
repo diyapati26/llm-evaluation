@@ -10,7 +10,7 @@ import time
 
 from openai import OpenAI
 
-from Output_Formats.output_format import ProviderResponse
+from schemas import ProviderResponse
 
 PRICING = {
     "openai/gpt-oss-120b":                            {"input": 0.15, "output": 0.75},
@@ -97,7 +97,7 @@ def get_groq_response(prompt, model, output_format, max_tokens=None, temperature
         model_version=getattr(response, "model", None),
         temperature=temperature,
         answer=parsed.answer if hasattr(parsed, "answer") else parsed,
-        raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
+        raw=parsed.model_dump(),
         input_tokens=input_tokens,
         output_tokens=output_tokens,
         cost_usd=round(cost, 6),

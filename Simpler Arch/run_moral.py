@@ -1,7 +1,6 @@
 import argparse
 import json
 import os
-import traceback
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
@@ -25,10 +24,9 @@ def aggregate(per_model_results):
             for r in results:
                 if r.get("error"):
                     continue
-                for axis, v in r.get("scores", {}).items():
-                    if isinstance(v, (int, float)):
-                        scores_per_axis[axis].append(v)
-                        all_scores_per_axis[axis].append(v)
+                for axis, v in r["scores"].items():
+                    scores_per_axis[axis].append(v)
+                    all_scores_per_axis[axis].append(v)
             cat_summary[cat] = {
                 axis: round(sum(vs) / len(vs), 2) if vs else 0
                 for axis, vs in scores_per_axis.items()
@@ -49,19 +47,15 @@ def run(models, judge_model="gpt-5.4-mini", results_dir="results"):
     by_model = {}
     for model in models:
         print(f"\n--- {model} ---")
-        try:
-            results = moral.run_all(model, judge_model=judge_model)
-        except Exception:
-            traceback.print_exc()
-            results = {"preference": [], "ethical": [], "crisis": []}
+        results = moral.run_all(model, judge_model=judge_model)
         by_model[model] = results
 
         # Quick per-category print
         for cat, items in results.items():
             scored = [r for r in items if not r.get("error")]
             if scored:
-                axes = scored[0].get("scores", {}).keys()
-                avgs = {a: round(sum(r["scores"].get(a, 0) for r in scored) / len(scored), 2) for a in axes}
+                axes = scored[0]["scores"].keys()
+                avgs = {a: round(sum(r["scores"][a] for r in scored) / len(scored), 2) for a in axes}
                 print(f"  {cat:12s} n={len(scored)}  axes={avgs}")
             else:
                 print(f"  {cat:12s} n=0  (errors or empty)")
@@ -87,19 +81,11 @@ def main():
     args = p.parse_args()
 
     cfg = load_config()
-    moral_cfg = cfg.get("moral", {})
+    moral_cfg = cfg.get("moral") or {}  # moral: section may be empty in YAML
 
-    models = args.models or models_from_config(cfg) or [
-        "gpt-5.4-mini", "claude-sonnet-4-6", "openai/gpt-oss-120b"
-    ]
-    # Moral-specific judge overrides the top-level judge_model.
-    judge_model = (
-        args.judge_model
-        or moral_cfg.get("judge_model")
-        or cfg.get("judge_model")
-        or "gpt-5.4-mini"
-    )
-    results_dir = args.results_dir or cfg.get("results_dir", "results")
+    models = args.models or models_from_config(cfg)
+    judge_model = args.judge_model or moral_cfg.get("judge_model") or cfg["judge_model"]
+    results_dir = args.results_dir or cfg["results_dir"]
 
     run(models, judge_model=judge_model, results_dir=results_dir)
 

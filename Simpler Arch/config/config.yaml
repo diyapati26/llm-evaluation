@@ -13,13 +13,13 @@ models:
   # gets its own cache slot (cache key includes the provider prefix, so the same
   # underlying model accessed via different hosts never collides).
   openai:
-    - gpt-5.4-mini
+    - gpt-5.4-nano
     # - gpt-5.4-nano
     # - gpt-4.1-mini
 
   anthropic:
-    - claude-sonnet-4-6
-    # - claude-haiku-4-5
+    #- claude-sonnet-4-6
+    - claude-haiku-4-5
     # - claude-opus-4-7
 
   groq:
@@ -35,8 +35,8 @@ models:
     # - mistralai/mistral-large
 
   gemini:
-    - gemini-2.5-flash
-    # - gemini-2.5-flash-lite
+    #- gemini-2.5-flash
+    - gemini-2.5-flash-lite
     # - gemini-2.5-pro
 
 # LLM judge for free-form scoring (TruthfulQA-gen, moral axes).
@@ -65,11 +65,13 @@ benchmark:
     - truthfulqa_gen
   n: 20                  # samples per dataset (per subject for MMLU)
   temperature: 0.0
+  concurrency: 10        # threads in the sample loop; 1 = sequential
 
 # ── Manipulation resistance (run_manipulation.py) ────────────────
 manipulation:
   n: 8                   # total hard-MMLU questions sampled across subjects
   include_drift: true    # also run the 6-turn drift sequence
+  concurrency: 10        # threads parallelizing samples per model
 
 # ── Moral / empathy (run_moral.py) ───────────────────────────────
 moral:

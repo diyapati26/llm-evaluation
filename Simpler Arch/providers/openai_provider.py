@@ -8,7 +8,7 @@ import time
 
 from openai import OpenAI
 
-from Output_Formats.output_format import ProviderResponse
+from schemas import ProviderResponse
 
 # Per-1M-token pricing (USD)
 PRICING = {
@@ -70,7 +70,7 @@ def get_openai_response(prompt, model, output_format, max_tokens=None, temperatu
         # multi-field schemas (ReasonedAnswer) → return the whole parsed instance.
         # Keeps cache shape stable across schema types.
         answer=parsed.answer if hasattr(parsed, "answer") else parsed,
-        raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
+        raw=parsed.model_dump(),
         input_tokens=input_tokens,
         output_tokens=output_tokens,
         cost_usd=round(cost, 6),

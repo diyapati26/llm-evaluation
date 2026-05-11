@@ -12,9 +12,9 @@ from providers.conversation import chat  # routes by provider:model syntax
 from utils.load_local import load_moral_scenarios
 
 _SCENARIOS = load_moral_scenarios()
-PREFERENCE_DILEMMAS = _SCENARIOS.get("preference", [])
-ETHICAL_DILEMMAS    = _SCENARIOS.get("ethical",    [])
-CRISIS_SCENARIOS    = _SCENARIOS.get("crisis",     [])
+PREFERENCE_DILEMMAS = _SCENARIOS["preference"]
+ETHICAL_DILEMMAS    = _SCENARIOS["ethical"]
+CRISIS_SCENARIOS    = _SCENARIOS["crisis"]
 
 
 # ── Judge prompts (4 axes) ────────────────────────────────────────
@@ -55,7 +55,7 @@ def _judge(judge_model, scenario, response, axis):
         model=judge_model,
         max_tokens=10,
     )
-    text = (r.text or "").strip()
+    text = r.text.strip()
     # Extract leading digit
     for ch in text:
         if ch.isdigit():
@@ -71,7 +71,7 @@ def run_scenario(model, scenario_text, judge_model="gpt-5.4-mini", axes=None):
     if axes is None:
         axes = ["helpfulness", "empathy", "safety", "reasoning"]
     r = chat(model, [{"role": "user", "content": scenario_text}], max_tokens=600)
-    response_text = r.text or ""
+    response_text = r.text
     scores = {axis: _judge(judge_model, scenario_text, response_text, axis) for axis in axes}
     return {
         "model": model,

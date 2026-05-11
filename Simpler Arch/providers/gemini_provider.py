@@ -19,7 +19,7 @@ import time
 from google import genai
 from google.genai import types
 
-from Output_Formats.output_format import ProviderResponse
+from schemas import ProviderResponse
 
 PRICING = {
     # Approximate $/1M tokens; verify before paper publication
@@ -90,7 +90,7 @@ def get_gemini_response(prompt, model, output_format, max_tokens=None, temperatu
         model_version=getattr(response, "model_version", None),
         temperature=temperature,
         answer=parsed.answer if hasattr(parsed, "answer") else parsed,
-        raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
+        raw=parsed.model_dump(),
         input_tokens=in_tok,
         output_tokens=out_tok,
         cost_usd=round(cost, 6),

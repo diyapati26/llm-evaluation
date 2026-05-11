@@ -23,7 +23,6 @@ import time
 
 from google.genai import types as gemini_types
 
-from Output_Formats.output_format import ProviderResponse
 from providers import (
     anthropic_provider,
     gemini_provider,
@@ -31,6 +30,7 @@ from providers import (
     openai_provider,
     openrouter_provider,
 )
+from schemas import ProviderResponse
 
 
 def _make_strict(node):
@@ -122,7 +122,7 @@ class OpenAIConversation(Conversation):
             model_version=getattr(response, "model", None),
             temperature=temperature,
             answer=parsed,
-            raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
+            raw=parsed.model_dump(),
             input_tokens=usage.input_tokens,
             output_tokens=usage.output_tokens,
             cost_usd=round(cost, 6),
@@ -141,20 +141,18 @@ class AnthropicConversation(Conversation):
         self.client = anthropic_provider._get_client()
         self.messages = []
 
-    def send(self, message, schema, max_tokens=None, temperature=0.0):
+    def send(self, message, schema, max_tokens=4096, temperature=0.0):
+        # Anthropic API requires max_tokens — pass a sane default if caller didn't.
         start = time.monotonic()
         self.messages.append({"role": "user", "content": message})
 
-        kwargs = {
-            "model": self.model,
-            "temperature": temperature,
-            "output_format": schema,
-            "messages": self.messages,
-        }
-        if max_tokens is not None:
-            kwargs["max_tokens"] = max_tokens
-
-        response = self.client.messages.parse(**kwargs)
+        response = self.client.messages.parse(
+            model=self.model,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            output_format=schema,
+            messages=self.messages,
+        )
 
         latency_ms = (time.monotonic() - start) * 1000
         parsed = response.parsed_output
@@ -178,7 +176,7 @@ class AnthropicConversation(Conversation):
             model_version=getattr(response, "model", None),
             temperature=temperature,
             answer=parsed,
-            raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
+            raw=parsed.model_dump(),
             input_tokens=in_tok,
             output_tokens=out_tok,
             cost_usd=round(cost, 6),
@@ -222,7 +220,7 @@ class GeminiConversation(Conversation):
         # Append model turn (JSON text) so next call sees full history
         self.contents.append({
             "role": "model",
-            "parts": [{"text": parsed.model_dump_json() if hasattr(parsed, "model_dump_json") else (response.text or "")}],
+            "parts": [{"text": parsed.model_dump_json()}],
         })
 
         usage = response.usage_metadata
@@ -237,7 +235,7 @@ class GeminiConversation(Conversation):
             model_version=getattr(response, "model_version", None),
             temperature=temperature,
             answer=parsed,
-            raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
+            raw=parsed.model_dump(),
             input_tokens=in_tok,
             output_tokens=out_tok,
             cost_usd=round(cost, 6),
@@ -325,7 +323,7 @@ class ChatCompletionsConversation(Conversation):
             model_version=getattr(response, "model", None),
             temperature=temperature,
             answer=parsed,
-            raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
+            raw=parsed.model_dump(),
             input_tokens=in_tok,
             output_tokens=out_tok,
             cost_usd=round(cost, 6),

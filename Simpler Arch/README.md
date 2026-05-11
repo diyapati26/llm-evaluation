@@ -28,7 +28,7 @@ Simpler Arch/
 │   ├── manipulation_attacks.jsonl   # 8 attack templates
 │   ├── manipulation_drift.jsonl     # 5 progressive drift turns
 │   └── moral_scenarios.jsonl        # 9 scenarios across 3 categories
-├── Output_Formats/output_format.py  # Pydantic schemas: MMLU_Answer, …, ReasonedAnswer, ProviderResponse
+├── schemas.py                       # Pydantic schemas: MMLU_Answer, …, ReasonedAnswer, ProviderResponse
 ├── providers/
 │   ├── openai_provider.py           # get_openai_response (parse) + get_openai_chat (free-form)
 │   ├── anthropic_provider.py        # get_anthropic_response + get_anthropic_chat
