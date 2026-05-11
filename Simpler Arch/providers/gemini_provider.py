@@ -87,6 +87,8 @@ def get_gemini_response(prompt, model, output_format, max_tokens=None, temperatu
     return ProviderResponse(
         provider="gemini",
         model=model,
+        model_version=getattr(response, "model_version", None),
+        temperature=temperature,
         answer=parsed.answer if hasattr(parsed, "answer") else parsed,
         raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
         input_tokens=in_tok,
@@ -121,6 +123,8 @@ def get_gemini_chat(messages, model, max_tokens=None, temperature=0.0):
     return ProviderResponse(
         provider="gemini",
         model=model,
+        model_version=getattr(response, "model_version", None),
+        temperature=temperature,
         text=text,
         input_tokens=in_tok,
         output_tokens=out_tok,

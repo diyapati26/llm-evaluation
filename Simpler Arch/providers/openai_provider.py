@@ -64,6 +64,8 @@ def get_openai_response(prompt, model, output_format, max_tokens=None, temperatu
     return ProviderResponse(
         provider="openai",
         model=model,
+        model_version=getattr(response, "model", None),
+        temperature=temperature,
         # Single-field schemas (MMLU_Answer etc.) → return the .answer value directly;
         # multi-field schemas (ReasonedAnswer) → return the whole parsed instance.
         # Keeps cache shape stable across schema types.
@@ -105,6 +107,8 @@ def get_openai_chat(messages, model, max_tokens=None, temperature=0.0):
     return ProviderResponse(
         provider="openai",
         model=model,
+        model_version=getattr(response, "model", None),
+        temperature=temperature,
         text=text,
         input_tokens=input_tokens,
         output_tokens=output_tokens,

@@ -246,8 +246,13 @@ def run(datasets, models, n, results_dir="results"):
                         errors += 1
                         traceback.print_exc()
                         continue
-                    # Dump to dict for JSON-friendly cache storage.
-                    cache_mod.put(cache, subject, model, prompt, resp.model_dump())
+                    # Store keyed by the API-returned model_version (dated snapshot)
+                    # so different snapshots auto-invalidate instead of colliding.
+                    cache_mod.put(
+                        cache, subject, model, prompt,
+                        resp.model_dump(),
+                        model_version=resp.model_version,
+                    )
 
                 try:
                     s = score_fn(row, resp.answer)

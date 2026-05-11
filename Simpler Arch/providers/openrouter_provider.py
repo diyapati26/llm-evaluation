@@ -128,6 +128,8 @@ def get_openrouter_response(prompt, model, output_format, max_tokens=None, tempe
     return ProviderResponse(
         provider="openrouter",
         model=model,
+        model_version=getattr(response, "model", None),
+        temperature=temperature,
         answer=parsed.answer if hasattr(parsed, "answer") else parsed,
         raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
         input_tokens=input_tokens,
@@ -162,6 +164,8 @@ def get_openrouter_chat(messages, model, max_tokens=None, temperature=0.0):
     return ProviderResponse(
         provider="openrouter",
         model=model,
+        model_version=getattr(response, "model", None),
+        temperature=temperature,
         text=text,
         input_tokens=input_tokens,
         output_tokens=output_tokens,

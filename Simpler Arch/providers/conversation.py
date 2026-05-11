@@ -119,6 +119,8 @@ class OpenAIConversation(Conversation):
         return ProviderResponse(
             provider="openai",
             model=self.model,
+            model_version=getattr(response, "model", None),
+            temperature=temperature,
             answer=parsed,
             raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
             input_tokens=usage.input_tokens,
@@ -173,6 +175,8 @@ class AnthropicConversation(Conversation):
         return ProviderResponse(
             provider="anthropic",
             model=self.model,
+            model_version=getattr(response, "model", None),
+            temperature=temperature,
             answer=parsed,
             raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
             input_tokens=in_tok,
@@ -230,6 +234,8 @@ class GeminiConversation(Conversation):
         return ProviderResponse(
             provider="gemini",
             model=self.model,
+            model_version=getattr(response, "model_version", None),
+            temperature=temperature,
             answer=parsed,
             raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
             input_tokens=in_tok,
@@ -316,6 +322,8 @@ class ChatCompletionsConversation(Conversation):
         return ProviderResponse(
             provider=self.provider,
             model=self.model,
+            model_version=getattr(response, "model", None),
+            temperature=temperature,
             answer=parsed,
             raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
             input_tokens=in_tok,

@@ -11,15 +11,21 @@ class ProviderResponse(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     provider: str
-    model: str
+    model: str                          # the model id we requested
     input_tokens: int
     output_tokens: int
     cost_usd: float
     latency_ms: float
 
+    # Reproducibility: model_version is the dated snapshot returned by the API
+    # (e.g., "gpt-5.4-mini-2026-01-15"). Aliases silently remap to snapshots that
+    # can change — logging the returned version lets a reviewer reproduce later.
+    model_version: str | None = None
+    temperature: float = 0.0
+
     answer: Any = None           # parsed schema instance (structured calls)
-    raw: dict | None = None   # answer.model_dump() — JSON serialization helper
-    text: str | None = None   # free-form text (chat calls)
+    raw: dict | None = None      # answer.model_dump() — JSON serialization helper
+    text: str | None = None      # free-form text (chat calls)
 
 
 class MMLU_Answer(BaseModel):
