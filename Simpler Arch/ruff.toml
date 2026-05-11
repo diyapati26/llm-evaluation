@@ -1,0 +1,5 @@
+line-length = 120
+
+[lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "C4", "RET"]
+ignore = ["E501"]  # line-too-long — line-length=120 is the soft target, don't enforce hard
