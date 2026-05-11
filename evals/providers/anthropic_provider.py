@@ -46,6 +46,7 @@ class AnthropicProvider(BaseLLMProvider):
         response = await self.client.messages.create(
             model=self.model,
             max_tokens=self.max_tokens,
+            temperature=self.temperature,
             messages=[{"role": "user", "content": prompt}],
         )
 
@@ -57,6 +58,8 @@ class AnthropicProvider(BaseLLMProvider):
         result = LLMResponse(
             sample_id=sample_id,
             model=self.model,
+            model_version=response.model,
+            temperature=self.temperature,
             provider="anthropic",
             output=response.content[0].text.strip(),
             input_tokens=input_tokens,
@@ -83,6 +86,7 @@ class AnthropicProvider(BaseLLMProvider):
         response = await self.client.messages.create(
             model=self.model,
             max_tokens=self.max_tokens,
+            temperature=self.temperature,
             messages=messages,
         )
 
@@ -94,6 +98,8 @@ class AnthropicProvider(BaseLLMProvider):
         return LLMResponse(
             sample_id=sample_id,
             model=self.model,
+            model_version=response.model,
+            temperature=self.temperature,
             provider="anthropic",
             output=response.content[0].text.strip(),
             input_tokens=input_tokens,
