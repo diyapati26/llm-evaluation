@@ -23,6 +23,8 @@ class EvalSample(BaseModel):
 class LLMResponse(BaseModel):
     sample_id: str
     model: str
+    model_version: Optional[str] = None  # exact version string returned by the API
+    temperature: float = 0.0
     provider: str
     output: str
     input_tokens: int

@@ -115,6 +115,8 @@ class GroqProvider(BaseLLMProvider):
                 return LLMResponse(
                     sample_id=sample_id,
                     model=self.model,
+                    model_version=response.model,
+                    temperature=self.temperature,
                     provider="groq",
                     output=output,
                     input_tokens=input_tokens,
