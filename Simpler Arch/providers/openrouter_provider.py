@@ -14,15 +14,14 @@ call fails — we don't best-effort parse, since silent fallback can produce
 garbage results that look successful. Pick a model that supports strict mode
 (Claude 3.5+, GPT-4o, Llama 3.3 70B, Qwen 72B, DeepSeek-V3, etc.).
 """
-import os
 import json
+import os
 import time
 import urllib.request
 
 from openai import OpenAI
 
 from Output_Formats.output_format import ProviderResponse
-
 
 _client = None
 _pricing_cache = None  # {model_id: {"input": $/Mtok, "output": $/Mtok}}

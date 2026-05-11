@@ -29,7 +29,6 @@ Simpler Arch/
 ├── runner.py                         # Standard benchmark CLI
 ├── run_manipulation.py               # Manipulation CLI (hard-MMLU)
 ├── run_moral.py                      # Moral / empathy CLI
-├── compare.py                        # Read all results/*.json and print accuracy/cost/latency table
 └── tests/
     └── test_providers.py             # 3-provider connectivity smoke test
 ```
@@ -81,16 +80,6 @@ python "Simpler Arch/run_moral.py"
 
 # Pick a different judge
 python "Simpler Arch/run_moral.py" --judge-model claude-sonnet-4-6
-```
-
-### Compare runs
-
-```bash
-# Latest per (model, dataset)
-python "Simpler Arch/compare.py"
-
-# Filter by dataset substring
-python "Simpler Arch/compare.py" --filter mmlu
 ```
 
 Results land in `results/` as JSON. `runner.py` writes `results_<timestamp>.json`,

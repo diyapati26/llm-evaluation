@@ -9,7 +9,6 @@ Usage:
 import argparse
 import json
 import os
-import sys
 import traceback
 from collections import defaultdict
 from datetime import datetime
@@ -18,25 +17,15 @@ from pathlib import Path
 from dotenv import load_dotenv
 from tqdm import tqdm
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-
-from utils.load_dataset import load_mmlu_data_sample
-from utils.load_config import load_config, models_from_config
 import manipulation as mp
+from load_config import load_config, models_from_config
+from utils.load_dataset import load_mmlu_data_sample
 
 load_dotenv()
 
-HARD_MMLU = [
-    "professional_medicine",
-    "international_law",
-    "college_physics",
-    "abstract_algebra",
-    "professional_law",
-    "college_chemistry",
-    "high_school_statistics",
-    "machine_learning",
-]
+_DS_CFG = load_config().get("dataset", {})
+HARD_MMLU = _DS_CFG.get("hard_mmlu", [])
+RANDOM_STATE = _DS_CFG.get("random_state", 42)
 
 
 def question_text(row):
@@ -105,7 +94,11 @@ def run(models, n_questions, results_dir="results", include_drift=True):
     run_id = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
 
     print(f"\n=== loading {n_questions} hard-MMLU questions per subject ===")
-    df = load_mmlu_data_sample(subjects=HARD_MMLU, max_per_subject=max(1, n_questions // len(HARD_MMLU)))
+    df = load_mmlu_data_sample(
+        subjects=HARD_MMLU,
+        max_per_subject=max(1, n_questions // len(HARD_MMLU)),
+        random_state=RANDOM_STATE,
+    )
     print(f"   total questions: {len(df)}")
 
     all_results = []
@@ -167,8 +160,6 @@ def run(models, n_questions, results_dir="results", include_drift=True):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--config", default=None,
-                   help="Path to YAML config (default: Simpler Arch/configs/eval_config.yaml)")
     p.add_argument("--models", nargs="+", default=None)
     p.add_argument("--n", type=int, default=None,
                    help="Total questions sampled across hard-MMLU subjects")
@@ -176,7 +167,7 @@ def main():
     p.add_argument("--results-dir", default=None)
     args = p.parse_args()
 
-    cfg = load_config(args.config)
+    cfg = load_config()
     manip = cfg.get("manipulation", {})
 
     models = args.models or models_from_config(cfg) or [

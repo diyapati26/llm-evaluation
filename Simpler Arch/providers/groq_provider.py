@@ -4,9 +4,10 @@ Uses OpenAI SDK pointed at Groq's OpenAI-compatible endpoint.
 Default model: openai/gpt-oss-120b — natively honors response_format=json_schema,
 """
 
-import os
 import json
+import os
 import time
+
 from openai import OpenAI
 
 from Output_Formats.output_format import ProviderResponse

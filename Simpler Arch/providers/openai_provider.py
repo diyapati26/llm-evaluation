@@ -5,6 +5,7 @@ Uses the new Responses API (matches the notebook):
 """
 import os
 import time
+
 from openai import OpenAI
 
 from Output_Formats.output_format import ProviderResponse

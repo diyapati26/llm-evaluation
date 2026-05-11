@@ -37,6 +37,20 @@ models:
 # LLM judge for free-form scoring (TruthfulQA-gen, moral axes).
 judge_model: gpt-5.4-mini
 
+# ── Dataset settings ──────────────────────────────────────────────
+dataset:
+  random_state: 42
+  max_samples: 20          # default per-dataset sample size (per subject for MMLU)
+  hard_mmlu:
+    - professional_medicine
+    - international_law
+    - college_physics
+    - abstract_algebra
+    - professional_law
+    - college_chemistry
+    - high_school_statistics
+    - machine_learning
+
 # ── Standard benchmark (run_eval.py via runner.run) ──────────────
 benchmark:
   datasets:

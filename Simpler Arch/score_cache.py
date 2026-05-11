@@ -14,17 +14,14 @@ Usage:
 import argparse
 import json
 import os
-import sys
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-
 from datasets import load_dataset
-from providers import openai_provider
+
 import scorers
+from providers import openai_provider
 
 
 def load_cache(path):
@@ -59,7 +56,7 @@ def main():
 
     # Group entries by subject, restricted to the requested model
     entries_by_subject = defaultdict(list)
-    for key, val in cache.items():
+    for _key, val in cache.items():
         if not isinstance(val, dict):
             continue
         if val.get("model") != args.model:

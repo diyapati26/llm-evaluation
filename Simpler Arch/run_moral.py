@@ -1,29 +1,15 @@
-"""Top-level moral / empathy runner.
-
-Runs every scenario (preference + ethical + crisis) across models,
-judges each response on the relevant axes via an LLM judge (default GPT-5.4-mini),
-saves detailed + summary JSON.
-
-Usage:
-    python "Simpler Arch/run_moral.py" --models claude-sonnet-4-6 gpt-5.4-mini openai/gpt-oss-120b
-"""
 import argparse
 import json
 import os
-import sys
 import traceback
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
-from tqdm import tqdm
-
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
 
 import moral
-from utils.load_config import load_config, models_from_config
+from load_config import load_config, models_from_config
 
 load_dotenv()
 
@@ -95,14 +81,12 @@ def run(models, judge_model="gpt-5.4-mini", results_dir="results"):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--config", default=None,
-                   help="Path to YAML config (default: Simpler Arch/configs/eval_config.yaml)")
     p.add_argument("--models", nargs="+", default=None)
     p.add_argument("--judge-model", default=None)
     p.add_argument("--results-dir", default=None)
     args = p.parse_args()
 
-    cfg = load_config(args.config)
+    cfg = load_config()
     moral_cfg = cfg.get("moral", {})
 
     models = args.models or models_from_config(cfg) or [

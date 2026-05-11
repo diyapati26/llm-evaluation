@@ -1,4 +1,4 @@
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -18,8 +18,8 @@ class ProviderResponse(BaseModel):
     latency_ms: float
 
     answer: Any = None           # parsed schema instance (structured calls)
-    raw: Optional[dict] = None   # answer.model_dump() — JSON serialization helper
-    text: Optional[str] = None   # free-form text (chat calls)
+    raw: dict | None = None   # answer.model_dump() — JSON serialization helper
+    text: str | None = None   # free-form text (chat calls)
 
 
 class MMLU_Answer(BaseModel):

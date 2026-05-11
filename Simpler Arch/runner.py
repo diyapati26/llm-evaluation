@@ -9,7 +9,6 @@ Usage (from repo root, with venv active):
 import argparse
 import json
 import os
-import sys
 import traceback
 from datetime import datetime
 from pathlib import Path
@@ -17,25 +16,27 @@ from pathlib import Path
 from dotenv import load_dotenv
 from tqdm import tqdm
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-
+import cache as cache_mod
+import scorers
+from load_config import load_config, models_from_config
+from Output_Formats.output_format import (
+    HellaSwag_Answer,
+    MMLU_Answer,
+    ProviderResponse,
+    TruthfulQA_Generation_Answer,
+    TruthfulQA_MC_Answer,
+)
+from providers import (
+    anthropic_provider,
+    groq_provider,
+    openai_provider,
+    openrouter_provider,
+)
 from utils.load_dataset import (
+    load_hellaswag_data_sample,
     load_mmlu_data_sample,
     load_truthfulqa_data_sample,
-    load_hellaswag_data_sample,
 )
-from utils.load_config import load_config, models_from_config
-from Output_Formats.output_format import (
-    MMLU_Answer,
-    HellaSwag_Answer,
-    TruthfulQA_MC_Answer,
-    TruthfulQA_Generation_Answer,
-)
-from providers import openai_provider, anthropic_provider, groq_provider, openrouter_provider
-from Output_Formats.output_format import ProviderResponse
-import scorers
-import cache as cache_mod
 
 load_dotenv()
 
@@ -94,6 +95,7 @@ def call(model, prompt, output_format):
         return provider.get_groq_response(prompt, real_model, output_format)
     if name == "openrouter":
         return provider.get_openrouter_response(prompt, real_model, output_format)
+    raise ValueError(f"Unknown provider name from route(): {name!r}")
 
 
 # ── Prompt builders ───────────────────────────────────────────────
@@ -173,32 +175,29 @@ def score_truthfulqa_gen(row, parsed_answer):
 
 # ── Datasets ──────────────────────────────────────────────────────
 
-HARD_MMLU = [
-    "professional_medicine",
-    "international_law",
-    "college_physics",
-    "abstract_algebra",
-    "professional_law",
-    "college_chemistry",
-    "high_school_statistics",
-    "machine_learning",
-]
+_DS_CFG = load_config().get("dataset", {})
+HARD_MMLU = _DS_CFG.get("hard_mmlu", [])
+RANDOM_STATE = _DS_CFG.get("random_state", 42)
 
 
 def get_dataset(name, n):
     if name == "mmlu":
-        df = load_mmlu_data_sample(subjects=HARD_MMLU, max_per_subject=max(1, n // len(HARD_MMLU)))
+        df = load_mmlu_data_sample(
+            subjects=HARD_MMLU,
+            max_per_subject=max(1, n // len(HARD_MMLU)),
+            random_state=RANDOM_STATE,
+        )
         return df, MMLU_Answer, mmlu_prompt, score_mmlu, "subject"
     if name == "hellaswag":
-        df = load_hellaswag_data_sample(max_samples=n)
+        df = load_hellaswag_data_sample(max_samples=n, random_state=RANDOM_STATE)
         df["subject"] = "hellaswag"
         return df, HellaSwag_Answer, hellaswag_prompt, score_hellaswag, "subject"
     if name == "truthfulqa_mc":
-        df = load_truthfulqa_data_sample(config="multiple_choice", max_samples=n)
+        df = load_truthfulqa_data_sample(config="multiple_choice", max_samples=n, random_state=RANDOM_STATE)
         df["subject"] = "truthfulqa_mc"
         return df, TruthfulQA_MC_Answer, truthfulqa_mc_prompt, score_truthfulqa_mc, "subject"
     if name == "truthfulqa_gen":
-        df = load_truthfulqa_data_sample(config="generation", max_samples=n)
+        df = load_truthfulqa_data_sample(config="generation", max_samples=n, random_state=RANDOM_STATE)
         df["subject"] = "truthfulqa_gen"
         return df, TruthfulQA_Generation_Answer, truthfulqa_gen_prompt, score_truthfulqa_gen, "subject"
     raise ValueError(f"Unknown dataset: {name}")
@@ -288,8 +287,6 @@ def run(datasets, models, n, results_dir="results"):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--config", default=None,
-                   help="Path to YAML config (default: Simpler Arch/configs/eval_config.yaml)")
     p.add_argument("--datasets", nargs="+", default=None,
                    choices=["mmlu", "hellaswag", "truthfulqa_mc", "truthfulqa_gen"])
     p.add_argument("--models", nargs="+", default=None)
@@ -299,7 +296,7 @@ def main():
     args = p.parse_args()
 
     # Config-driven defaults; CLI overrides.
-    cfg = load_config(args.config)
+    cfg = load_config()
     bench = cfg.get("benchmark", {})
 
     datasets = args.datasets or bench.get("datasets") or ["mmlu"]

@@ -21,13 +21,13 @@ Factory:
 import json
 import time
 
+from Output_Formats.output_format import ProviderResponse
 from providers import (
-    openai_provider,
     anthropic_provider,
     groq_provider,
+    openai_provider,
     openrouter_provider,
 )
-from Output_Formats.output_format import ProviderResponse
 
 
 def _make_strict(node):
@@ -282,6 +282,25 @@ def _resolve(model):
     raise ValueError(
         f"Don't know how to route '{model}'. Use 'provider:model' syntax."
     )
+
+
+def chat(model, messages, max_tokens=None, temperature=0.0):
+    """Single-turn free-form chat across any provider. Returns ProviderResponse.
+
+    Routes by 'provider:model' prefix or name inference. Use this when you want
+    raw text output (LLM judges, moral scenarios) — Conversation is for multi-turn
+    structured-output flows.
+    """
+    provider_name, real_model = _resolve(model)
+    if provider_name == "openai":
+        return openai_provider.get_openai_chat(messages, real_model, max_tokens=max_tokens, temperature=temperature)
+    if provider_name == "anthropic":
+        return anthropic_provider.get_anthropic_chat(messages, real_model, max_tokens=max_tokens, temperature=temperature)
+    if provider_name == "groq":
+        return groq_provider.get_groq_chat(messages, real_model, max_tokens=max_tokens, temperature=temperature)
+    if provider_name == "openrouter":
+        return openrouter_provider.get_openrouter_chat(messages, real_model, max_tokens=max_tokens, temperature=temperature)
+    raise ValueError(f"Unknown provider '{provider_name}'")
 
 
 def start_conversation(model):
