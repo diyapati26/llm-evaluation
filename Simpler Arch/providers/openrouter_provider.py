@@ -33,7 +33,8 @@ def _get_client():
         _client = OpenAI(
             base_url="https://openrouter.ai/api/v1",
             api_key=os.environ["OPENROUTER_API_KEY"],
-        )
+            timeout=30.0,  # OpenRouter routes through many providers — some hang.
+        )                  # Without a timeout, hung calls deadlock the thread pool.
     return _client
 
 
@@ -89,12 +90,14 @@ def _make_strict(node):
     return node
 
 
-def get_openrouter_response(prompt, model, output_format, max_tokens=None, temperature=0.0):
+def get_openrouter_response(prompt, model, output_format, max_tokens=2048, temperature=0.0):
     """Call OpenRouter with strict json_schema. Returns ProviderResponse.
 
     Strict mode only — raises if the underlying model doesn't support
-    response_format=json_schema. max_tokens=None lets the model use its full
-    output budget.
+    response_format=json_schema.
+
+    OpenRouter charges credit RESERVATION based on max_tokens, not actual usage.
+    Default of 2048 keeps credit budget bounded; raise per-call if you need more.
     """
     client = _get_client()
     schema = _make_strict(output_format.model_json_schema())
@@ -139,8 +142,8 @@ def get_openrouter_response(prompt, model, output_format, max_tokens=None, tempe
     )
 
 
-def get_openrouter_chat(messages, model, max_tokens=None, temperature=0.0):
-    """Free-form chat (no Pydantic). Returns ProviderResponse with text."""
+def get_openrouter_chat(messages, model, max_tokens=2048, temperature=0.0):
+    """Free-form chat (no Pydantic). max_tokens default 2048 (OpenRouter credit reservation)."""
     client = _get_client()
 
     kwargs = {

@@ -28,6 +28,7 @@ def _get_client():
         _client = OpenAI(
             base_url="https://api.groq.com/openai/v1",
             api_key=os.environ["GROQ_API_KEY"],
+            timeout=30.0,
         )
     return _client
 

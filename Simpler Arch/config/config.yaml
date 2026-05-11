@@ -28,11 +28,11 @@ models:
     # - meta-llama/llama-3.3-70b-versatile
 
   openrouter:
-    - meta-llama/llama-3.3-70b-instruct
+    - minimax/minimax-m2.5:free
+    # - z-ai/glm-4.5-air:free  (returns bare int instead of {answer: ...})
+    # - moonshotai/kimi-k2     (Novita route doesn't support strict json_schema)
+    # - meta-llama/llama-3.3-70b-instruct
     # - anthropic/claude-3.5-sonnet
-    # - qwen/qwen-2.5-72b-instruct
-    # - deepseek/deepseek-chat
-    # - mistralai/mistral-large
 
   gemini:
     #- gemini-2.5-flash

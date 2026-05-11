@@ -261,7 +261,8 @@ class ChatCompletionsConversation(Conversation):
         self.pricing_fn = pricing_fn
         self.messages = []
 
-    def send(self, message, schema, max_tokens=None, temperature=0.0):
+    def send(self, message, schema, max_tokens=2048, temperature=0.0):
+        # 2048 default caps OpenRouter credit reservation (charges on reservation, not usage).
         start = time.monotonic()
         self.messages.append({"role": "user", "content": message})
         schema_dict = _make_strict(schema.model_json_schema())
