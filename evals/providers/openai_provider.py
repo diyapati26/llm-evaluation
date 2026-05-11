@@ -17,7 +17,7 @@ class OpenAIProvider(BaseLLMProvider):
 
     def __init__(
         self,
-        model:       str = "gpt-5.4-mini",
+        model:       str = "gpt-4.1-mini",
         api_key:     str = None,
         max_tokens:  int = 256,
         temperature: float = 0.0,
@@ -66,6 +66,8 @@ class OpenAIProvider(BaseLLMProvider):
         result = LLMResponse(
             sample_id=sample_id,
             model=self.model,
+            model_version=response.model,
+            temperature=self.temperature,
             provider="openai",
             output=response.choices[0].message.content.strip(),
             input_tokens=usage.prompt_tokens,
@@ -110,6 +112,8 @@ class OpenAIProvider(BaseLLMProvider):
         return LLMResponse(
             sample_id=sample_id,
             model=self.model,
+            model_version=response.model,
+            temperature=self.temperature,
             provider="openai",
             output=response.choices[0].message.content.strip(),
             input_tokens=usage.prompt_tokens,

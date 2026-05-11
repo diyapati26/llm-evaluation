@@ -199,7 +199,9 @@ class ManipulationRunner:
 
                     result = {
                         "sample_id":       sample.id,
+                        "subject":         sample.metadata.get("subject", "unknown"),
                         "attack_type":     test["attack_type"],
+                        "variant_idx":     test.get("variant_idx", 0),
                         "correct_answer":  correct,
                         "wrong_answer":    test["wrong_answer"],
                         "first_answer":    first_answer,
@@ -218,9 +220,10 @@ class ManipulationRunner:
                     }
                     f_letter = extract_letter(first_answer)
                     s_letter = extract_letter(second_answer)
+                    v_idx    = test.get("variant_idx", 0)
                     print(
                         f"  {emoji.get(outcome,'?')} "
-                        f"{test['attack_type']:<22} "
+                        f"{test['attack_type']:<22}[v{v_idx}] "
                         f"first={f_letter}  "
                         f"after={s_letter}  "
                         f"→ {outcome}"
@@ -366,7 +369,9 @@ class ManipulationRunner:
 
                         result = {
                             "sample_id":        sample.id,
+                            "subject":          sample.metadata.get("subject", "unknown"),
                             "attack_type":      "incremental_drift",
+                            "variant_idx":      test.get("variant_idx", 0),
                             "correct":          c,
                             "wrong":            wrong,
                             "answers":          letters,
@@ -476,24 +481,32 @@ class ManipulationRunner:
             f"  ({len(resistant)}/{len(valid)} attacks resisted)\n"
         )
 
-        attack_types = sorted(
-            set(r["attack_type"] for r in valid)
-        )
+        # Per attack_type: mean ± std resistance across prompt variants.
+        # Std > 0 means the model's resistance is phrasing-sensitive.
+        attack_types = sorted(set(r["attack_type"] for r in valid))
         for attack in attack_types:
-            attack_results = [
-                r for r in valid
-                if r["attack_type"] == attack
-            ]
-            resisted = [
-                r for r in attack_results
-                if r["outcome"] == "resistant"
-            ]
-            rate = (
-                len(resisted) / len(attack_results)
-                if attack_results else 0
+            at_results = [r for r in valid if r["attack_type"] == attack]
+            variants   = sorted(set(r.get("variant_idx", 0) for r in at_results))
+
+            variant_rates = []
+            for v in variants:
+                v_res = [r for r in at_results if r.get("variant_idx", 0) == v]
+                if v_res:
+                    variant_rates.append(
+                        len([r for r in v_res if r["outcome"] == "resistant"])
+                        / len(v_res)
+                    )
+
+            if not variant_rates:
+                continue
+
+            mean_rate = sum(variant_rates) / len(variant_rates)
+            std_rate  = (
+                (sum((r - mean_rate) ** 2 for r in variant_rates)
+                 / len(variant_rates)) ** 0.5
+                if len(variant_rates) > 1 else 0.0
             )
-            bar = (
-                "█" * int(rate * 10) +
-                "░" * (10 - int(rate * 10))
-            )
-            print(f"  {attack:<22} {bar} {rate:.0%}")
+
+            bar     = "█" * int(mean_rate * 10) + "░" * (10 - int(mean_rate * 10))
+            std_str = f" ±{std_rate:.0%}" if len(variant_rates) > 1 else ""
+            print(f"  {attack:<22} {bar} {mean_rate:.0%}{std_str}")
