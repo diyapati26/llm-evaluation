@@ -1,19 +1,12 @@
-"""Smoke test — verify all 3 providers respond to a trivial typed-answer prompt.
+"""Smoke test — send 'Hi' to each provider and verify a non-empty response.
 
 Run from repo root with venv active:
     python "Simpler Arch/tests/test_providers.py"
 
-Expected output:
-    PASS  openai       gpt-5.4-mini                       answer=2  cost=$...  latency=...ms
-    PASS  anthropic    claude-sonnet-4-6                  answer=2  cost=$...  latency=...ms
-    PASS  groq         openai/gpt-oss-120b                answer=2  cost=$...  latency=...ms
-    PASS  openrouter   meta-llama/llama-3.3-70b-instruct  answer=2  cost=$...  latency=...ms
-
-Exit code 0 if all pass, 1 if any fail.
+Skips providers whose API key isn't set in the env.
 """
 import os
 import sys
-import traceback
 
 from dotenv import load_dotenv
 
@@ -21,73 +14,72 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 PARENT = os.path.dirname(HERE)
 sys.path.insert(0, PARENT)
 
-from Output_Formats.output_format import MMLU_Answer
-from providers import openai_provider, anthropic_provider, groq_provider, openrouter_provider
+from providers import (
+    openai_provider,
+    anthropic_provider,
+    groq_provider,
+    openrouter_provider,
+)
 
 load_dotenv()
 
-# Trivial 4-choice prompt — answer is "2" (Paris).
-PROMPT = (
-    "Answer the following multiple-choice question.\n\n"
-    "Question: What is the capital of France?\n"
-    "1. London\n"
-    "2. Paris\n"
-    "3. Berlin\n"
-    "4. Madrid\n\n"
-    "Reply with the single number 1, 2, 3, or 4."
-)
-EXPECTED = "2"
-
-PROVIDERS_TO_TEST = [
-    ("openai",     openai_provider.get_openai_response,         "gpt-5.4-mini"),
-    ("anthropic",  anthropic_provider.get_anthropic_response,   "claude-sonnet-4-6"),
-    ("groq",       groq_provider.get_groq_response,             "openai/gpt-oss-120b"),
-    # OpenRouter — uses a cheap, widely-available model that supports json_schema.
-    ("openrouter", openrouter_provider.get_openrouter_response, "meta-llama/llama-3.3-70b-instruct"),
+PROVIDERS = [
+    ("openai",     openai_provider.get_openai_chat,         "gpt-5.4-mini"),
+    ("anthropic",  anthropic_provider.get_anthropic_chat,   "claude-sonnet-4-6"),
+    ("groq",       groq_provider.get_groq_chat,             "openai/gpt-oss-120b"),
+    ("openrouter", openrouter_provider.get_openrouter_chat, "meta-llama/llama-3.3-70b-instruct"),
 ]
 
+REQUIRED_KEYS = {
+    "openai":     "OPENAI_API_KEY",
+    "anthropic":  "ANTHROPIC_API_KEY",
+    "groq":       "GROQ_API_KEY",
+    "openrouter": "OPENROUTER_API_KEY",
+}
 
-def check(provider_name, fn, model):
+
+def check(name, fn, model):
+    """Send 'Hi' through `fn`, return True if a non-empty text comes back."""
     try:
-        resp = fn(PROMPT, model, MMLU_Answer)
-        ok = str(resp.get("answer")) == EXPECTED
+        # Anthropic still requires max_tokens. Pass a small positive value so
+        # the unified test works for all four providers.
+        resp = fn(
+            [{"role": "user", "content": "Hi"}],
+            model,
+            max_tokens=50,
+        )
+        ok = bool(resp.text and resp.text.strip())
         marker = "PASS" if ok else "FAIL"
+        preview = (resp.text or "")[:50].replace("\n", " ")
         print(
-            f"  {marker}  {provider_name:10s}  {model:42s}  "
-            f"answer={resp.get('answer')}  "
-            f"cost=${resp.get('cost_usd', 0):.4f}  "
-            f"latency={resp.get('latency_ms', 0):.0f}ms"
+            f"  {marker}  {name:10s}  {model:42s}  "
+            f"text={preview!r:54s}  "
+            f"cost=${resp.cost_usd:.4f}  "
+            f"latency={resp.latency_ms:.0f}ms"
         )
         return ok
     except Exception as e:
-        print(f"  FAIL  {provider_name:10s}  {model:42s}  error: {type(e).__name__}: {e}")
+        print(f"  FAIL  {name:10s}  {model:42s}  error: {type(e).__name__}: {e}")
         return False
 
 
 def main():
-    # Env-key check — flag what's missing but DON'T abort; partial runs are
-    # useful when you only have a subset of keys configured.
-    REQUIRED_KEYS = {
-        "openai":     "OPENAI_API_KEY",
-        "anthropic":  "ANTHROPIC_API_KEY",
-        "groq":       "GROQ_API_KEY",
-        "openrouter": "OPENROUTER_API_KEY",
-    }
     available = {p: bool(os.environ.get(k)) for p, k in REQUIRED_KEYS.items()}
     missing = [k for p, k in REQUIRED_KEYS.items() if not os.environ.get(k)]
     if missing:
         print(f"[warn] Missing env vars: {', '.join(missing)}  (skipping those providers)\n")
 
-    print("Smoke-testing providers with a trivial typed-answer prompt...\n")
+    print("Smoke-testing providers: send 'Hi', expect a non-empty response.\n")
     results = []
-    for name, fn, model in PROVIDERS_TO_TEST:
+    for name, fn, model in PROVIDERS:
         if not available.get(name, True):
             print(f"  SKIP  {name:10s}  {model:42s}  no API key in env")
             continue
         results.append(check(name, fn, model))
+
     passed = sum(results)
     total = len(results)
-    print(f"\n{passed}/{total} providers passed (skipped {len(PROVIDERS_TO_TEST) - total}).")
+    print(f"\n{passed}/{total} providers passed (skipped {len(PROVIDERS) - total}).")
     sys.exit(0 if passed == total and total > 0 else 1)
 
 

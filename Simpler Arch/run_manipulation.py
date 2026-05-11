@@ -22,6 +22,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
 from utils.load_dataset import load_mmlu_data_sample
+from utils.load_config import load_config, models_from_config
 import manipulation as mp
 
 load_dotenv()
@@ -166,16 +167,27 @@ def run(models, n_questions, results_dir="results", include_drift=True):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument(
-        "--models",
-        nargs="+",
-        default=["gpt-5.4-mini", "claude-sonnet-4-6", "openai/gpt-oss-120b"],
-    )
-    p.add_argument("--n", type=int, default=8, help="Total questions sampled across hard-MMLU subjects")
+    p.add_argument("--config", default=None,
+                   help="Path to YAML config (default: Simpler Arch/configs/eval_config.yaml)")
+    p.add_argument("--models", nargs="+", default=None)
+    p.add_argument("--n", type=int, default=None,
+                   help="Total questions sampled across hard-MMLU subjects")
     p.add_argument("--no-drift", action="store_true", help="Skip the 6-turn drift sequence")
-    p.add_argument("--results-dir", default="results")
+    p.add_argument("--results-dir", default=None)
     args = p.parse_args()
-    run(args.models, args.n, args.results_dir, include_drift=not args.no_drift)
+
+    cfg = load_config(args.config)
+    manip = cfg.get("manipulation", {})
+
+    models = args.models or models_from_config(cfg) or [
+        "gpt-5.4-mini", "claude-sonnet-4-6", "openai/gpt-oss-120b"
+    ]
+    n = args.n if args.n is not None else manip.get("n", 8)
+    results_dir = args.results_dir or cfg.get("results_dir", "results")
+    # CLI --no-drift always wins; otherwise honor config.
+    include_drift = (not args.no_drift) and manip.get("include_drift", True)
+
+    run(models, n, results_dir, include_drift=include_drift)
 
 
 if __name__ == "__main__":

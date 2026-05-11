@@ -27,6 +27,7 @@ from providers import (
     groq_provider,
     openrouter_provider,
 )
+from Output_Formats.output_format import ProviderResponse
 
 
 def _make_strict(node):
@@ -72,7 +73,7 @@ class Conversation:
         self.total_latency_ms += latency_ms
         self.turn_count += 1
 
-    def send(self, message, schema, max_tokens=512, temperature=0.0):
+    def send(self, message, schema, max_tokens=None, temperature=0.0):
         raise NotImplementedError
 
 
@@ -87,19 +88,22 @@ class OpenAIConversation(Conversation):
         self.client = openai_provider._get_client()
         self.conv_id = None  # created lazily on first send
 
-    def send(self, message, schema, max_tokens=512, temperature=0.0):
+    def send(self, message, schema, max_tokens=None, temperature=0.0):
         start = time.monotonic()
         if self.conv_id is None:
             self.conv_id = self.client.conversations.create().id
 
-        response = self.client.responses.parse(
-            model=self.model,
-            conversation=self.conv_id,
-            input=[{"role": "user", "content": message}],
-            text_format=schema,
-            max_output_tokens=max_tokens,
-            temperature=temperature,
-        )
+        kwargs = {
+            "model": self.model,
+            "conversation": self.conv_id,
+            "input": [{"role": "user", "content": message}],
+            "text_format": schema,
+            "temperature": temperature,
+        }
+        if max_tokens is not None:
+            kwargs["max_output_tokens"] = max_tokens
+
+        response = self.client.responses.parse(**kwargs)
 
         latency_ms = (time.monotonic() - start) * 1000
         parsed = response.output_parsed
@@ -109,16 +113,16 @@ class OpenAIConversation(Conversation):
         )
         self._accumulate(cost, usage.input_tokens, usage.output_tokens, latency_ms)
 
-        return {
-            "provider": "openai",
-            "model": self.model,
-            "answer": parsed,
-            "raw": parsed.model_dump() if hasattr(parsed, "model_dump") else parsed,
-            "input_tokens": usage.input_tokens,
-            "output_tokens": usage.output_tokens,
-            "cost_usd": round(cost, 6),
-            "latency_ms": round(latency_ms, 2),
-        }
+        return ProviderResponse(
+            provider="openai",
+            model=self.model,
+            answer=parsed,
+            raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
+            input_tokens=usage.input_tokens,
+            output_tokens=usage.output_tokens,
+            cost_usd=round(cost, 6),
+            latency_ms=round(latency_ms, 2),
+        )
 
 
 # ── Anthropic: client-side messages, no server-side state ────────
@@ -132,17 +136,20 @@ class AnthropicConversation(Conversation):
         self.client = anthropic_provider._get_client()
         self.messages = []
 
-    def send(self, message, schema, max_tokens=512, temperature=0.0):
+    def send(self, message, schema, max_tokens=None, temperature=0.0):
         start = time.monotonic()
         self.messages.append({"role": "user", "content": message})
 
-        response = self.client.messages.parse(
-            model=self.model,
-            max_tokens=max_tokens,
-            temperature=temperature,
-            output_format=schema,
-            messages=self.messages,
-        )
+        kwargs = {
+            "model": self.model,
+            "temperature": temperature,
+            "output_format": schema,
+            "messages": self.messages,
+        }
+        if max_tokens is not None:
+            kwargs["max_tokens"] = max_tokens
+
+        response = self.client.messages.parse(**kwargs)
 
         latency_ms = (time.monotonic() - start) * 1000
         parsed = response.parsed_output
@@ -160,16 +167,16 @@ class AnthropicConversation(Conversation):
         cost = anthropic_provider.estimate_cost(self.model, in_tok, out_tok)
         self._accumulate(cost, in_tok, out_tok, latency_ms)
 
-        return {
-            "provider": "anthropic",
-            "model": self.model,
-            "answer": parsed,
-            "raw": parsed.model_dump() if hasattr(parsed, "model_dump") else parsed,
-            "input_tokens": in_tok,
-            "output_tokens": out_tok,
-            "cost_usd": round(cost, 6),
-            "latency_ms": round(latency_ms, 2),
-        }
+        return ProviderResponse(
+            provider="anthropic",
+            model=self.model,
+            answer=parsed,
+            raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
+            input_tokens=in_tok,
+            output_tokens=out_tok,
+            cost_usd=round(cost, 6),
+            latency_ms=round(latency_ms, 2),
+        )
 
 
 # ── Generic OpenAI-compatible chat completions (Groq + OpenRouter) ─
@@ -190,14 +197,21 @@ class ChatCompletionsConversation(Conversation):
         self.pricing_fn = pricing_fn
         self.messages = []
 
-    def send(self, message, schema, max_tokens=512, temperature=0.0):
+    def send(self, message, schema, max_tokens=None, temperature=0.0):
         start = time.monotonic()
         self.messages.append({"role": "user", "content": message})
         schema_dict = _make_strict(schema.model_json_schema())
 
+        def _build_kwargs(messages, response_format=None):
+            k = {"model": self.model, "messages": messages, "temperature": temperature}
+            if max_tokens is not None:
+                k["max_tokens"] = max_tokens
+            if response_format is not None:
+                k["response_format"] = response_format
+            return k
+
         try:
-            response = self.client.chat.completions.create(
-                model=self.model,
+            response = self.client.chat.completions.create(**_build_kwargs(
                 messages=self.messages,
                 response_format={
                     "type": "json_schema",
@@ -207,15 +221,12 @@ class ChatCompletionsConversation(Conversation):
                         "strict": True,
                     },
                 },
-                max_tokens=max_tokens,
-                temperature=temperature,
-            )
+            ))
             raw_text = (response.choices[0].message.content or "").strip()
             parsed = schema(**json.loads(raw_text))
         except Exception:
             # Fallback: tell the model the schema inline and parse best-effort
-            response = self.client.chat.completions.create(
-                model=self.model,
+            response = self.client.chat.completions.create(**_build_kwargs(
                 messages=self.messages + [{
                     "role": "system",
                     "content": (
@@ -223,9 +234,7 @@ class ChatCompletionsConversation(Conversation):
                         "no prose or code fences:\n" + json.dumps(schema_dict)
                     ),
                 }],
-                max_tokens=max_tokens,
-                temperature=temperature,
-            )
+            ))
             raw_text = (response.choices[0].message.content or "").strip()
             # Strip code fences some models add
             if raw_text.startswith("```"):
@@ -244,16 +253,16 @@ class ChatCompletionsConversation(Conversation):
         cost = self.pricing_fn(self.model, in_tok, out_tok)
         self._accumulate(cost, in_tok, out_tok, latency_ms)
 
-        return {
-            "provider": self.provider,
-            "model": self.model,
-            "answer": parsed,
-            "raw": parsed.model_dump() if hasattr(parsed, "model_dump") else parsed,
-            "input_tokens": in_tok,
-            "output_tokens": out_tok,
-            "cost_usd": round(cost, 6),
-            "latency_ms": round(latency_ms, 2),
-        }
+        return ProviderResponse(
+            provider=self.provider,
+            model=self.model,
+            answer=parsed,
+            raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
+            input_tokens=in_tok,
+            output_tokens=out_tok,
+            cost_usd=round(cost, 6),
+            latency_ms=round(latency_ms, 2),
+        )
 
 
 # ── Factory ───────────────────────────────────────────────────────

@@ -25,6 +25,7 @@ from utils.load_dataset import (
     load_truthfulqa_data_sample,
     load_hellaswag_data_sample,
 )
+from utils.load_config import load_config, models_from_config
 from Output_Formats.output_format import (
     MMLU_Answer,
     HellaSwag_Answer,
@@ -32,6 +33,7 @@ from Output_Formats.output_format import (
     TruthfulQA_Generation_Answer,
 )
 from providers import openai_provider, anthropic_provider, groq_provider, openrouter_provider
+from Output_Formats.output_format import ProviderResponse
 import scorers
 import cache as cache_mod
 
@@ -229,7 +231,9 @@ def run(datasets, models, n, results_dir="results"):
                 cached = cache_mod.get(cache, subject, model, prompt)
 
                 if cached is not None:
-                    resp = cached
+                    # Cache stores plain dicts (JSON-friendly). Wrap back into
+                    # ProviderResponse so attribute access works downstream.
+                    resp = ProviderResponse(**cached) if isinstance(cached, dict) else cached
                 else:
                     try:
                         resp = call(model, prompt, output_format)
@@ -237,15 +241,16 @@ def run(datasets, models, n, results_dir="results"):
                         errors += 1
                         traceback.print_exc()
                         continue
-                    cache_mod.put(cache, subject, model, prompt, resp)
+                    # Dump to dict for JSON-friendly cache storage.
+                    cache_mod.put(cache, subject, model, prompt, resp.model_dump())
 
                 try:
-                    s = score_fn(row, resp["answer"])
+                    s = score_fn(row, resp.answer)
                 except Exception:
                     s = 0.0
                 scores_list.append(s)
-                costs.append(resp.get("cost_usd", 0.0))
-                latencies.append(resp.get("latency_ms", 0.0))
+                costs.append(resp.cost_usd)
+                latencies.append(resp.latency_ms)
 
             cache_mod.save_cache(cache)
 
@@ -283,21 +288,28 @@ def run(datasets, models, n, results_dir="results"):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument(
-        "--datasets",
-        nargs="+",
-        default=["mmlu"],
-        choices=["mmlu", "hellaswag", "truthfulqa_mc", "truthfulqa_gen"],
-    )
-    p.add_argument(
-        "--models",
-        nargs="+",
-        default=["gpt-5.4-mini", "claude-sonnet-4-6", "openai/gpt-oss-120b"],
-    )
-    p.add_argument("--n", type=int, default=20, help="Samples per dataset (per subject for MMLU)")
-    p.add_argument("--results-dir", default="results")
+    p.add_argument("--config", default=None,
+                   help="Path to YAML config (default: Simpler Arch/configs/eval_config.yaml)")
+    p.add_argument("--datasets", nargs="+", default=None,
+                   choices=["mmlu", "hellaswag", "truthfulqa_mc", "truthfulqa_gen"])
+    p.add_argument("--models", nargs="+", default=None)
+    p.add_argument("--n", type=int, default=None,
+                   help="Samples per dataset (per subject for MMLU)")
+    p.add_argument("--results-dir", default=None)
     args = p.parse_args()
-    run(args.datasets, args.models, args.n, args.results_dir)
+
+    # Config-driven defaults; CLI overrides.
+    cfg = load_config(args.config)
+    bench = cfg.get("benchmark", {})
+
+    datasets = args.datasets or bench.get("datasets") or ["mmlu"]
+    models = args.models or models_from_config(cfg) or [
+        "gpt-5.4-mini", "claude-sonnet-4-6", "openai/gpt-oss-120b"
+    ]
+    n = args.n if args.n is not None else bench.get("n", 20)
+    results_dir = args.results_dir or cfg.get("results_dir", "results")
+
+    run(datasets, models, n, results_dir)
 
 
 if __name__ == "__main__":

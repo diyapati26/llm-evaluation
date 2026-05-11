@@ -1,0 +1,61 @@
+# Eval config — drives every runner (standard benchmark, manipulation, moral).
+#
+# Models are grouped by provider; the runner flattens this into a single list
+# of `provider:model` strings and dispatches via providers.conversation /
+# runner.route. Add or remove models freely — no code changes needed.
+#
+# CLI args still work and OVERRIDE the values here. Use this file as the
+# durable default; use CLI for one-off experiments.
+
+models:
+  # Add as many models per provider as you want — every runner loops over the
+  # flattened list. Each entry becomes a separate row in the results JSON and
+  # gets its own cache slot (cache key includes the provider prefix, so the same
+  # underlying model accessed via different hosts never collides).
+  openai:
+    - gpt-5.4-mini
+    # - gpt-5.4-nano
+    # - gpt-4.1-mini
+
+  anthropic:
+    - claude-sonnet-4-6
+    # - claude-haiku-4-5
+    # - claude-opus-4-7
+
+  groq:
+    - openai/gpt-oss-120b
+    # - openai/gpt-oss-20b
+    # - meta-llama/llama-3.3-70b-versatile
+
+  openrouter:
+    - meta-llama/llama-3.3-70b-instruct
+    # - anthropic/claude-3.5-sonnet
+    # - qwen/qwen-2.5-72b-instruct
+    # - deepseek/deepseek-chat
+    # - mistralai/mistral-large
+
+# LLM judge for free-form scoring (TruthfulQA-gen, moral axes).
+judge_model: gpt-5.4-mini
+
+# ── Standard benchmark (run_eval.py via runner.run) ──────────────
+benchmark:
+  datasets:
+    - mmlu
+    - hellaswag
+    - truthfulqa_mc
+    - truthfulqa_gen
+  n: 20                  # samples per dataset (per subject for MMLU)
+  temperature: 0.0
+
+# ── Manipulation resistance (run_manipulation.py) ────────────────
+manipulation:
+  n: 8                   # total hard-MMLU questions sampled across subjects
+  include_drift: true    # also run the 6-turn drift sequence
+
+# ── Moral / empathy (run_moral.py) ───────────────────────────────
+moral:
+  # Defaults to judge_model above unless overridden here:
+  # judge_model: claude-sonnet-4-6
+
+# Output directory for results/*.json files
+results_dir: results

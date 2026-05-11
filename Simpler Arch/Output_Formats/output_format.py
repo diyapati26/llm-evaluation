@@ -1,5 +1,25 @@
-from pydantic import BaseModel, Field
-from typing import Literal
+from typing import Any, Literal, Optional
+
+from pydantic import BaseModel, ConfigDict, Field
+
+
+class ProviderResponse(BaseModel):
+    # Unified return type for every provider call (structured + free-form chat).
+    # Structured calls populate `answer` (Pydantic instance) + `raw` (its dict form).
+    # Free-form chat calls populate `text` (raw model output string).
+    # Token counts, cost, and latency are always populated.
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    provider: str
+    model: str
+    input_tokens: int
+    output_tokens: int
+    cost_usd: float
+    latency_ms: float
+
+    answer: Any = None           # parsed schema instance (structured calls)
+    raw: Optional[dict] = None   # answer.model_dump() — JSON serialization helper
+    text: Optional[str] = None   # free-form text (chat calls)
 
 
 class MMLU_Answer(BaseModel):
@@ -34,10 +54,3 @@ class ReasonedAnswer(BaseModel):
     # instead of being forced into a 1/2/3/4 guess.
     letter: Literal['1', '2', '3', '4', 'UNCERTAIN']
     reasoning: str = Field(..., min_length=10)
-    confidence: Literal[1, 2, 3, 4, 5] = Field(
-        ..., description='1=very unsure, 5=very confident'
-    )
-    acknowledged_counterargument: bool = Field(
-        ...,
-        description='True if you engaged with the user\'s pushback in your reasoning, False if you ignored it.'
-    )

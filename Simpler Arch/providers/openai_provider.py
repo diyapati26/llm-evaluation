@@ -7,6 +7,8 @@ import os
 import time
 from openai import OpenAI
 
+from Output_Formats.output_format import ProviderResponse
+
 # Per-1M-token pricing (USD)
 PRICING = {
     "gpt-5.4-mini": {"input": 0.75, "output": 4.50},
@@ -32,18 +34,24 @@ def estimate_cost(model, input_tokens, output_tokens):
     return (input_tokens * p["input"] + output_tokens * p["output"]) / 1_000_000
 
 
-def get_openai_response(prompt, model, output_format, max_tokens=256, temperature=0.0):
-    """Call OpenAI Responses API with a Pydantic text_format. Returns dict with parsed answer + metadata."""
-    client = _get_client()
-    start = time.monotonic()
+def get_openai_response(prompt, model, output_format, max_tokens=None, temperature=0.0):
+    """Call OpenAI Responses API with a Pydantic text_format. Returns dict with parsed answer + metadata.
 
-    response = client.responses.parse(
-        model=model,
-        input=[{"role": "user", "content": prompt}],
-        text_format=output_format,
-        max_output_tokens=max_tokens,
-        temperature=temperature,
-    )
+    max_tokens=None lets the model use its full output budget (no truncation).
+    """
+    client = _get_client()
+
+    kwargs = {
+        "model": model,
+        "input": [{"role": "user", "content": prompt}],
+        "text_format": output_format,
+        "temperature": temperature,
+    }
+    if max_tokens is not None:
+        kwargs["max_output_tokens"] = max_tokens
+
+    start = time.monotonic()
+    response = client.responses.parse(**kwargs)
 
     latency_ms = (time.monotonic() - start) * 1000
     parsed = response.output_parsed
@@ -52,32 +60,39 @@ def get_openai_response(prompt, model, output_format, max_tokens=256, temperatur
     output_tokens = usage.output_tokens
     cost = estimate_cost(model, input_tokens, output_tokens)
 
-    return {
-        "provider": "openai",
-        "model": model,
-        "answer": parsed.answer if hasattr(parsed, "answer") else parsed,
-        "raw": parsed.model_dump() if hasattr(parsed, "model_dump") else parsed,
-        "input_tokens": input_tokens,
-        "output_tokens": output_tokens,
-        "cost_usd": round(cost, 6),
-        "latency_ms": round(latency_ms, 2),
-    }
+    return ProviderResponse(
+        provider="openai",
+        model=model,
+        # Single-field schemas (MMLU_Answer etc.) → return the .answer value directly;
+        # multi-field schemas (ReasonedAnswer) → return the whole parsed instance.
+        # Keeps cache shape stable across schema types.
+        answer=parsed.answer if hasattr(parsed, "answer") else parsed,
+        raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
+        input_tokens=input_tokens,
+        output_tokens=output_tokens,
+        cost_usd=round(cost, 6),
+        latency_ms=round(latency_ms, 2),
+    )
 
 
-def get_openai_chat(messages, model, max_tokens=512, temperature=0.0):
-    """Multi-turn free-form chat — no Pydantic, returns text + metadata.
-    Used for manipulation testing where the model gives reasoned letter answers.
-    Responses API accepts the same role/content message list via `input`.
+def get_openai_chat(messages, model, max_tokens=None, temperature=0.0):
+    """Free-form chat (no Pydantic). Returns text + metadata.
+
+    Used by moral.py's LLM-judge calls. NOT used by manipulation any more — that
+    path now goes through providers.conversation.start_conversation.
     """
     client = _get_client()
-    start = time.monotonic()
 
-    response = client.responses.create(
-        model=model,
-        input=messages,
-        max_output_tokens=max_tokens,
-        temperature=temperature,
-    )
+    kwargs = {
+        "model": model,
+        "input": messages,
+        "temperature": temperature,
+    }
+    if max_tokens is not None:
+        kwargs["max_output_tokens"] = max_tokens
+
+    start = time.monotonic()
+    response = client.responses.create(**kwargs)
 
     latency_ms = (time.monotonic() - start) * 1000
     text = (response.output_text or "").strip()
@@ -86,12 +101,12 @@ def get_openai_chat(messages, model, max_tokens=512, temperature=0.0):
     output_tokens = usage.output_tokens
     cost = estimate_cost(model, input_tokens, output_tokens)
 
-    return {
-        "provider": "openai",
-        "model": model,
-        "text": text,
-        "input_tokens": input_tokens,
-        "output_tokens": output_tokens,
-        "cost_usd": round(cost, 6),
-        "latency_ms": round(latency_ms, 2),
-    }
+    return ProviderResponse(
+        provider="openai",
+        model=model,
+        text=text,
+        input_tokens=input_tokens,
+        output_tokens=output_tokens,
+        cost_usd=round(cost, 6),
+        latency_ms=round(latency_ms, 2),
+    )

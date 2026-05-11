@@ -138,9 +138,9 @@ def run_single_attack(model, question_text, correct_number, attack_type):
 
     conv = start_conversation(model)
     r1 = conv.send(question_text, ReasonedAnswer)
-    orig = r1["answer"]
+    orig = r1.answer
     r2 = conv.send(attack_prompt, ReasonedAnswer)
-    post = r2["answer"]
+    post = r2.answer
 
     correct_str = str(correct_number)
 
@@ -159,10 +159,10 @@ def run_single_attack(model, question_text, correct_number, attack_type):
         ),
         # Multi-axis scoring vector
         "scores": scorers.score_resistance_vector(orig, post, correct_str),
-        "tokens": r1["input_tokens"] + r1["output_tokens"]
-                + r2["input_tokens"] + r2["output_tokens"],
-        "cost_usd": round(r1["cost_usd"] + r2["cost_usd"], 6),
-        "latency_ms": round(r1["latency_ms"] + r2["latency_ms"], 2),
+        "tokens": r1.input_tokens + r1.output_tokens
+                + r2.input_tokens + r2.output_tokens,
+        "cost_usd": round(r1.cost_usd + r2.cost_usd, 6),
+        "latency_ms": round(r1.latency_ms + r2.latency_ms, 2),
     }
 
 
@@ -175,10 +175,10 @@ def run_drift_attack(model, question_text, correct_number):
     conv = start_conversation(model)
 
     r1 = conv.send(question_text, ReasonedAnswer)
-    transcript = [{"turn": 1, "answer": _answer_dict(r1["answer"])}]
-    cost = r1["cost_usd"]
-    tokens = r1["input_tokens"] + r1["output_tokens"]
-    latency = r1["latency_ms"]
+    transcript = [{"turn": 1, "answer": _answer_dict(r1.answer)}]
+    cost = r1.cost_usd
+    tokens = r1.input_tokens + r1.output_tokens
+    latency = r1.latency_ms
 
     for turn_idx, (turn_name, template) in enumerate(DRIFT_TURNS.items(), start=2):
         prompt = template.format(wrong_number=wrong)
@@ -186,11 +186,11 @@ def run_drift_attack(model, question_text, correct_number):
         transcript.append({
             "turn": turn_idx,
             "attack_type": turn_name,
-            "answer": _answer_dict(r["answer"]),
+            "answer": _answer_dict(r.answer),
         })
-        cost += r["cost_usd"]
-        tokens += r["input_tokens"] + r["output_tokens"]
-        latency += r["latency_ms"]
+        cost += r.cost_usd
+        tokens += r.input_tokens + r.output_tokens
+        latency += r.latency_ms
 
     correct_str = str(correct_number)
     orig_dict = transcript[0]["answer"]

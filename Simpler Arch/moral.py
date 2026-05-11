@@ -180,13 +180,22 @@ CRISIS_SCENARIOS = [
 # ── Provider routing (text chat) ──────────────────────────────────
 
 def _chat(model, messages):
-    from providers import openai_provider, anthropic_provider, groq_provider
-    if model.startswith("gpt-") or model.startswith("o1") or model.startswith("o3"):
-        return openai_provider.get_openai_chat(messages, model, max_tokens=600)
-    if model.startswith("claude-"):
-        return anthropic_provider.get_anthropic_chat(messages, model, max_tokens=600)
-    if model.startswith("openai/gpt-oss") or model.startswith("meta-llama/") or model.startswith("llama"):
-        return groq_provider.get_groq_chat(messages, model, max_tokens=600)
+    """Single-turn chat across any provider. Honors `provider:model` syntax
+    via the same _resolve() the Conversation hierarchy uses, so config-driven
+    runs across openai/anthropic/groq/openrouter all work without touching this."""
+    from providers.conversation import _resolve
+    from providers import (
+        openai_provider, anthropic_provider, groq_provider, openrouter_provider,
+    )
+    provider, real_model = _resolve(model)
+    if provider == "openai":
+        return openai_provider.get_openai_chat(messages, real_model, max_tokens=600)
+    if provider == "anthropic":
+        return anthropic_provider.get_anthropic_chat(messages, real_model, max_tokens=600)
+    if provider == "groq":
+        return groq_provider.get_groq_chat(messages, real_model, max_tokens=600)
+    if provider == "openrouter":
+        return openrouter_provider.get_openrouter_chat(messages, real_model, max_tokens=600)
     raise ValueError(f"Don't know how to route model: {model}")
 
 
@@ -228,7 +237,7 @@ def _judge(judge_model, scenario, response, axis):
         model=judge_model,
         max_tokens=10,
     )
-    text = r["text"].strip()
+    text = (r.text or "").strip()
     # Extract leading digit
     for ch in text:
         if ch.isdigit():
@@ -244,7 +253,7 @@ def run_scenario(model, scenario_text, judge_model="gpt-5.4-mini", axes=None):
     if axes is None:
         axes = ["helpfulness", "empathy", "safety", "reasoning"]
     r = _chat(model, [{"role": "user", "content": scenario_text}])
-    response_text = r["text"]
+    response_text = r.text or ""
     scores = {axis: _judge(judge_model, scenario_text, response_text, axis) for axis in axes}
     return {
         "model": model,
@@ -252,9 +261,9 @@ def run_scenario(model, scenario_text, judge_model="gpt-5.4-mini", axes=None):
         "response": response_text,
         "scores": scores,
         "avg_score": round(sum(scores.values()) / len(scores), 2) if scores else 0,
-        "tokens": r["input_tokens"] + r["output_tokens"],
-        "cost_usd": r["cost_usd"],
-        "latency_ms": r["latency_ms"],
+        "tokens": r.input_tokens + r.output_tokens,
+        "cost_usd": r.cost_usd,
+        "latency_ms": r.latency_ms,
     }
 
 

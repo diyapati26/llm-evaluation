@@ -5,14 +5,14 @@ hundreds of models from Anthropic, OpenAI, Meta, Mistral, DeepSeek, Qwen, xAI,
 etc., namespaced like "anthropic/claude-3.5-sonnet" or "qwen/qwen-2.5-72b-instruct".
 
 Pricing is fetched once from https://openrouter.ai/api/v1/models on first cost
-calc and cached in-process — accuracy comes from OpenRouter's live prices rather
-than a hardcoded dict, which is what we want for paper reproducibility (cite
-the day-of-run prices from the same source the code reads).
+calc and cached in-process — live prices rather than a hardcoded dict, so the
+costs in your results match what OpenRouter actually billed on the day of run.
 
-OpenRouter routes structured-output requests through to the underlying provider.
-Not every model honors `response_format=json_schema` — get_openrouter_response
-falls back to a plain chat completion + best-effort JSON parse when the strict
-form errors out.
+STRICT MODE ONLY: structured-output requests use response_format=json_schema
+with strict=True. If the chosen model doesn't support strict json_schema, the
+call fails — we don't best-effort parse, since silent fallback can produce
+garbage results that look successful. Pick a model that supports strict mode
+(Claude 3.5+, GPT-4o, Llama 3.3 70B, Qwen 72B, DeepSeek-V3, etc.).
 """
 import os
 import json
@@ -20,6 +20,8 @@ import time
 import urllib.request
 
 from openai import OpenAI
+
+from Output_Formats.output_format import ProviderResponse
 
 
 _client = None
@@ -32,11 +34,6 @@ def _get_client():
         _client = OpenAI(
             base_url="https://openrouter.ai/api/v1",
             api_key=os.environ["OPENROUTER_API_KEY"],
-            default_headers={
-                # Optional but recommended — OpenRouter uses these for attribution
-                "HTTP-Referer": "https://github.com/your-repo",
-                "X-Title": "llm-robustness-eval",
-            },
         )
     return _client
 
@@ -45,8 +42,7 @@ def _load_pricing():
     """Fetch /models once, build model_id -> {input,output} dict in $/1M tokens.
 
     OpenRouter returns prompt/completion prices in $/token. We multiply by 1M
-    so the unit matches PRICING dicts in the other providers (where the cost
-    formula divides by 1_000_000 at the end).
+    so the unit matches PRICING dicts in the other providers.
     """
     global _pricing_cache
     if _pricing_cache is not None:
@@ -80,9 +76,8 @@ def estimate_cost(model, input_tokens, output_tokens):
 
 
 def _make_strict(node):
-    """OpenRouter passes strict json_schema requests through to the underlying
-    provider, which may require additionalProperties=False on every object node
-    (same constraint Groq enforces). Walk the schema and pin it.
+    """Recursively pin additionalProperties=False on every object node. Required
+    when the underlying provider (Claude, Groq, etc.) enforces it for strict mode.
     """
     if isinstance(node, dict):
         if node.get("type") == "object" and "additionalProperties" not in node:
@@ -95,68 +90,35 @@ def _make_strict(node):
     return node
 
 
-def _parse_payload(raw_text, output_format):
-    """Best-effort: strip code fences if present, then parse JSON into the schema."""
-    text = (raw_text or "").strip()
-    if text.startswith("```"):
-        # ```json ... ```  or  ``` ... ```
-        text = text.strip("`")
-        if text.lower().startswith("json"):
-            text = text[4:].lstrip()
-    payload = json.loads(text)
-    return output_format(**payload)
+def get_openrouter_response(prompt, model, output_format, max_tokens=None, temperature=0.0):
+    """Call OpenRouter with strict json_schema. Returns ProviderResponse.
 
-
-def get_openrouter_response(prompt, model, output_format, max_tokens=256, temperature=0.0):
-    """Call OpenRouter with a Pydantic response_format. Returns dict with parsed answer + metadata.
-
-    Tries response_format=json_schema first (strict). If the underlying model
-    doesn't support it, falls back to a plain completion and best-effort parses
-    JSON from the raw text. Raises RuntimeError only if both paths fail.
+    Strict mode only — raises if the underlying model doesn't support
+    response_format=json_schema. max_tokens=None lets the model use its full
+    output budget.
     """
     client = _get_client()
     schema = _make_strict(output_format.model_json_schema())
-    start = time.monotonic()
 
-    response = None
-    parsed = None
-    try:
-        response = client.chat.completions.create(
-            model=model,
-            messages=[{"role": "user", "content": prompt}],
-            response_format={
-                "type": "json_schema",
-                "json_schema": {
-                    "name": output_format.__name__,
-                    "schema": schema,
-                    "strict": True,
-                },
+    kwargs = {
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}],
+        "response_format": {
+            "type": "json_schema",
+            "json_schema": {
+                "name": output_format.__name__,
+                "schema": schema,
+                "strict": True,
             },
-            max_tokens=max_tokens,
-            temperature=temperature,
-        )
-        parsed = _parse_payload(response.choices[0].message.content, output_format)
-    except Exception:
-        # Some OpenRouter-hosted models don't support strict json_schema.
-        # Fall back to plain chat and best-effort JSON parse.
-        try:
-            response = client.chat.completions.create(
-                model=model,
-                messages=[{"role": "user", "content": (
-                    prompt
-                    + "\n\nReturn ONLY a JSON object matching this schema, "
-                      "no prose, no code fences:\n"
-                    + json.dumps(schema)
-                )}],
-                max_tokens=max_tokens,
-                temperature=temperature,
-            )
-            parsed = _parse_payload(response.choices[0].message.content, output_format)
-        except Exception as e:
-            raise RuntimeError(
-                f"OpenRouter model {model} did not return parseable structured "
-                f"output (both strict and fallback paths failed): {e}"
-            )
+        },
+        "temperature": temperature,
+    }
+    if max_tokens is not None:
+        kwargs["max_tokens"] = max_tokens
+
+    start = time.monotonic()
+    response = client.chat.completions.create(**kwargs)
+    parsed = output_format(**json.loads(response.choices[0].message.content))
 
     latency_ms = (time.monotonic() - start) * 1000
     usage = response.usage
@@ -164,31 +126,32 @@ def get_openrouter_response(prompt, model, output_format, max_tokens=256, temper
     output_tokens = usage.completion_tokens
     cost = estimate_cost(model, input_tokens, output_tokens)
 
-    return {
-        "provider": "openrouter",
-        "model": model,
-        "answer": parsed.answer if hasattr(parsed, "answer") else parsed,
-        "raw": parsed.model_dump() if hasattr(parsed, "model_dump") else parsed,
-        "input_tokens": input_tokens,
-        "output_tokens": output_tokens,
-        "cost_usd": round(cost, 6),
-        "latency_ms": round(latency_ms, 2),
-    }
-
-
-def get_openrouter_chat(messages, model, max_tokens=512, temperature=0.0):
-    """Multi-turn free-form chat — no Pydantic, returns text + metadata.
-    Used for manipulation testing where the model gives reasoned letter answers.
-    """
-    client = _get_client()
-    start = time.monotonic()
-
-    response = client.chat.completions.create(
+    return ProviderResponse(
+        provider="openrouter",
         model=model,
-        messages=messages,
-        max_tokens=max_tokens,
-        temperature=temperature,
+        answer=parsed.answer if hasattr(parsed, "answer") else parsed,
+        raw=parsed.model_dump() if hasattr(parsed, "model_dump") else None,
+        input_tokens=input_tokens,
+        output_tokens=output_tokens,
+        cost_usd=round(cost, 6),
+        latency_ms=round(latency_ms, 2),
     )
+
+
+def get_openrouter_chat(messages, model, max_tokens=None, temperature=0.0):
+    """Free-form chat (no Pydantic). Returns ProviderResponse with text."""
+    client = _get_client()
+
+    kwargs = {
+        "model": model,
+        "messages": messages,
+        "temperature": temperature,
+    }
+    if max_tokens is not None:
+        kwargs["max_tokens"] = max_tokens
+
+    start = time.monotonic()
+    response = client.chat.completions.create(**kwargs)
 
     latency_ms = (time.monotonic() - start) * 1000
     text = (response.choices[0].message.content or "").strip()
@@ -197,12 +160,12 @@ def get_openrouter_chat(messages, model, max_tokens=512, temperature=0.0):
     output_tokens = usage.completion_tokens
     cost = estimate_cost(model, input_tokens, output_tokens)
 
-    return {
-        "provider": "openrouter",
-        "model": model,
-        "text": text,
-        "input_tokens": input_tokens,
-        "output_tokens": output_tokens,
-        "cost_usd": round(cost, 6),
-        "latency_ms": round(latency_ms, 2),
-    }
+    return ProviderResponse(
+        provider="openrouter",
+        model=model,
+        text=text,
+        input_tokens=input_tokens,
+        output_tokens=output_tokens,
+        cost_usd=round(cost, 6),
+        latency_ms=round(latency_ms, 2),
+    )

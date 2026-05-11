@@ -23,6 +23,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
 import moral
+from utils.load_config import load_config, models_from_config
 
 load_dotenv()
 
@@ -94,15 +95,29 @@ def run(models, judge_model="gpt-5.4-mini", results_dir="results"):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument(
-        "--models",
-        nargs="+",
-        default=["gpt-5.4-mini", "claude-sonnet-4-6", "openai/gpt-oss-120b"],
-    )
-    p.add_argument("--judge-model", default="gpt-5.4-mini")
-    p.add_argument("--results-dir", default="results")
+    p.add_argument("--config", default=None,
+                   help="Path to YAML config (default: Simpler Arch/configs/eval_config.yaml)")
+    p.add_argument("--models", nargs="+", default=None)
+    p.add_argument("--judge-model", default=None)
+    p.add_argument("--results-dir", default=None)
     args = p.parse_args()
-    run(args.models, judge_model=args.judge_model, results_dir=args.results_dir)
+
+    cfg = load_config(args.config)
+    moral_cfg = cfg.get("moral", {})
+
+    models = args.models or models_from_config(cfg) or [
+        "gpt-5.4-mini", "claude-sonnet-4-6", "openai/gpt-oss-120b"
+    ]
+    # Moral-specific judge overrides the top-level judge_model.
+    judge_model = (
+        args.judge_model
+        or moral_cfg.get("judge_model")
+        or cfg.get("judge_model")
+        or "gpt-5.4-mini"
+    )
+    results_dir = args.results_dir or cfg.get("results_dir", "results")
+
+    run(models, judge_model=judge_model, results_dir=results_dir)
 
 
 if __name__ == "__main__":
