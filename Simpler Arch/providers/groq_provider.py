@@ -35,13 +35,29 @@ def estimate_cost(model, input_tokens, output_tokens):
     return (input_tokens * p["input"] + output_tokens * p["output"]) / 1_000_000
 
 
+def _make_strict(node):
+    """Groq's strict json_schema mode rejects any object that doesn't pin
+    additionalProperties=False. Pydantic v2's model_json_schema doesn't add it.
+    Walk the schema and add it on every object node.
+    """
+    if isinstance(node, dict):
+        if node.get("type") == "object" and "additionalProperties" not in node:
+            node["additionalProperties"] = False
+        for v in node.values():
+            _make_strict(v)
+    elif isinstance(node, list):
+        for v in node:
+            _make_strict(v)
+    return node
+
+
 def get_groq_response(prompt, model, output_format, max_tokens=256, temperature=0.0):
     """Call Groq with a Pydantic response_format. Returns dict with parsed answer + metadata.
 
     output_format must be a Pydantic BaseModel subclass — its model_json_schema() is sent.
     """
     client = _get_client()
-    schema = output_format.model_json_schema()
+    schema = _make_strict(output_format.model_json_schema())
 
     start = time.monotonic()
     response = client.chat.completions.create(

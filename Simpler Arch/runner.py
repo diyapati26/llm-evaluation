@@ -31,7 +31,7 @@ from Output_Formats.output_format import (
     TruthfulQA_MC_Answer,
     TruthfulQA_Generation_Answer,
 )
-from providers import openai_provider, anthropic_provider, groq_provider
+from providers import openai_provider, anthropic_provider, groq_provider, openrouter_provider
 import scorers
 import cache as cache_mod
 
@@ -40,25 +40,58 @@ load_dotenv()
 # ── Provider routing ──────────────────────────────────────────────
 
 
+_EXPLICIT_PROVIDERS = {
+    "openai":     (openai_provider,     "openai"),
+    "anthropic":  (anthropic_provider,  "anthropic"),
+    "groq":       (groq_provider,       "groq"),
+    "openrouter": (openrouter_provider, "openrouter"),
+}
+
+
 def route(model):
-    """Return (provider_module, provider_name) for a given model id."""
-    if model.startswith("gpt-") or model.startswith("o1") or model.startswith("o3"):
-        return openai_provider, "openai"
+    """Return (provider_module, provider_name, real_model) for a given model id.
+
+    Explicit form wins: 'openrouter:anthropic/claude-3.5-sonnet' → openrouter provider,
+    real model = 'anthropic/claude-3.5-sonnet'. The 'openai/' and 'meta-llama/'
+    prefixes contain '/' but no ':', so they hit prefix inference (Groq-hosted).
+
+    Unprefixed names fall back to prefix inference for back-compat with existing
+    --models arguments and cached entries.
+    """
+    # Explicit "provider:model" — disambiguates collisions between hosts
+    if ":" in model:
+        provider_name, real_model = model.split(":", 1)
+        if provider_name in _EXPLICIT_PROVIDERS:
+            mod, name = _EXPLICIT_PROVIDERS[provider_name]
+            return mod, name, real_model
+        raise ValueError(
+            f"Unknown provider prefix '{provider_name}'. "
+            f"Known: {sorted(_EXPLICIT_PROVIDERS)}"
+        )
+
+    # Prefix inference (back-compat for unprefixed names)
+    if model.startswith(("gpt-", "o1", "o3")):
+        return openai_provider, "openai", model
     if model.startswith("claude-"):
-        return anthropic_provider, "anthropic"
-    if model.startswith("openai/gpt-oss") or model.startswith("meta-llama/") or model.startswith("llama"):
-        return groq_provider, "groq"
-    raise ValueError(f"Don't know how to route model: {model}")
+        return anthropic_provider, "anthropic", model
+    if model.startswith(("openai/gpt-oss", "meta-llama/", "llama")):
+        return groq_provider, "groq", model
+    raise ValueError(
+        f"Don't know how to route model: {model}. "
+        f"Use 'provider:model' syntax (e.g. 'openrouter:qwen/qwen-2.5-72b')."
+    )
 
 
 def call(model, prompt, output_format):
-    provider, name = route(model)
+    provider, name, real_model = route(model)
     if name == "openai":
-        return provider.get_openai_response(prompt, model, output_format)
+        return provider.get_openai_response(prompt, real_model, output_format)
     if name == "anthropic":
-        return provider.get_anthropic_response(prompt, model, output_format)
+        return provider.get_anthropic_response(prompt, real_model, output_format)
     if name == "groq":
-        return provider.get_groq_response(prompt, model, output_format)
+        return provider.get_groq_response(prompt, real_model, output_format)
+    if name == "openrouter":
+        return provider.get_openrouter_response(prompt, real_model, output_format)
 
 
 # ── Prompt builders ───────────────────────────────────────────────

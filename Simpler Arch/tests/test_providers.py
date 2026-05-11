@@ -4,9 +4,10 @@ Run from repo root with venv active:
     python "Simpler Arch/tests/test_providers.py"
 
 Expected output:
-    ✓ PASS  openai       gpt-5.4-mini             answer=2  cost=$...  latency=...ms
-    ✓ PASS  anthropic    claude-sonnet-4-6        answer=2  cost=$...  latency=...ms
-    ✓ PASS  groq         openai/gpt-oss-120b      answer=2  cost=$...  latency=...ms
+    PASS  openai       gpt-5.4-mini                       answer=2  cost=$...  latency=...ms
+    PASS  anthropic    claude-sonnet-4-6                  answer=2  cost=$...  latency=...ms
+    PASS  groq         openai/gpt-oss-120b                answer=2  cost=$...  latency=...ms
+    PASS  openrouter   meta-llama/llama-3.3-70b-instruct  answer=2  cost=$...  latency=...ms
 
 Exit code 0 if all pass, 1 if any fail.
 """
@@ -21,7 +22,7 @@ PARENT = os.path.dirname(HERE)
 sys.path.insert(0, PARENT)
 
 from Output_Formats.output_format import MMLU_Answer
-from providers import openai_provider, anthropic_provider, groq_provider
+from providers import openai_provider, anthropic_provider, groq_provider, openrouter_provider
 
 load_dotenv()
 
@@ -38,9 +39,11 @@ PROMPT = (
 EXPECTED = "2"
 
 PROVIDERS_TO_TEST = [
-    ("openai",    openai_provider.get_openai_response,    "gpt-5.4-mini"),
-    ("anthropic", anthropic_provider.get_anthropic_response, "claude-sonnet-4-6"),
-    ("groq",      groq_provider.get_groq_response,        "openai/gpt-oss-120b"),
+    ("openai",     openai_provider.get_openai_response,         "gpt-5.4-mini"),
+    ("anthropic",  anthropic_provider.get_anthropic_response,   "claude-sonnet-4-6"),
+    ("groq",       groq_provider.get_groq_response,             "openai/gpt-oss-120b"),
+    # OpenRouter — uses a cheap, widely-available model that supports json_schema.
+    ("openrouter", openrouter_provider.get_openrouter_response, "meta-llama/llama-3.3-70b-instruct"),
 ]
 
 
@@ -48,36 +51,44 @@ def check(provider_name, fn, model):
     try:
         resp = fn(PROMPT, model, MMLU_Answer)
         ok = str(resp.get("answer")) == EXPECTED
-        marker = "✓ PASS" if ok else "✗ FAIL"
+        marker = "PASS" if ok else "FAIL"
         print(
-            f"{marker}  {provider_name:10s}  {model:32s}  "
+            f"  {marker}  {provider_name:10s}  {model:42s}  "
             f"answer={resp.get('answer')}  "
             f"cost=${resp.get('cost_usd', 0):.4f}  "
             f"latency={resp.get('latency_ms', 0):.0f}ms"
         )
         return ok
     except Exception as e:
-        print(f"✗ FAIL  {provider_name:10s}  {model:32s}  error: {type(e).__name__}: {e}")
+        print(f"  FAIL  {provider_name:10s}  {model:42s}  error: {type(e).__name__}: {e}")
         return False
 
 
 def main():
-    # Quick env-key sanity check
-    missing = []
-    for k in ("OPENAI_API_KEY", "ANTHROPIC_API_KEY", "GROQ_API_KEY"):
-        if not os.environ.get(k):
-            missing.append(k)
+    # Env-key check — flag what's missing but DON'T abort; partial runs are
+    # useful when you only have a subset of keys configured.
+    REQUIRED_KEYS = {
+        "openai":     "OPENAI_API_KEY",
+        "anthropic":  "ANTHROPIC_API_KEY",
+        "groq":       "GROQ_API_KEY",
+        "openrouter": "OPENROUTER_API_KEY",
+    }
+    available = {p: bool(os.environ.get(k)) for p, k in REQUIRED_KEYS.items()}
+    missing = [k for p, k in REQUIRED_KEYS.items() if not os.environ.get(k)]
     if missing:
-        print(f"⚠️  Missing env vars: {', '.join(missing)}")
-        print("   Copy .env.example to .env and fill in your keys, then re-run.")
-        sys.exit(1)
+        print(f"[warn] Missing env vars: {', '.join(missing)}  (skipping those providers)\n")
 
-    print("Smoke-testing 3 providers with a trivial typed-answer prompt...\n")
-    results = [check(name, fn, model) for name, fn, model in PROVIDERS_TO_TEST]
+    print("Smoke-testing providers with a trivial typed-answer prompt...\n")
+    results = []
+    for name, fn, model in PROVIDERS_TO_TEST:
+        if not available.get(name, True):
+            print(f"  SKIP  {name:10s}  {model:42s}  no API key in env")
+            continue
+        results.append(check(name, fn, model))
     passed = sum(results)
     total = len(results)
-    print(f"\n{passed}/{total} providers passed.")
-    sys.exit(0 if passed == total else 1)
+    print(f"\n{passed}/{total} providers passed (skipped {len(PROVIDERS_TO_TEST) - total}).")
+    sys.exit(0 if passed == total and total > 0 else 1)
 
 
 if __name__ == "__main__":
