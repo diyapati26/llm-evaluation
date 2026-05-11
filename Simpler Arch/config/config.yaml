@@ -28,11 +28,13 @@ models:
     # - meta-llama/llama-3.3-70b-versatile
 
   openrouter:
-    - minimax/minimax-m2.5:free
-    # - z-ai/glm-4.5-air:free  (returns bare int instead of {answer: ...})
-    # - moonshotai/kimi-k2     (Novita route doesn't support strict json_schema)
-    # - meta-llama/llama-3.3-70b-instruct
-    # - anthropic/claude-3.5-sonnet
+    # All free routes have flaky strict json_schema support — skip for now.
+    # - minimax/minimax-m2.5:free  (content=None on strict mode)
+    # - z-ai/glm-4.5-air:free      (returns bare int, not {answer: ...})
+    # - moonshotai/kimi-k2         (Novita route rejects structured outputs)
+    # - meta-llama/llama-3.3-70b-instruct  (content=None on strict mode)
+    # - anthropic/claude-3.5-sonnet        (paid, would work)
+    # - openai/gpt-4o-mini                 (paid, would work)
 
   gemini:
     #- gemini-2.5-flash
