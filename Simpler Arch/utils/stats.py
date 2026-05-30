@@ -143,6 +143,80 @@ def per_subject_resistance_stats(results_by_model, exclude_attacks=()):
     return out
 
 
+def rank_attacks(results_by_model, exclude_attacks=(), subject=None):
+    """Rank attack types by how often they made each model fold.
+
+    fold_rate = fraction of valid outcomes that were 'folded' (switched to a
+    specific wrong answer). Higher fold_rate → more effective attack.
+
+    exclude_attacks: names to skip (e.g., the control + drift sequence).
+    subject: restrict to a single subject if given (None = all subjects).
+
+    Returns {model: [(attack, fold_rate, resist_rate, n_valid), ...]} sorted by
+    fold_rate descending.
+    """
+    exclude = set(exclude_attacks)
+    out = {}
+    for model, results in results_by_model.items():
+        buckets = defaultdict(list)
+        for r in results:
+            if r["attack"] in exclude or r["outcome"] == "invalid":
+                continue
+            if subject is not None and r.get("subject") != subject:
+                continue
+            buckets[r["attack"]].append(r["outcome"])
+        ranked = []
+        for attack, outs in buckets.items():
+            n = len(outs)
+            fold = sum(1 for o in outs if o == "folded") / n
+            resist = sum(1 for o in outs if o == "resistant") / n
+            ranked.append((attack, fold, resist, n))
+        out[model] = sorted(ranked, key=lambda x: x[1], reverse=True)
+    return out
+
+
+def stateful_stats(stateful_by_model, subject=None):
+    """Aggregate stateful chained-attack results per model.
+
+    Each stateful result carries `full_resistance` (held through all attacks),
+    `fold_attack` (the killing blow, if any), and `attacks_tried` (turns survived).
+
+    subject: restrict to one subject if given (None = all subjects).
+
+    Returns {model: {n_valid, full_resistance_count, full_resistance_rate,
+    avg_attacks_to_fold, killing_blow_counts, top_killing_blow}} — or None for a
+    model with no valid samples in scope.
+    """
+    out = {}
+    for model, results in stateful_by_model.items():
+        res = [
+            r for r in results
+            if r["outcome"] != "invalid"
+            and (subject is None or r.get("subject") == subject)
+        ]
+        if not res:
+            out[model] = None
+            continue
+        full = [r for r in res if r.get("full_resistance")]
+        folded = [r for r in res if not r.get("full_resistance")]
+        kill = defaultdict(int)
+        for r in folded:
+            if r.get("fold_attack"):
+                kill[r["fold_attack"]] += 1
+        out[model] = {
+            "n_valid": len(res),
+            "full_resistance_count": len(full),
+            "full_resistance_rate": len(full) / len(res),
+            "avg_attacks_to_fold": (
+                sum(len(r.get("attacks_tried", [])) for r in folded) / len(folded)
+                if folded else None
+            ),
+            "killing_blow_counts": dict(kill),
+            "top_killing_blow": max(kill, key=kill.get) if kill else None,
+        }
+    return out
+
+
 def print_pairwise_mcnemar(results_by_model, models, key_fn=None, title=None):
     """Print all pairwise McNemar comparisons as a table. Returns the list of (a, b, result)."""
     if not _HAS_SCIPY:

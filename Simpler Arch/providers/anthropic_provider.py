@@ -7,11 +7,14 @@ import time
 
 import anthropic
 
+import pricing
 from schemas import ProviderResponse
 
+# Authoritative prices live in config/pricing.yaml; this dict is the offline
+# fallback. Kept in sync with the YAML (verified 2026-05-30).
 PRICING = {
-    "claude-opus-4-7":           {"input": 15.00, "output": 75.00},
-    "claude-opus-4-6":           {"input": 15.00, "output": 75.00},
+    "claude-opus-4-7":           {"input":  5.00, "output": 25.00},
+    "claude-opus-4-6":           {"input":  5.00, "output": 25.00},
     "claude-sonnet-4-6":         {"input":  3.00, "output": 15.00},
     "claude-sonnet-4-5":         {"input":  3.00, "output": 15.00},
     "claude-haiku-4-5":          {"input":  1.00, "output":  5.00},
@@ -29,7 +32,7 @@ def _get_client():
 
 
 def estimate_cost(model, input_tokens, output_tokens):
-    p = PRICING.get(model, {"input": 3.00, "output": 15.00})
+    p = pricing.get_price("anthropic", model, PRICING.get(model, {"input": 3.00, "output": 15.00}))
     return (input_tokens * p["input"] + output_tokens * p["output"]) / 1_000_000
 
 

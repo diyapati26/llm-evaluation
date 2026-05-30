@@ -10,13 +10,16 @@ import time
 
 from openai import OpenAI
 
+import pricing
 from schemas import ProviderResponse
 
+# Authoritative prices live in config/pricing.yaml; this dict is the offline
+# fallback. Kept in sync with the YAML (verified 2026-05-30).
 PRICING = {
-    "openai/gpt-oss-120b":                            {"input": 0.15, "output": 0.75},
-    "openai/gpt-oss-20b":                             {"input": 0.05, "output": 0.25},
-    "meta-llama/llama-4-scout-17b-16e-instruct":      {"input": 0.00, "output": 0.00},
-    "meta-llama/llama-3.3-70b-versatile":             {"input": 0.00, "output": 0.00},
+    "openai/gpt-oss-120b":                            {"input": 0.15,  "output": 0.60},
+    "openai/gpt-oss-20b":                             {"input": 0.075, "output": 0.30},
+    "meta-llama/llama-4-scout-17b-16e-instruct":      {"input": 0.11,  "output": 0.34},
+    "meta-llama/llama-3.3-70b-versatile":             {"input": 0.59,  "output": 0.79},
 }
 
 _client = None
@@ -34,7 +37,7 @@ def _get_client():
 
 
 def estimate_cost(model, input_tokens, output_tokens):
-    p = PRICING.get(model, {"input": 0.0, "output": 0.0})
+    p = pricing.get_price("groq", model, PRICING.get(model, {"input": 0.0, "output": 0.0}))
     return (input_tokens * p["input"] + output_tokens * p["output"]) / 1_000_000
 
 

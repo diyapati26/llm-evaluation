@@ -10,8 +10,8 @@ The parsed Pydantic instance comes back via `response.parsed`.
 Multi-turn: handled by GeminiConversation (in providers/conversation.py) — keeps
 a client-side `contents` list with role="user"/"model" entries.
 
-Pricing values below are approximate $/1M tokens. Verify on
-https://ai.google.dev/pricing before reporting paper-final costs.
+Authoritative prices live in config/pricing.yaml. The PRICING dict below is the
+offline fallback, kept in sync with the YAML (verified 2026-05-30).
 """
 import os
 import time
@@ -19,15 +19,19 @@ import time
 from google import genai
 from google.genai import types
 
+import pricing
 from schemas import ProviderResponse
 
+# $/1M tokens, text/image/video input tier (audio costs more); 2.5 Pro is the
+# <=200k-token tier. Mirrors config/pricing.yaml.
 PRICING = {
-    # Approximate $/1M tokens; verify before paper publication
-    "gemini-2.5-pro":         {"input": 1.25,   "output": 10.00},
-    "gemini-2.5-flash":       {"input": 0.075,  "output":  0.30},
-    "gemini-2.5-flash-lite":  {"input": 0.0375, "output":  0.15},
-    "gemini-2.0-flash":       {"input": 0.075,  "output":  0.30},
-    "gemini-2.0-flash-lite":  {"input": 0.0375, "output":  0.15},
+    "gemini-3.5-flash":       {"input": 1.50,  "output": 9.00},
+    "gemini-3.5-flash-lite":  {"input": 0.25,  "output": 1.50},
+    "gemini-2.5-pro":         {"input": 1.25,  "output": 10.00},
+    "gemini-2.5-flash":       {"input": 0.30,  "output": 2.50},
+    "gemini-2.5-flash-lite":  {"input": 0.10,  "output": 0.40},
+    "gemini-2.0-flash":       {"input": 0.10,  "output": 0.40},
+    "gemini-2.0-flash-lite":  {"input": 0.075, "output": 0.30},
 }
 
 _client = None
@@ -41,7 +45,7 @@ def _get_client():
 
 
 def estimate_cost(model, input_tokens, output_tokens):
-    p = PRICING.get(model, {"input": 0.0, "output": 0.0})
+    p = pricing.get_price("gemini", model, PRICING.get(model, {"input": 0.0, "output": 0.0}))
     return (input_tokens * p["input"] + output_tokens * p["output"]) / 1_000_000
 
 

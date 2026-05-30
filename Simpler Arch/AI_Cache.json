@@ -3739,5 +3739,410 @@
       "answer": "George H. W. Bush"
     },
     "text": null
+  },
+  "professional_medicine::gpt-5.4-nano-2026-03-17::Answer the following multiple-choice question.\n\nQuestion: A 25-year-old gravida 3 para 2 female is admitted to the hospital at 39\u00a0weeks' gestation in active labor. She had been having regular contractions every 4\u00a0minutes, but is now having only a few intermittent, weak contractions. She has received medication for pain twice in the past 6\u00a0hours. Examination shows no reason for obstructed labor. The fetal head is engaged, the membranes are intact, the fetal heart tones are normal, and the cervix is 100%\u00a0effaced and 7\u00a0cm dilated. The most appropriate management is to\n1. administer an epidural anesthetic\n2. administer tocolytic therapy\n3. apply cervical topical corticosteroids\n4. augment the labor with oxytocin\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "openai",
+    "model": "gpt-5.4-nano",
+    "input_tokens": 237,
+    "output_tokens": 16,
+    "cost_usd": 6.7e-05,
+    "latency_ms": 9968.0,
+    "model_version": "gpt-5.4-nano-2026-03-17",
+    "temperature": 0.0,
+    "answer": "4",
+    "raw": {
+      "answer": "4"
+    },
+    "text": null
+  },
+  "professional_law::gpt-5.4-nano-2026-03-17::Answer the following multiple-choice question.\n\nQuestion: A driver and passenger were driving to work in the former's automobile one morning. As they were traveling at a speed of 20 m. p. h. (which was within the posted speed limit), the passenger suddenly pointed to an overturned vehicle along the side of the highway and said, \"Look at that car upside down. \" The driver turned to look at the overturned vehicle. As he was looking toward the side of the road, the driver failed to see an abandoned vehicle with a flat tire in the highway about 200 feet in front of his approaching auto. Seconds later, the driver crashed into the rear of the abandoned auto and was injured. The jurisdiction has a relevant comparative negligence statute in effect. If the driver asserts a claim against the owner of the abandoned auto, the most likely result is that the driver will\n1. recover all of his damages, because the defendant created a dangerous condition.\n2. recover only a portion of damages, because the abandoned auto was in plain view.\n3. recover nothing, because he had the last clear chance to avoid the collision.\n4. recover nothing, because the passenger's act was a supervening cause.\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "openai",
+    "model": "gpt-5.4-nano",
+    "input_tokens": 315,
+    "output_tokens": 16,
+    "cost_usd": 8.3e-05,
+    "latency_ms": 10016.0,
+    "model_version": "gpt-5.4-nano-2026-03-17",
+    "temperature": 0.0,
+    "answer": "2",
+    "raw": {
+      "answer": "2"
+    },
+    "text": null
+  },
+  "college_chemistry::gpt-5.4-nano-2026-03-17::Answer the following multiple-choice question.\n\nQuestion: A molecule has a rotational correlation time of 1 ns. At what magnetic field would protons in this molecule have the fastest spin-lattice relaxation? [Use eqns 5.3 and 5.4.]\n1. 3.74 T\n2. 5.19 T\n3. 6.08 T\n4. 9.49 T\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "openai",
+    "model": "gpt-5.4-nano",
+    "input_tokens": 157,
+    "output_tokens": 16,
+    "cost_usd": 5.1e-05,
+    "latency_ms": 10094.0,
+    "model_version": "gpt-5.4-nano-2026-03-17",
+    "temperature": 0.0,
+    "answer": "2",
+    "raw": {
+      "answer": "2"
+    },
+    "text": null
+  },
+  "clinical_knowledge::gpt-5.4-nano-2026-03-17::Answer the following multiple-choice question.\n\nQuestion: The blood glucose concentration during 80-90 minutes of intermittent high intensity exercise:\n1. frequently rises by 1 - 3 mM.\n2. remains relatively unchanged.\n3. frequently falls by 1 - 3 mM.\n4. falls to hypoglycaemic levels.\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "openai",
+    "model": "gpt-5.4-nano",
+    "input_tokens": 139,
+    "output_tokens": 16,
+    "cost_usd": 4.8e-05,
+    "latency_ms": 10110.0,
+    "model_version": "gpt-5.4-nano-2026-03-17",
+    "temperature": 0.0,
+    "answer": "3",
+    "raw": {
+      "answer": "3"
+    },
+    "text": null
+  },
+  "international_law::gpt-5.4-nano-2026-03-17::Answer the following multiple-choice question.\n\nQuestion: What does the principle 'pacta sunt servanda' mean?\n1. Parties to a treaty should be cognizant of its terms and not misinterpret them\n2. Parties to a treaty should safeguard the object and purpose of the treaty\n3. Parties to a treaty should adhere to its terms in good faith\n4. Parties to a treaty should not violate the most important provisions of the treaty\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "openai",
+    "model": "gpt-5.4-nano",
+    "input_tokens": 163,
+    "output_tokens": 16,
+    "cost_usd": 5.3e-05,
+    "latency_ms": 10094.0,
+    "model_version": "gpt-5.4-nano-2026-03-17",
+    "temperature": 0.0,
+    "answer": "3",
+    "raw": {
+      "answer": "3"
+    },
+    "text": null
+  },
+  "college_physics::gpt-5.4-nano-2026-03-17::Answer the following multiple-choice question.\n\nQuestion: Light of variable frequency shines on the metal surface of a photoelectric tube. Einstein\u2019s theory of the photoelectric effect predicts that the\n1. work function of the metal is proportional to the frequency\n2. work function of the metal is proportional to the wavelength\n3. current in the tube is a linear function of the wavelength\n4. potential difference necessary to stop the emitted electrons is a linear function of the frequency above the threshold frequency\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "openai",
+    "model": "gpt-5.4-nano",
+    "input_tokens": 170,
+    "output_tokens": 16,
+    "cost_usd": 5.4e-05,
+    "latency_ms": 10094.0,
+    "model_version": "gpt-5.4-nano-2026-03-17",
+    "temperature": 0.0,
+    "answer": "4",
+    "raw": {
+      "answer": "4"
+    },
+    "text": null
+  },
+  "high_school_statistics::gpt-5.4-nano-2026-03-17::Answer the following multiple-choice question.\n\nQuestion: Suppose you wish to compare the AP Statistics exam results for the male and female students taking AP Statistics at your high school. Which is the most appropriate technique for gathering the needed data?\n1. Census\n2. Sample survey\n3. Experiment\n4. Observational study\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "openai",
+    "model": "gpt-5.4-nano",
+    "input_tokens": 136,
+    "output_tokens": 16,
+    "cost_usd": 4.7e-05,
+    "latency_ms": 10094.0,
+    "model_version": "gpt-5.4-nano-2026-03-17",
+    "temperature": 0.0,
+    "answer": "4",
+    "raw": {
+      "answer": "4"
+    },
+    "text": null
+  },
+  "machine_learning::gpt-5.4-nano-2026-03-17::Answer the following multiple-choice question.\n\nQuestion: Statement 1| For any two variables x and y having joint distribution p(x, y), we always have H[x, y] \u2265 H[x] + H[y] where H is entropy function. Statement 2| For some directed graphs, moralization decreases the number of edges present in the graph.\n1. True, True\n2. False, False\n3. True, False\n4. False, True\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "openai",
+    "model": "gpt-5.4-nano",
+    "input_tokens": 167,
+    "output_tokens": 16,
+    "cost_usd": 5.3e-05,
+    "latency_ms": 10109.0,
+    "model_version": "gpt-5.4-nano-2026-03-17",
+    "temperature": 0.0,
+    "answer": "4",
+    "raw": {
+      "answer": "4"
+    },
+    "text": null
+  },
+  "formal_logic::gpt-5.4-nano-2026-03-17::Answer the following multiple-choice question.\n\nQuestion:  Which of the given formulas of PL is the best symbolization of the following sentence?\nEither England's importing beef is a sufficient condition for France's subsidizing agriculture, or China doesn't promote human rights when and only when South Africa supplies diamonds.\n1. (E \u2283 F) \u2228 (~C \u2283 S)\n2. (F \u2283 E) \u2228 (S \u2283 ~C\n3. (E \u2283 F) \u2228 ~(S \u2261 C)\n4. (E \u2283 F) \u2228 (~C \u2261 S)\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "openai",
+    "model": "gpt-5.4-nano",
+    "input_tokens": 201,
+    "output_tokens": 16,
+    "cost_usd": 6e-05,
+    "latency_ms": 13484.0,
+    "model_version": "gpt-5.4-nano-2026-03-17",
+    "temperature": 0.0,
+    "answer": "4",
+    "raw": {
+      "answer": "4"
+    },
+    "text": null
+  },
+  "machine_learning::claude-haiku-4-5-20251001::Answer the following multiple-choice question.\n\nQuestion: Statement 1| For any two variables x and y having joint distribution p(x, y), we always have H[x, y] \u2265 H[x] + H[y] where H is entropy function. Statement 2| For some directed graphs, moralization decreases the number of edges present in the graph.\n1. True, True\n2. False, False\n3. True, False\n4. False, True\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "anthropic",
+    "model": "claude-haiku-4-5",
+    "input_tokens": 321,
+    "output_tokens": 9,
+    "cost_usd": 0.000366,
+    "latency_ms": 1562.0,
+    "model_version": "claude-haiku-4-5-20251001",
+    "temperature": 0.0,
+    "answer": "2",
+    "raw": {
+      "answer": "2"
+    },
+    "text": null
+  },
+  "formal_logic::claude-haiku-4-5-20251001::Answer the following multiple-choice question.\n\nQuestion:  Which of the given formulas of PL is the best symbolization of the following sentence?\nEither England's importing beef is a sufficient condition for France's subsidizing agriculture, or China doesn't promote human rights when and only when South Africa supplies diamonds.\n1. (E \u2283 F) \u2228 (~C \u2283 S)\n2. (F \u2283 E) \u2228 (S \u2283 ~C\n3. (E \u2283 F) \u2228 ~(S \u2261 C)\n4. (E \u2283 F) \u2228 (~C \u2261 S)\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "anthropic",
+    "model": "claude-haiku-4-5",
+    "input_tokens": 379,
+    "output_tokens": 9,
+    "cost_usd": 0.000424,
+    "latency_ms": 1578.0,
+    "model_version": "claude-haiku-4-5-20251001",
+    "temperature": 0.0,
+    "answer": "4",
+    "raw": {
+      "answer": "4"
+    },
+    "text": null
+  },
+  "international_law::claude-haiku-4-5-20251001::Answer the following multiple-choice question.\n\nQuestion: What does the principle 'pacta sunt servanda' mean?\n1. Parties to a treaty should be cognizant of its terms and not misinterpret them\n2. Parties to a treaty should safeguard the object and purpose of the treaty\n3. Parties to a treaty should adhere to its terms in good faith\n4. Parties to a treaty should not violate the most important provisions of the treaty\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "anthropic",
+    "model": "claude-haiku-4-5",
+    "input_tokens": 319,
+    "output_tokens": 9,
+    "cost_usd": 0.000364,
+    "latency_ms": 1609.0,
+    "model_version": "claude-haiku-4-5-20251001",
+    "temperature": 0.0,
+    "answer": "3",
+    "raw": {
+      "answer": "3"
+    },
+    "text": null
+  },
+  "high_school_statistics::claude-haiku-4-5-20251001::Answer the following multiple-choice question.\n\nQuestion: Suppose you wish to compare the AP Statistics exam results for the male and female students taking AP Statistics at your high school. Which is the most appropriate technique for gathering the needed data?\n1. Census\n2. Sample survey\n3. Experiment\n4. Observational study\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "anthropic",
+    "model": "claude-haiku-4-5",
+    "input_tokens": 285,
+    "output_tokens": 9,
+    "cost_usd": 0.00033,
+    "latency_ms": 2312.0,
+    "model_version": "claude-haiku-4-5-20251001",
+    "temperature": 0.0,
+    "answer": "1",
+    "raw": {
+      "answer": "1"
+    },
+    "text": null
+  },
+  "college_chemistry::claude-haiku-4-5-20251001::Answer the following multiple-choice question.\n\nQuestion: A molecule has a rotational correlation time of 1 ns. At what magnetic field would protons in this molecule have the fastest spin-lattice relaxation? [Use eqns 5.3 and 5.4.]\n1. 3.74 T\n2. 5.19 T\n3. 6.08 T\n4. 9.49 T\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "anthropic",
+    "model": "claude-haiku-4-5",
+    "input_tokens": 313,
+    "output_tokens": 9,
+    "cost_usd": 0.000358,
+    "latency_ms": 2344.0,
+    "model_version": "claude-haiku-4-5-20251001",
+    "temperature": 0.0,
+    "answer": "1",
+    "raw": {
+      "answer": "1"
+    },
+    "text": null
+  },
+  "clinical_knowledge::claude-haiku-4-5-20251001::Answer the following multiple-choice question.\n\nQuestion: The blood glucose concentration during 80-90 minutes of intermittent high intensity exercise:\n1. frequently rises by 1 - 3 mM.\n2. remains relatively unchanged.\n3. frequently falls by 1 - 3 mM.\n4. falls to hypoglycaemic levels.\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "anthropic",
+    "model": "claude-haiku-4-5",
+    "input_tokens": 297,
+    "output_tokens": 9,
+    "cost_usd": 0.000342,
+    "latency_ms": 2328.0,
+    "model_version": "claude-haiku-4-5-20251001",
+    "temperature": 0.0,
+    "answer": "1",
+    "raw": {
+      "answer": "1"
+    },
+    "text": null
+  },
+  "professional_medicine::claude-haiku-4-5-20251001::Answer the following multiple-choice question.\n\nQuestion: A 25-year-old gravida 3 para 2 female is admitted to the hospital at 39\u00a0weeks' gestation in active labor. She had been having regular contractions every 4\u00a0minutes, but is now having only a few intermittent, weak contractions. She has received medication for pain twice in the past 6\u00a0hours. Examination shows no reason for obstructed labor. The fetal head is engaged, the membranes are intact, the fetal heart tones are normal, and the cervix is 100%\u00a0effaced and 7\u00a0cm dilated. The most appropriate management is to\n1. administer an epidural anesthetic\n2. administer tocolytic therapy\n3. apply cervical topical corticosteroids\n4. augment the labor with oxytocin\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "anthropic",
+    "model": "claude-haiku-4-5",
+    "input_tokens": 405,
+    "output_tokens": 9,
+    "cost_usd": 0.00045,
+    "latency_ms": 2328.0,
+    "model_version": "claude-haiku-4-5-20251001",
+    "temperature": 0.0,
+    "answer": "4",
+    "raw": {
+      "answer": "4"
+    },
+    "text": null
+  },
+  "professional_law::claude-haiku-4-5-20251001::Answer the following multiple-choice question.\n\nQuestion: A driver and passenger were driving to work in the former's automobile one morning. As they were traveling at a speed of 20 m. p. h. (which was within the posted speed limit), the passenger suddenly pointed to an overturned vehicle along the side of the highway and said, \"Look at that car upside down. \" The driver turned to look at the overturned vehicle. As he was looking toward the side of the road, the driver failed to see an abandoned vehicle with a flat tire in the highway about 200 feet in front of his approaching auto. Seconds later, the driver crashed into the rear of the abandoned auto and was injured. The jurisdiction has a relevant comparative negligence statute in effect. If the driver asserts a claim against the owner of the abandoned auto, the most likely result is that the driver will\n1. recover all of his damages, because the defendant created a dangerous condition.\n2. recover only a portion of damages, because the abandoned auto was in plain view.\n3. recover nothing, because he had the last clear chance to avoid the collision.\n4. recover nothing, because the passenger's act was a supervening cause.\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "anthropic",
+    "model": "claude-haiku-4-5",
+    "input_tokens": 473,
+    "output_tokens": 9,
+    "cost_usd": 0.000518,
+    "latency_ms": 2437.0,
+    "model_version": "claude-haiku-4-5-20251001",
+    "temperature": 0.0,
+    "answer": "2",
+    "raw": {
+      "answer": "2"
+    },
+    "text": null
+  },
+  "college_physics::claude-haiku-4-5-20251001::Answer the following multiple-choice question.\n\nQuestion: Light of variable frequency shines on the metal surface of a photoelectric tube. Einstein\u2019s theory of the photoelectric effect predicts that the\n1. work function of the metal is proportional to the frequency\n2. work function of the metal is proportional to the wavelength\n3. current in the tube is a linear function of the wavelength\n4. potential difference necessary to stop the emitted electrons is a linear function of the frequency above the threshold frequency\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "anthropic",
+    "model": "claude-haiku-4-5",
+    "input_tokens": 322,
+    "output_tokens": 9,
+    "cost_usd": 0.000367,
+    "latency_ms": 2531.0,
+    "model_version": "claude-haiku-4-5-20251001",
+    "temperature": 0.0,
+    "answer": "4",
+    "raw": {
+      "answer": "4"
+    },
+    "text": null
+  },
+  "international_law::openai/gpt-oss-120b::Answer the following multiple-choice question.\n\nQuestion: What does the principle 'pacta sunt servanda' mean?\n1. Parties to a treaty should be cognizant of its terms and not misinterpret them\n2. Parties to a treaty should safeguard the object and purpose of the treaty\n3. Parties to a treaty should adhere to its terms in good faith\n4. Parties to a treaty should not violate the most important provisions of the treaty\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "input_tokens": 289,
+    "output_tokens": 100,
+    "cost_usd": 0.000103,
+    "latency_ms": 672.0,
+    "model_version": "openai/gpt-oss-120b",
+    "temperature": 0.0,
+    "answer": "3",
+    "raw": {
+      "answer": "3"
+    },
+    "text": null
+  },
+  "college_physics::openai/gpt-oss-120b::Answer the following multiple-choice question.\n\nQuestion: Light of variable frequency shines on the metal surface of a photoelectric tube. Einstein\u2019s theory of the photoelectric effect predicts that the\n1. work function of the metal is proportional to the frequency\n2. work function of the metal is proportional to the wavelength\n3. current in the tube is a linear function of the wavelength\n4. potential difference necessary to stop the emitted electrons is a linear function of the frequency above the threshold frequency\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "input_tokens": 296,
+    "output_tokens": 84,
+    "cost_usd": 9.5e-05,
+    "latency_ms": 672.0,
+    "model_version": "openai/gpt-oss-120b",
+    "temperature": 0.0,
+    "answer": "4",
+    "raw": {
+      "answer": "4"
+    },
+    "text": null
+  },
+  "professional_medicine::openai/gpt-oss-120b::Answer the following multiple-choice question.\n\nQuestion: A 25-year-old gravida 3 para 2 female is admitted to the hospital at 39\u00a0weeks' gestation in active labor. She had been having regular contractions every 4\u00a0minutes, but is now having only a few intermittent, weak contractions. She has received medication for pain twice in the past 6\u00a0hours. Examination shows no reason for obstructed labor. The fetal head is engaged, the membranes are intact, the fetal heart tones are normal, and the cervix is 100%\u00a0effaced and 7\u00a0cm dilated. The most appropriate management is to\n1. administer an epidural anesthetic\n2. administer tocolytic therapy\n3. apply cervical topical corticosteroids\n4. augment the labor with oxytocin\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "input_tokens": 363,
+    "output_tokens": 182,
+    "cost_usd": 0.000164,
+    "latency_ms": 766.0,
+    "model_version": "openai/gpt-oss-120b",
+    "temperature": 0.0,
+    "answer": "4",
+    "raw": {
+      "answer": "4"
+    },
+    "text": null
+  },
+  "clinical_knowledge::openai/gpt-oss-120b::Answer the following multiple-choice question.\n\nQuestion: The blood glucose concentration during 80-90 minutes of intermittent high intensity exercise:\n1. frequently rises by 1 - 3 mM.\n2. remains relatively unchanged.\n3. frequently falls by 1 - 3 mM.\n4. falls to hypoglycaemic levels.\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "input_tokens": 265,
+    "output_tokens": 175,
+    "cost_usd": 0.000145,
+    "latency_ms": 781.0,
+    "model_version": "openai/gpt-oss-120b",
+    "temperature": 0.0,
+    "answer": "2",
+    "raw": {
+      "answer": "2"
+    },
+    "text": null
+  },
+  "high_school_statistics::openai/gpt-oss-120b::Answer the following multiple-choice question.\n\nQuestion: Suppose you wish to compare the AP Statistics exam results for the male and female students taking AP Statistics at your high school. Which is the most appropriate technique for gathering the needed data?\n1. Census\n2. Sample survey\n3. Experiment\n4. Observational study\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "input_tokens": 262,
+    "output_tokens": 178,
+    "cost_usd": 0.000146,
+    "latency_ms": 875.0,
+    "model_version": "openai/gpt-oss-120b",
+    "temperature": 0.0,
+    "answer": "1",
+    "raw": {
+      "answer": "1"
+    },
+    "text": null
+  },
+  "professional_law::openai/gpt-oss-120b::Answer the following multiple-choice question.\n\nQuestion: A driver and passenger were driving to work in the former's automobile one morning. As they were traveling at a speed of 20 m. p. h. (which was within the posted speed limit), the passenger suddenly pointed to an overturned vehicle along the side of the highway and said, \"Look at that car upside down. \" The driver turned to look at the overturned vehicle. As he was looking toward the side of the road, the driver failed to see an abandoned vehicle with a flat tire in the highway about 200 feet in front of his approaching auto. Seconds later, the driver crashed into the rear of the abandoned auto and was injured. The jurisdiction has a relevant comparative negligence statute in effect. If the driver asserts a claim against the owner of the abandoned auto, the most likely result is that the driver will\n1. recover all of his damages, because the defendant created a dangerous condition.\n2. recover only a portion of damages, because the abandoned auto was in plain view.\n3. recover nothing, because he had the last clear chance to avoid the collision.\n4. recover nothing, because the passenger's act was a supervening cause.\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "input_tokens": 441,
+    "output_tokens": 263,
+    "cost_usd": 0.000224,
+    "latency_ms": 922.0,
+    "model_version": "openai/gpt-oss-120b",
+    "temperature": 0.0,
+    "answer": "2",
+    "raw": {
+      "answer": "2"
+    },
+    "text": null
+  },
+  "college_chemistry::openai/gpt-oss-120b::Answer the following multiple-choice question.\n\nQuestion: A molecule has a rotational correlation time of 1 ns. At what magnetic field would protons in this molecule have the fastest spin-lattice relaxation? [Use eqns 5.3 and 5.4.]\n1. 3.74 T\n2. 5.19 T\n3. 6.08 T\n4. 9.49 T\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "input_tokens": 283,
+    "output_tokens": 379,
+    "cost_usd": 0.00027,
+    "latency_ms": 1172.0,
+    "model_version": "openai/gpt-oss-120b",
+    "temperature": 0.0,
+    "answer": "1",
+    "raw": {
+      "answer": "1"
+    },
+    "text": null
+  },
+  "machine_learning::openai/gpt-oss-120b::Answer the following multiple-choice question.\n\nQuestion: Statement 1| For any two variables x and y having joint distribution p(x, y), we always have H[x, y] \u2265 H[x] + H[y] where H is entropy function. Statement 2| For some directed graphs, moralization decreases the number of edges present in the graph.\n1. True, True\n2. False, False\n3. True, False\n4. False, True\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "input_tokens": 293,
+    "output_tokens": 422,
+    "cost_usd": 0.000297,
+    "latency_ms": 1235.0,
+    "model_version": "openai/gpt-oss-120b",
+    "temperature": 0.0,
+    "answer": "2",
+    "raw": {
+      "answer": "2"
+    },
+    "text": null
+  },
+  "formal_logic::openai/gpt-oss-120b::Answer the following multiple-choice question.\n\nQuestion:  Which of the given formulas of PL is the best symbolization of the following sentence?\nEither England's importing beef is a sufficient condition for France's subsidizing agriculture, or China doesn't promote human rights when and only when South Africa supplies diamonds.\n1. (E \u2283 F) \u2228 (~C \u2283 S)\n2. (F \u2283 E) \u2228 (S \u2283 ~C\n3. (E \u2283 F) \u2228 ~(S \u2261 C)\n4. (E \u2283 F) \u2228 (~C \u2261 S)\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "groq",
+    "model": "openai/gpt-oss-120b",
+    "input_tokens": 327,
+    "output_tokens": 478,
+    "cost_usd": 0.000336,
+    "latency_ms": 1344.0,
+    "model_version": "openai/gpt-oss-120b",
+    "temperature": 0.0,
+    "answer": "4",
+    "raw": {
+      "answer": "4"
+    },
+    "text": null
   }
 }

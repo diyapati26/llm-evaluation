@@ -8,6 +8,7 @@ import time
 
 from openai import OpenAI
 
+import pricing
 from schemas import ProviderResponse
 
 # Per-1M-token pricing (USD)
@@ -31,7 +32,9 @@ def _get_client():
 
 
 def estimate_cost(model, input_tokens, output_tokens):
-    p = PRICING.get(model, {"input": 0.75, "output": 4.50})
+    # config/pricing.yaml is authoritative; the local PRICING dict is the
+    # offline fallback when the model isn't listed (or the YAML is missing).
+    p = pricing.get_price("openai", model, PRICING.get(model, {"input": 0.75, "output": 4.50}))
     return (input_tokens * p["input"] + output_tokens * p["output"]) / 1_000_000
 
 

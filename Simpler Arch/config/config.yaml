@@ -38,7 +38,7 @@ models:
 
   gemini:
     #- gemini-2.5-flash
-    - gemini-2.5-flash-lite
+    - gemini-3.5-flash
     # - gemini-2.5-pro
 
 # LLM judge for free-form scoring (TruthfulQA-gen, moral axes).
@@ -57,6 +57,8 @@ dataset:
     - college_chemistry
     - high_school_statistics
     - machine_learning
+    - clinical_knowledge
+    - formal_logic
 
 # ── Standard benchmark (run_eval.py via runner.run) ──────────────
 benchmark:
@@ -74,6 +76,10 @@ manipulation:
   n: 8                   # total hard-MMLU questions sampled across subjects
   include_drift: true    # also run the 6-turn drift sequence
   concurrency: 10        # threads parallelizing samples per model
+  mode: both             # stateless | stateful | both
+                         #   stateless: fresh conversation per attack, ranks attack effectiveness
+                         #   stateful:  chain all attacks in one conversation until the model folds
+                         #   both:      run both modes (default)
 
 # ── Moral / empathy (run_moral.py) ───────────────────────────────
 moral:
