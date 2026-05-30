@@ -20,6 +20,7 @@ from google import genai
 from google.genai import types
 
 import pricing
+from providers.retry import retry_on_rate_limit
 from schemas import ProviderResponse
 
 # $/1M tokens, text/image/video input tier (audio costs more); 2.5 Pro is the
@@ -58,6 +59,7 @@ def _to_gemini_contents(messages):
     return contents
 
 
+@retry_on_rate_limit
 def get_gemini_response(prompt, model, output_format, max_tokens=None, temperature=0.0):
     """Call Gemini with a Pydantic output_format. Returns ProviderResponse.
 
@@ -102,6 +104,7 @@ def get_gemini_response(prompt, model, output_format, max_tokens=None, temperatu
     )
 
 
+@retry_on_rate_limit
 def get_gemini_chat(messages, model, max_tokens=None, temperature=0.0):
     """Free-form chat (no Pydantic). Returns ProviderResponse with text."""
     client = _get_client()

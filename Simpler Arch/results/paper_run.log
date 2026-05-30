@@ -1,0 +1,1204 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Models: openai:gpt-5.4-nano, anthropic:claude-haiku-4-5, groq:openai/gpt-oss-120b, gemini:gemini-3.5-flash
+Results dir: results
+Skipping: (none)
+
+################################################################################################
+#  STAGE 1/3 — STANDARD BENCHMARK (accuracy)
+################################################################################################
+
+=== loading mmlu ===
+subject
+abstract_algebra          10
+clinical_knowledge        10
+college_chemistry         10
+college_physics           10
+formal_logic              10
+high_school_statistics    10
+international_law         10
+machine_learning          10
+professional_law          10
+professional_medicine     10
+Name: count, dtype: int64
+   100 samples
+
+--- openai:gpt-5.4-nano on mmlu  (concurrency=8) ---
+openai:gpt-5.4-nano:   0%|          | 0/100 [00:00<?, ?it/s]openai:gpt-5.4-nano: 100%|##########| 100/100 [00:00<?, ?it/s]
+   accuracy=0.620  cost=$0.0057  avg_latency=1825ms  errors=0
+
+--- anthropic:claude-haiku-4-5 on mmlu  (concurrency=8) ---
+anthropic:claude-haiku-4-5:   0%|          | 0/100 [00:00<?, ?it/s]anthropic:claude-haiku-4-5:  68%|######8   | 68/100 [00:02<00:01, 27.66it/s]anthropic:claude-haiku-4-5:  78%|#######8  | 78/100 [00:02<00:00, 31.07it/s]anthropic:claude-haiku-4-5:  84%|########4 | 84/100 [00:03<00:00, 23.35it/s]anthropic:claude-haiku-4-5:  88%|########8 | 88/100 [00:03<00:00, 21.40it/s]anthropic:claude-haiku-4-5:  91%|#########1| 91/100 [00:03<00:00, 18.10it/s]anthropic:claude-haiku-4-5:  97%|#########7| 97/100 [00:04<00:00, 19.53it/s]anthropic:claude-haiku-4-5: 100%|##########| 100/100 [00:06<00:00,  6.25it/s]anthropic:claude-haiku-4-5: 100%|##########| 100/100 [00:06<00:00, 15.02it/s]
+   accuracy=0.870  cost=$0.0389  avg_latency=1295ms  errors=0
+
+--- groq:openai/gpt-oss-120b on mmlu  (concurrency=8) ---
+groq:openai/gpt-oss-120b:   0%|          | 0/100 [00:00<?, ?it/s]groq:openai/gpt-oss-120b:  29%|##9       | 29/100 [00:02<00:07,  9.92it/s]groq:openai/gpt-oss-120b:  31%|###1      | 31/100 [00:03<00:06, 10.04it/s]groq:openai/gpt-oss-120b:  37%|###7      | 37/100 [00:03<00:05, 11.74it/s]groq:openai/gpt-oss-120b:  39%|###9      | 39/100 [00:03<00:05, 10.64it/s]groq:openai/gpt-oss-120b:  43%|####3     | 43/100 [00:03<00:04, 11.82it/s]groq:openai/gpt-oss-120b:  46%|####6     | 46/100 [00:04<00:04, 11.28it/s]groq:openai/gpt-oss-120b:  48%|####8     | 48/100 [00:04<00:05, 10.22it/s]groq:openai/gpt-oss-120b:  50%|#####     | 50/100 [00:05<00:06,  7.71it/s]groq:openai/gpt-oss-120b:  51%|#####1    | 51/100 [00:05<00:07,  6.72it/s]groq:openai/gpt-oss-120b:  53%|#####3    | 53/100 [00:06<00:09,  4.84it/s]groq:openai/gpt-oss-120b:  56%|#####6    | 56/100 [00:11<00:35,  1.24it/s]groq:openai/gpt-oss-120b:  57%|#####6    | 57/100 [00:16<00:59,  1.38s/it]groq:openai/gpt-oss-120b:  58%|#####8    | 58/100 [00:20<01:17,  1.85s/it]groq:openai/gpt-oss-120b:  59%|#####8    | 59/100 [00:24<01:28,  2.16s/it]groq:openai/gpt-oss-120b:  60%|######    | 60/100 [00:27<01:38,  2.45s/it]groq:openai/gpt-oss-120b:  61%|######1   | 61/100 [00:30<01:42,  2.62s/it]groq:openai/gpt-oss-120b:  62%|######2   | 62/100 [00:34<01:54,  3.02s/it]groq:openai/gpt-oss-120b:  65%|######5   | 65/100 [00:39<01:15,  2.17s/it]groq:openai/gpt-oss-120b:  68%|######8   | 68/100 [00:47<01:16,  2.38s/it]groq:openai/gpt-oss-120b:  69%|######9   | 69/100 [00:50<01:19,  2.56s/it]groq:openai/gpt-oss-120b:  71%|#######1  | 71/100 [00:55<01:14,  2.56s/it]groq:openai/gpt-oss-120b:  72%|#######2  | 72/100 [00:58<01:14,  2.68s/it]groq:openai/gpt-oss-120b:  73%|#######3  | 73/100 [01:03<01:20,  3.00s/it]groq:openai/gpt-oss-120b:  75%|#######5  | 75/100 [01:05<00:57,  2.29s/it]groq:openai/gpt-oss-120b:  76%|#######6  | 76/100 [01:09<01:04,  2.67s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6902, Requested 1241. Please try again in 1.0725s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  77%|#######7  | 77/100 [01:14<01:12,  3.16s/it]groq:openai/gpt-oss-120b:  79%|#######9  | 79/100 [01:14<00:43,  2.05s/it]groq:openai/gpt-oss-120b:  80%|########  | 80/100 [01:19<00:50,  2.53s/it]groq:openai/gpt-oss-120b:  81%|########1 | 81/100 [01:20<00:43,  2.28s/it]groq:openai/gpt-oss-120b:  82%|########2 | 82/100 [01:26<00:59,  3.33s/it]groq:openai/gpt-oss-120b:  83%|########2 | 83/100 [01:30<00:58,  3.43s/it]groq:openai/gpt-oss-120b:  85%|########5 | 85/100 [01:31<00:31,  2.07s/it]groq:openai/gpt-oss-120b:  86%|########6 | 86/100 [01:39<00:49,  3.55s/it]groq:openai/gpt-oss-120b:  87%|########7 | 87/100 [01:41<00:42,  3.25s/it]groq:openai/gpt-oss-120b:  89%|########9 | 89/100 [01:47<00:34,  3.14s/it]groq:openai/gpt-oss-120b:  90%|######### | 90/100 [01:57<00:46,  4.63s/it]groq:openai/gpt-oss-120b:  92%|#########2| 92/100 [02:01<00:28,  3.56s/it]groq:openai/gpt-oss-120b:  93%|#########3| 93/100 [02:06<00:26,  3.86s/it]groq:openai/gpt-oss-120b:  94%|#########3| 94/100 [02:09<00:22,  3.79s/it]groq:openai/gpt-oss-120b:  95%|#########5| 95/100 [02:14<00:20,  4.06s/it]groq:openai/gpt-oss-120b:  96%|#########6| 96/100 [02:19<00:16,  4.17s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7182, Requested 1237. Please try again in 3.1425s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  97%|#########7| 97/100 [02:20<00:09,  3.30s/it]groq:openai/gpt-oss-120b:  98%|#########8| 98/100 [02:23<00:06,  3.35s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7114, Requested 1280. Please try again in 2.955s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  99%|#########9| 99/100 [02:24<00:02,  2.68s/it]groq:openai/gpt-oss-120b: 100%|##########| 100/100 [02:52<00:00, 10.08s/it]groq:openai/gpt-oss-120b: 100%|##########| 100/100 [02:52<00:00,  1.73s/it]
+   accuracy=0.876  cost=$0.0205  avg_latency=3102ms  errors=3
+
+--- gemini:gemini-3.5-flash on mmlu  (concurrency=8) ---
+gemini:gemini-3.5-flash:   0%|          | 0/100 [00:00<?, ?it/s]gemini:gemini-3.5-flash: 100%|##########| 100/100 [00:00<00:00, 19872.57it/s]
+   accuracy=0.940  cost=$0.0296  avg_latency=3363ms  errors=0
+
+=== loading hellaswag ===
+   100 samples
+
+--- openai:gpt-5.4-nano on hellaswag  (concurrency=8) ---
+openai:gpt-5.4-nano:   0%|          | 0/100 [00:00<?, ?it/s]openai:gpt-5.4-nano: 100%|##########| 100/100 [00:00<?, ?it/s]
+   accuracy=0.640  cost=$0.0077  avg_latency=1075ms  errors=0
+
+--- anthropic:claude-haiku-4-5 on hellaswag  (concurrency=8) ---
+anthropic:claude-haiku-4-5:   0%|          | 0/100 [00:00<?, ?it/s]anthropic:claude-haiku-4-5:  81%|########1 | 81/100 [00:00<00:00, 104.49it/s]anthropic:claude-haiku-4-5:  92%|#########2| 92/100 [00:01<00:00, 87.35it/s] anthropic:claude-haiku-4-5: 100%|##########| 100/100 [00:03<00:00, 20.91it/s]anthropic:claude-haiku-4-5: 100%|##########| 100/100 [00:03<00:00, 32.11it/s]
+   accuracy=0.930  cost=$0.0488  avg_latency=1202ms  errors=0
+
+--- groq:openai/gpt-oss-120b on hellaswag  (concurrency=8) ---
+groq:openai/gpt-oss-120b:   0%|          | 0/100 [00:00<?, ?it/s]groq:openai/gpt-oss-120b:  21%|##1       | 21/100 [00:00<00:01, 41.05it/s]groq:openai/gpt-oss-120b:  26%|##6       | 26/100 [00:02<00:07,  9.70it/s]groq:openai/gpt-oss-120b:  28%|##8       | 28/100 [00:04<00:18,  3.86it/s]groq:openai/gpt-oss-120b:  30%|###       | 30/100 [00:13<00:59,  1.17it/s]groq:openai/gpt-oss-120b:  31%|###1      | 31/100 [00:17<01:23,  1.21s/it]groq:openai/gpt-oss-120b:  32%|###2      | 32/100 [00:21<01:45,  1.55s/it]groq:openai/gpt-oss-120b:  33%|###3      | 33/100 [00:25<02:05,  1.88s/it]groq:openai/gpt-oss-120b:  34%|###4      | 34/100 [00:25<01:46,  1.61s/it]groq:openai/gpt-oss-120b:  35%|###5      | 35/100 [00:29<02:12,  2.03s/it]groq:openai/gpt-oss-120b:  36%|###6      | 36/100 [00:34<02:48,  2.63s/it]groq:openai/gpt-oss-120b:  37%|###7      | 37/100 [00:37<03:05,  2.94s/it]groq:openai/gpt-oss-120b:  38%|###8      | 38/100 [00:44<04:02,  3.92s/it]groq:openai/gpt-oss-120b:  39%|###9      | 39/100 [00:49<04:13,  4.15s/it]groq:openai/gpt-oss-120b:  40%|####      | 40/100 [00:53<04:08,  4.14s/it]groq:openai/gpt-oss-120b:  41%|####1     | 41/100 [01:00<04:53,  4.98s/it]groq:openai/gpt-oss-120b:  42%|####2     | 42/100 [01:07<05:11,  5.38s/it]groq:openai/gpt-oss-120b:  43%|####3     | 43/100 [01:11<04:56,  5.21s/it]groq:openai/gpt-oss-120b:  44%|####4     | 44/100 [01:18<05:14,  5.62s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7875, Requested 1383. Please try again in 9.435s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  45%|####5     | 45/100 [01:24<05:17,  5.77s/it]groq:openai/gpt-oss-120b:  46%|####6     | 46/100 [01:24<03:41,  4.10s/it]groq:openai/gpt-oss-120b:  47%|####6     | 47/100 [01:28<03:28,  3.94s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7308, Requested 1097. Please try again in 3.0375s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  48%|####8     | 48/100 [01:28<02:33,  2.95s/it]groq:openai/gpt-oss-120b:  49%|####9     | 49/100 [01:33<02:59,  3.51s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7348, Requested 1114. Please try again in 3.465s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  50%|#####     | 50/100 [01:34<02:13,  2.68s/it]groq:openai/gpt-oss-120b:  51%|#####1    | 51/100 [01:38<02:28,  3.03s/it]groq:openai/gpt-oss-120b:  52%|#####2    | 52/100 [01:42<02:47,  3.49s/it]groq:openai/gpt-oss-120b:  53%|#####3    | 53/100 [01:50<03:34,  4.57s/it]groq:openai/gpt-oss-120b:  54%|#####4    | 54/100 [01:53<03:18,  4.31s/it]groq:openai/gpt-oss-120b:  55%|#####5    | 55/100 [01:58<03:25,  4.57s/it]groq:openai/gpt-oss-120b:  56%|#####6    | 56/100 [02:03<03:16,  4.47s/it]groq:openai/gpt-oss-120b:  57%|#####6    | 57/100 [02:05<02:51,  3.99s/it]groq:openai/gpt-oss-120b:  58%|#####8    | 58/100 [02:10<02:50,  4.05s/it]groq:openai/gpt-oss-120b:  59%|#####8    | 59/100 [02:14<02:43,  3.98s/it]groq:openai/gpt-oss-120b:  60%|######    | 60/100 [02:20<03:13,  4.84s/it]groq:openai/gpt-oss-120b:  61%|######1   | 61/100 [02:27<03:32,  5.45s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7932, Requested 943. Please try again in 6.5625s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  62%|######2   | 62/100 [02:28<02:35,  4.10s/it]groq:openai/gpt-oss-120b:  63%|######3   | 63/100 [02:28<01:48,  2.92s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7925, Requested 960. Please try again in 6.6375s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  64%|######4   | 64/100 [02:33<02:02,  3.40s/it]groq:openai/gpt-oss-120b:  65%|######5   | 65/100 [02:33<01:24,  2.42s/it]groq:openai/gpt-oss-120b:  66%|######6   | 66/100 [02:37<01:33,  2.75s/it]groq:openai/gpt-oss-120b:  67%|######7   | 67/100 [02:42<01:54,  3.46s/it]groq:openai/gpt-oss-120b:  68%|######8   | 68/100 [02:48<02:20,  4.40s/it]groq:openai/gpt-oss-120b:  69%|######9   | 69/100 [02:53<02:16,  4.40s/it]groq:openai/gpt-oss-120b:  70%|#######   | 70/100 [02:57<02:15,  4.51s/it]groq:openai/gpt-oss-120b:  71%|#######1  | 71/100 [03:04<02:29,  5.15s/it]groq:openai/gpt-oss-120b:  72%|#######2  | 72/100 [03:05<01:50,  3.96s/it]groq:openai/gpt-oss-120b:  73%|#######3  | 73/100 [03:10<01:51,  4.14s/it]groq:openai/gpt-oss-120b:  74%|#######4  | 74/100 [03:15<01:54,  4.40s/it]groq:openai/gpt-oss-120b:  75%|#######5  | 75/100 [03:20<01:55,  4.63s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7841, Requested 944. Please try again in 5.8875s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  76%|#######6  | 76/100 [03:28<02:14,  5.59s/it]groq:openai/gpt-oss-120b:  77%|#######7  | 77/100 [03:28<01:32,  4.01s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6725, Requested 1286. Please try again in 82.499999ms. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  78%|#######8  | 78/100 [03:34<01:43,  4.72s/it]groq:openai/gpt-oss-120b:  79%|#######9  | 79/100 [03:35<01:13,  3.49s/it]groq:openai/gpt-oss-120b:  80%|########  | 80/100 [03:37<01:02,  3.15s/it]groq:openai/gpt-oss-120b:  81%|########1 | 81/100 [03:45<01:23,  4.39s/it]groq:openai/gpt-oss-120b:  82%|########2 | 82/100 [03:50<01:23,  4.65s/it]groq:openai/gpt-oss-120b:  83%|########2 | 83/100 [03:51<01:02,  3.69s/it]groq:openai/gpt-oss-120b:  84%|########4 | 84/100 [03:57<01:08,  4.31s/it]groq:openai/gpt-oss-120b:  85%|########5 | 85/100 [04:03<01:09,  4.65s/it]groq:openai/gpt-oss-120b:  86%|########6 | 86/100 [04:07<01:02,  4.50s/it]groq:openai/gpt-oss-120b:  87%|########7 | 87/100 [04:12<01:02,  4.82s/it]groq:openai/gpt-oss-120b:  88%|########8 | 88/100 [04:17<00:57,  4.83s/it]groq:openai/gpt-oss-120b:  89%|########9 | 89/100 [04:21<00:50,  4.62s/it]groq:openai/gpt-oss-120b:  90%|######### | 90/100 [04:27<00:50,  5.03s/it]groq:openai/gpt-oss-120b:  91%|#########1| 91/100 [04:33<00:46,  5.12s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7092, Requested 1321. Please try again in 3.097499999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  92%|#########2| 92/100 [04:37<00:38,  4.78s/it]groq:openai/gpt-oss-120b:  93%|#########3| 93/100 [04:38<00:26,  3.73s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7359, Requested 1270. Please try again in 4.7175s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  94%|#########3| 94/100 [04:40<00:19,  3.24s/it]groq:openai/gpt-oss-120b:  95%|#########5| 95/100 [04:43<00:15,  3.19s/it]groq:openai/gpt-oss-120b:  96%|#########6| 96/100 [04:48<00:14,  3.69s/it]groq:openai/gpt-oss-120b:  97%|#########7| 97/100 [04:56<00:14,  4.94s/it]groq:openai/gpt-oss-120b:  98%|#########8| 98/100 [05:02<00:10,  5.27s/it]groq:openai/gpt-oss-120b:  99%|#########9| 99/100 [05:10<00:06,  6.24s/it]groq:openai/gpt-oss-120b: 100%|##########| 100/100 [05:23<00:00,  8.02s/it]groq:openai/gpt-oss-120b: 100%|##########| 100/100 [05:23<00:00,  3.23s/it]
+   accuracy=0.736  cost=$0.0200  avg_latency=3792ms  errors=9
+
+--- gemini:gemini-3.5-flash on hellaswag  (concurrency=8) ---
+gemini:gemini-3.5-flash:   0%|          | 0/100 [00:00<?, ?it/s]gemini:gemini-3.5-flash:   4%|4         | 4/100 [00:06<02:33,  1.60s/it]gemini:gemini-3.5-flash:   5%|5         | 5/100 [00:07<02:16,  1.44s/it]gemini:gemini-3.5-flash:   8%|8         | 8/100 [00:07<01:06,  1.39it/s]gemini:gemini-3.5-flash:   9%|9         | 9/100 [00:07<00:57,  1.59it/s]gemini:gemini-3.5-flash:  10%|#         | 10/100 [00:08<00:59,  1.51it/s]gemini:gemini-3.5-flash:  11%|#1        | 11/100 [00:08<00:49,  1.81it/s]gemini:gemini-3.5-flash:  13%|#3        | 13/100 [00:09<00:42,  2.05it/s]gemini:gemini-3.5-flash:  14%|#4        | 14/100 [00:10<00:42,  2.05it/s]gemini:gemini-3.5-flash:  15%|#5        | 15/100 [00:10<00:45,  1.85it/s]gemini:gemini-3.5-flash:  16%|#6        | 16/100 [00:11<00:41,  2.03it/s]gemini:gemini-3.5-flash:  19%|#9        | 19/100 [00:11<00:24,  3.34it/s]gemini:gemini-3.5-flash:  21%|##1       | 21/100 [00:11<00:19,  4.02it/s]gemini:gemini-3.5-flash:  22%|##2       | 22/100 [00:12<00:27,  2.79it/s]gemini:gemini-3.5-flash:  24%|##4       | 24/100 [00:13<00:32,  2.33it/s]gemini:gemini-3.5-flash:  25%|##5       | 25/100 [00:14<00:32,  2.31it/s]gemini:gemini-3.5-flash:  26%|##6       | 26/100 [00:14<00:26,  2.76it/s]gemini:gemini-3.5-flash:  28%|##8       | 28/100 [00:14<00:18,  3.82it/s]gemini:gemini-3.5-flash:  29%|##9       | 29/100 [00:14<00:20,  3.53it/s]gemini:gemini-3.5-flash:  31%|###1      | 31/100 [00:15<00:22,  3.06it/s]gemini:gemini-3.5-flash:  32%|###2      | 32/100 [00:16<00:26,  2.55it/s]gemini:gemini-3.5-flash:  33%|###3      | 33/100 [00:16<00:25,  2.67it/s]gemini:gemini-3.5-flash:  34%|###4      | 34/100 [00:16<00:20,  3.24it/s]gemini:gemini-3.5-flash:  35%|###5      | 35/100 [00:16<00:17,  3.76it/s]gemini:gemini-3.5-flash:  36%|###6      | 36/100 [00:17<00:24,  2.60it/s]gemini:gemini-3.5-flash:  37%|###7      | 37/100 [00:17<00:19,  3.22it/s]gemini:gemini-3.5-flash:  38%|###8      | 38/100 [00:17<00:15,  3.99it/s]gemini:gemini-3.5-flash:  40%|####      | 40/100 [00:19<00:24,  2.49it/s]gemini:gemini-3.5-flash:  42%|####2     | 42/100 [00:19<00:19,  3.04it/s]gemini:gemini-3.5-flash:  44%|####4     | 44/100 [00:19<00:13,  4.08it/s]gemini:gemini-3.5-flash:  46%|####6     | 46/100 [00:20<00:12,  4.20it/s]gemini:gemini-3.5-flash:  47%|####6     | 47/100 [00:20<00:12,  4.14it/s]gemini:gemini-3.5-flash:  48%|####8     | 48/100 [00:20<00:16,  3.15it/s]gemini:gemini-3.5-flash:  49%|####9     | 49/100 [00:21<00:20,  2.49it/s]gemini:gemini-3.5-flash:  50%|#####     | 50/100 [00:21<00:16,  3.05it/s]gemini:gemini-3.5-flash:  52%|#####2    | 52/100 [00:21<00:10,  4.65it/s]gemini:gemini-3.5-flash:  53%|#####3    | 53/100 [00:22<00:09,  4.97it/s]gemini:gemini-3.5-flash:  54%|#####4    | 54/100 [00:22<00:09,  5.02it/s]gemini:gemini-3.5-flash:  55%|#####5    | 55/100 [00:22<00:09,  4.58it/s]gemini:gemini-3.5-flash:  56%|#####6    | 56/100 [00:23<00:18,  2.37it/s]gemini:gemini-3.5-flash:  57%|#####6    | 57/100 [00:23<00:16,  2.57it/s]gemini:gemini-3.5-flash:  58%|#####8    | 58/100 [00:24<00:16,  2.53it/s]gemini:gemini-3.5-flash:  59%|#####8    | 59/100 [00:24<00:12,  3.16it/s]gemini:gemini-3.5-flash:  62%|######2   | 62/100 [00:24<00:06,  5.88it/s]gemini:gemini-3.5-flash:  63%|######3   | 63/100 [00:25<00:11,  3.10it/s]gemini:gemini-3.5-flash:  64%|######4   | 64/100 [00:26<00:14,  2.49it/s]gemini:gemini-3.5-flash:  65%|######5   | 65/100 [00:26<00:13,  2.64it/s]gemini:gemini-3.5-flash:  68%|######8   | 68/100 [00:27<00:09,  3.27it/s]gemini:gemini-3.5-flash:  69%|######9   | 69/100 [00:27<00:09,  3.26it/s]gemini:gemini-3.5-flash:  70%|#######   | 70/100 [00:27<00:09,  3.04it/s]gemini:gemini-3.5-flash:  71%|#######1  | 71/100 [00:28<00:09,  3.17it/s]gemini:gemini-3.5-flash:  72%|#######2  | 72/100 [00:28<00:07,  3.81it/s]gemini:gemini-3.5-flash:  74%|#######4  | 74/100 [00:28<00:05,  4.94it/s]gemini:gemini-3.5-flash:  75%|#######5  | 75/100 [00:28<00:06,  3.88it/s]gemini:gemini-3.5-flash:  76%|#######6  | 76/100 [00:29<00:06,  3.95it/s]gemini:gemini-3.5-flash:  77%|#######7  | 77/100 [00:29<00:06,  3.31it/s]gemini:gemini-3.5-flash:  78%|#######8  | 78/100 [00:29<00:05,  3.94it/s]gemini:gemini-3.5-flash:  79%|#######9  | 79/100 [00:30<00:07,  2.90it/s]gemini:gemini-3.5-flash:  80%|########  | 80/100 [00:30<00:07,  2.82it/s]gemini:gemini-3.5-flash:  82%|########2 | 82/100 [00:31<00:07,  2.39it/s]gemini:gemini-3.5-flash:  84%|########4 | 84/100 [00:32<00:05,  2.95it/s]gemini:gemini-3.5-flash:  85%|########5 | 85/100 [00:32<00:04,  3.00it/s]gemini:gemini-3.5-flash:  87%|########7 | 87/100 [00:33<00:04,  2.62it/s]gemini:gemini-3.5-flash:  90%|######### | 90/100 [00:33<00:02,  3.79it/s]gemini:gemini-3.5-flash:  91%|#########1| 91/100 [00:34<00:02,  3.07it/s]gemini:gemini-3.5-flash:  92%|#########2| 92/100 [00:34<00:02,  2.87it/s]gemini:gemini-3.5-flash:  93%|#########3| 93/100 [00:35<00:02,  2.43it/s]gemini:gemini-3.5-flash:  95%|#########5| 95/100 [00:35<00:01,  3.31it/s]gemini:gemini-3.5-flash:  96%|#########6| 96/100 [00:35<00:01,  3.56it/s]gemini:gemini-3.5-flash:  97%|#########7| 97/100 [00:36<00:00,  3.11it/s]gemini:gemini-3.5-flash:  98%|#########8| 98/100 [00:36<00:00,  3.50it/s]gemini:gemini-3.5-flash:  99%|#########9| 99/100 [00:36<00:00,  2.81it/s]gemini:gemini-3.5-flash: 100%|##########| 100/100 [00:38<00:00,  1.77it/s]gemini:gemini-3.5-flash: 100%|##########| 100/100 [00:38<00:00,  2.63it/s]
+   accuracy=0.990  cost=$0.0412  avg_latency=2615ms  errors=0
+
+=== loading truthfulqa_mc ===
+   100 samples
+
+--- openai:gpt-5.4-nano on truthfulqa_mc  (concurrency=8) ---
+openai:gpt-5.4-nano:   0%|          | 0/100 [00:00<?, ?it/s]openai:gpt-5.4-nano:  21%|##1       | 21/100 [00:04<00:16,  4.67it/s]openai:gpt-5.4-nano:  25%|##5       | 25/100 [00:04<00:13,  5.68it/s]openai:gpt-5.4-nano:  28%|##8       | 28/100 [00:04<00:10,  6.58it/s]openai:gpt-5.4-nano:  30%|###       | 30/100 [00:05<00:13,  5.23it/s]openai:gpt-5.4-nano:  33%|###3      | 33/100 [00:05<00:10,  6.26it/s]openai:gpt-5.4-nano:  35%|###5      | 35/100 [00:05<00:09,  7.06it/s]openai:gpt-5.4-nano:  37%|###7      | 37/100 [00:06<00:10,  6.13it/s]openai:gpt-5.4-nano:  39%|###9      | 39/100 [00:06<00:08,  7.19it/s]openai:gpt-5.4-nano:  41%|####1     | 41/100 [00:06<00:07,  8.31it/s]openai:gpt-5.4-nano:  44%|####4     | 44/100 [00:07<00:07,  7.53it/s]openai:gpt-5.4-nano:  46%|####6     | 46/100 [00:07<00:06,  8.49it/s]openai:gpt-5.4-nano:  48%|####8     | 48/100 [00:07<00:05,  9.62it/s]openai:gpt-5.4-nano:  51%|#####1    | 51/100 [00:07<00:05,  8.32it/s]openai:gpt-5.4-nano:  55%|#####5    | 55/100 [00:08<00:04,  9.76it/s]openai:gpt-5.4-nano:  57%|#####6    | 57/100 [00:08<00:04,  9.50it/s]openai:gpt-5.4-nano:  59%|#####8    | 59/100 [00:08<00:05,  7.90it/s]openai:gpt-5.4-nano:  64%|######4   | 64/100 [00:08<00:02, 12.70it/s]openai:gpt-5.4-nano:  66%|######6   | 66/100 [00:09<00:03, 10.82it/s]openai:gpt-5.4-nano:  68%|######8   | 68/100 [00:09<00:03,  9.25it/s]openai:gpt-5.4-nano:  71%|#######1  | 71/100 [00:09<00:03,  9.04it/s]openai:gpt-5.4-nano:  74%|#######4  | 74/100 [00:10<00:02,  9.01it/s]openai:gpt-5.4-nano:  76%|#######6  | 76/100 [00:10<00:02,  8.96it/s]openai:gpt-5.4-nano:  79%|#######9  | 79/100 [00:10<00:01, 11.43it/s]openai:gpt-5.4-nano:  81%|########1 | 81/100 [00:11<00:02,  7.92it/s]openai:gpt-5.4-nano:  83%|########2 | 83/100 [00:11<00:01,  8.98it/s]openai:gpt-5.4-nano:  86%|########6 | 86/100 [00:11<00:01,  7.05it/s]openai:gpt-5.4-nano:  90%|######### | 90/100 [00:11<00:00, 10.01it/s]openai:gpt-5.4-nano:  92%|#########2| 92/100 [00:12<00:01,  7.82it/s]openai:gpt-5.4-nano:  95%|#########5| 95/100 [00:12<00:00,  9.14it/s]openai:gpt-5.4-nano:  97%|#########7| 97/100 [00:12<00:00,  8.46it/s]openai:gpt-5.4-nano:  99%|#########9| 99/100 [00:13<00:00,  8.80it/s]openai:gpt-5.4-nano: 100%|##########| 100/100 [00:13<00:00,  7.54it/s]
+   accuracy=0.780  cost=$0.0055  avg_latency=1160ms  errors=0
+
+--- anthropic:claude-haiku-4-5 on truthfulqa_mc  (concurrency=8) ---
+anthropic:claude-haiku-4-5:   0%|          | 0/100 [00:00<?, ?it/s]anthropic:claude-haiku-4-5:  21%|##1       | 21/100 [00:01<00:04, 17.15it/s]anthropic:claude-haiku-4-5:  23%|##3       | 23/100 [00:02<00:08,  9.13it/s]anthropic:claude-haiku-4-5:  28%|##8       | 28/100 [00:02<00:06, 10.34it/s]anthropic:claude-haiku-4-5:  30%|###       | 30/100 [00:02<00:07,  9.48it/s]anthropic:claude-haiku-4-5:  32%|###2      | 32/100 [00:03<00:08,  8.40it/s]anthropic:claude-haiku-4-5:  35%|###5      | 35/100 [00:03<00:07,  8.66it/s]anthropic:claude-haiku-4-5:  37%|###7      | 37/100 [00:03<00:07,  8.19it/s]anthropic:claude-haiku-4-5:  40%|####      | 40/100 [00:04<00:06,  8.63it/s]anthropic:claude-haiku-4-5:  44%|####4     | 44/100 [00:04<00:05, 10.37it/s]anthropic:claude-haiku-4-5:  46%|####6     | 46/100 [00:04<00:05, 10.57it/s]anthropic:claude-haiku-4-5:  48%|####8     | 48/100 [00:04<00:05,  9.23it/s]anthropic:claude-haiku-4-5:  49%|####9     | 49/100 [00:05<00:06,  7.49it/s]anthropic:claude-haiku-4-5:  53%|#####3    | 53/100 [00:05<00:04, 10.50it/s]anthropic:claude-haiku-4-5:  55%|#####5    | 55/100 [00:05<00:04, 10.63it/s]anthropic:claude-haiku-4-5:  57%|#####6    | 57/100 [00:05<00:04,  9.27it/s]anthropic:claude-haiku-4-5:  59%|#####8    | 59/100 [00:05<00:04,  9.99it/s]anthropic:claude-haiku-4-5:  61%|######1   | 61/100 [00:06<00:03,  9.90it/s]anthropic:claude-haiku-4-5:  63%|######3   | 63/100 [00:06<00:04,  7.92it/s]anthropic:claude-haiku-4-5:  64%|######4   | 64/100 [00:06<00:04,  7.58it/s]anthropic:claude-haiku-4-5:  65%|######5   | 65/100 [00:06<00:04,  7.81it/s]anthropic:claude-haiku-4-5:  66%|######6   | 66/100 [00:06<00:04,  8.17it/s]anthropic:claude-haiku-4-5:  70%|#######   | 70/100 [00:07<00:02, 10.44it/s]anthropic:claude-haiku-4-5:  72%|#######2  | 72/100 [00:07<00:03,  8.35it/s]anthropic:claude-haiku-4-5:  74%|#######4  | 74/100 [00:07<00:02,  9.66it/s]anthropic:claude-haiku-4-5:  76%|#######6  | 76/100 [00:08<00:05,  4.23it/s]anthropic:claude-haiku-4-5:  77%|#######7  | 77/100 [00:10<00:09,  2.48it/s]anthropic:claude-haiku-4-5:  78%|#######8  | 78/100 [00:10<00:09,  2.34it/s]anthropic:claude-haiku-4-5:  79%|#######9  | 79/100 [00:12<00:13,  1.52it/s]anthropic:claude-haiku-4-5:  80%|########  | 80/100 [00:12<00:14,  1.40it/s]anthropic:claude-haiku-4-5:  81%|########1 | 81/100 [00:14<00:15,  1.19it/s]anthropic:claude-haiku-4-5:  82%|########2 | 82/100 [00:15<00:19,  1.07s/it]anthropic:claude-haiku-4-5:  83%|########2 | 83/100 [00:17<00:19,  1.15s/it]anthropic:claude-haiku-4-5:  84%|########4 | 84/100 [00:18<00:17,  1.10s/it]anthropic:claude-haiku-4-5:  85%|########5 | 85/100 [00:19<00:18,  1.20s/it]anthropic:claude-haiku-4-5:  86%|########6 | 86/100 [00:21<00:17,  1.25s/it]anthropic:claude-haiku-4-5:  87%|########7 | 87/100 [00:22<00:16,  1.24s/it]anthropic:claude-haiku-4-5:  88%|########8 | 88/100 [00:23<00:15,  1.31s/it]anthropic:claude-haiku-4-5:  89%|########9 | 89/100 [00:24<00:12,  1.17s/it]anthropic:claude-haiku-4-5:  90%|######### | 90/100 [00:25<00:11,  1.11s/it]anthropic:claude-haiku-4-5:  91%|#########1| 91/100 [00:26<00:09,  1.06s/it]anthropic:claude-haiku-4-5:  92%|#########2| 92/100 [00:28<00:10,  1.29s/it]anthropic:claude-haiku-4-5:  93%|#########3| 93/100 [00:28<00:07,  1.12s/it]anthropic:claude-haiku-4-5:  94%|#########3| 94/100 [00:30<00:07,  1.24s/it]anthropic:claude-haiku-4-5:  95%|#########5| 95/100 [00:31<00:05,  1.18s/it]anthropic:claude-haiku-4-5:  96%|#########6| 96/100 [00:32<00:04,  1.03s/it]anthropic:claude-haiku-4-5:  97%|#########7| 97/100 [00:34<00:03,  1.25s/it]anthropic:claude-haiku-4-5:  98%|#########8| 98/100 [00:35<00:02,  1.34s/it]anthropic:claude-haiku-4-5:  99%|#########9| 99/100 [00:36<00:01,  1.34s/it]anthropic:claude-haiku-4-5: 100%|##########| 100/100 [00:38<00:00,  1.55s/it]anthropic:claude-haiku-4-5: 100%|##########| 100/100 [00:38<00:00,  2.57it/s]
+   accuracy=0.940  cost=$0.0403  avg_latency=1377ms  errors=0
+
+--- groq:openai/gpt-oss-120b on truthfulqa_mc  (concurrency=8) ---
+groq:openai/gpt-oss-120b:   0%|          | 0/100 [00:00<?, ?it/s]groq:openai/gpt-oss-120b:  21%|##1       | 21/100 [00:00<00:02, 33.55it/s]groq:openai/gpt-oss-120b:  25%|##5       | 25/100 [00:00<00:03, 24.85it/s]groq:openai/gpt-oss-120b:  28%|##8       | 28/100 [00:01<00:05, 12.85it/s]groq:openai/gpt-oss-120b:  32%|###2      | 32/100 [00:01<00:04, 13.97it/s]groq:openai/gpt-oss-120b:  34%|###4      | 34/100 [00:05<00:22,  2.93it/s]groq:openai/gpt-oss-120b:  36%|###6      | 36/100 [00:10<00:46,  1.39it/s]groq:openai/gpt-oss-120b:  37%|###7      | 37/100 [00:12<00:53,  1.18it/s]groq:openai/gpt-oss-120b:  38%|###8      | 38/100 [00:14<01:10,  1.14s/it]groq:openai/gpt-oss-120b:  39%|###9      | 39/100 [00:18<01:32,  1.52s/it]groq:openai/gpt-oss-120b:  40%|####      | 40/100 [00:24<02:26,  2.45s/it]groq:openai/gpt-oss-120b:  41%|####1     | 41/100 [00:25<02:10,  2.20s/it]groq:openai/gpt-oss-120b:  42%|####2     | 42/100 [00:29<02:23,  2.47s/it]groq:openai/gpt-oss-120b:  43%|####3     | 43/100 [00:33<02:42,  2.86s/it]groq:openai/gpt-oss-120b:  44%|####4     | 44/100 [00:37<02:55,  3.13s/it]groq:openai/gpt-oss-120b:  45%|####5     | 45/100 [00:42<03:24,  3.72s/it]groq:openai/gpt-oss-120b:  46%|####6     | 46/100 [00:46<03:31,  3.91s/it]groq:openai/gpt-oss-120b:  47%|####6     | 47/100 [00:48<02:56,  3.34s/it]groq:openai/gpt-oss-120b:  48%|####8     | 48/100 [00:54<03:29,  4.02s/it]groq:openai/gpt-oss-120b:  49%|####9     | 49/100 [00:57<03:13,  3.80s/it]groq:openai/gpt-oss-120b:  50%|#####     | 50/100 [00:58<02:26,  2.93s/it]groq:openai/gpt-oss-120b:  51%|#####1    | 51/100 [01:02<02:40,  3.27s/it]groq:openai/gpt-oss-120b:  52%|#####2    | 52/100 [01:03<02:00,  2.52s/it]groq:openai/gpt-oss-120b:  53%|#####3    | 53/100 [01:10<02:56,  3.76s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7946, Requested 537. Please try again in 3.6225s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  54%|#####4    | 54/100 [01:13<02:46,  3.63s/it]groq:openai/gpt-oss-120b:  55%|#####5    | 55/100 [01:13<01:57,  2.61s/it]groq:openai/gpt-oss-120b:  56%|#####6    | 56/100 [01:16<01:58,  2.69s/it]groq:openai/gpt-oss-120b:  57%|#####6    | 57/100 [01:21<02:19,  3.23s/it]groq:openai/gpt-oss-120b:  58%|#####8    | 58/100 [01:22<01:55,  2.74s/it]groq:openai/gpt-oss-120b:  59%|#####8    | 59/100 [01:31<03:08,  4.60s/it]groq:openai/gpt-oss-120b:  60%|######    | 60/100 [01:33<02:29,  3.75s/it]groq:openai/gpt-oss-120b:  61%|######1   | 61/100 [01:37<02:26,  3.76s/it]groq:openai/gpt-oss-120b:  62%|######2   | 62/100 [01:41<02:32,  4.01s/it]groq:openai/gpt-oss-120b:  63%|######3   | 63/100 [01:44<02:14,  3.65s/it]groq:openai/gpt-oss-120b:  64%|######4   | 64/100 [01:48<02:15,  3.77s/it]groq:openai/gpt-oss-120b:  65%|######5   | 65/100 [01:52<02:18,  3.96s/it]groq:openai/gpt-oss-120b:  66%|######6   | 66/100 [01:54<01:46,  3.14s/it]groq:openai/gpt-oss-120b:  67%|######7   | 67/100 [02:01<02:21,  4.28s/it]groq:openai/gpt-oss-120b:  68%|######8   | 68/100 [02:02<01:51,  3.48s/it]groq:openai/gpt-oss-120b:  69%|######9   | 69/100 [02:08<02:04,  4.02s/it]groq:openai/gpt-oss-120b:  70%|#######   | 70/100 [02:10<01:46,  3.56s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6968, Requested 1079. Please try again in 352.5ms. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  71%|#######1  | 71/100 [02:16<02:00,  4.15s/it]groq:openai/gpt-oss-120b:  72%|#######2  | 72/100 [02:17<01:30,  3.22s/it]groq:openai/gpt-oss-120b:  73%|#######3  | 73/100 [02:18<01:11,  2.66s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7352, Requested 1191. Please try again in 4.0725s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  74%|#######4  | 74/100 [02:22<01:20,  3.10s/it]groq:openai/gpt-oss-120b:  75%|#######5  | 75/100 [02:23<00:59,  2.38s/it]groq:openai/gpt-oss-120b:  76%|#######6  | 76/100 [02:30<01:30,  3.78s/it]groq:openai/gpt-oss-120b:  77%|#######7  | 77/100 [02:32<01:16,  3.34s/it]groq:openai/gpt-oss-120b:  78%|#######8  | 78/100 [02:39<01:38,  4.47s/it]groq:openai/gpt-oss-120b:  79%|#######9  | 79/100 [02:42<01:25,  4.07s/it]groq:openai/gpt-oss-120b:  80%|########  | 80/100 [02:43<00:59,  2.99s/it]groq:openai/gpt-oss-120b:  81%|########1 | 81/100 [02:48<01:11,  3.78s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7191, Requested 1217. Please try again in 3.059999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  82%|########2 | 82/100 [02:50<00:53,  2.95s/it]groq:openai/gpt-oss-120b:  83%|########2 | 83/100 [02:51<00:42,  2.51s/it]groq:openai/gpt-oss-120b:  84%|########4 | 84/100 [02:54<00:40,  2.56s/it]groq:openai/gpt-oss-120b:  85%|########5 | 85/100 [02:57<00:40,  2.73s/it]groq:openai/gpt-oss-120b:  86%|########6 | 86/100 [03:00<00:41,  3.00s/it]groq:openai/gpt-oss-120b:  87%|########7 | 87/100 [03:03<00:36,  2.79s/it]groq:openai/gpt-oss-120b:  88%|########8 | 88/100 [03:08<00:41,  3.43s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7787, Requested 1002. Please try again in 5.9175s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  89%|########9 | 89/100 [03:11<00:36,  3.36s/it]groq:openai/gpt-oss-120b:  90%|######### | 90/100 [03:11<00:23,  2.40s/it]groq:openai/gpt-oss-120b:  91%|#########1| 91/100 [03:15<00:25,  2.86s/it]groq:openai/gpt-oss-120b:  92%|#########2| 92/100 [03:16<00:17,  2.24s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7949, Requested 698. Please try again in 4.8525s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  93%|#########3| 93/100 [03:21<00:22,  3.21s/it]groq:openai/gpt-oss-120b:  94%|#########3| 94/100 [03:22<00:14,  2.44s/it]groq:openai/gpt-oss-120b:  95%|#########5| 95/100 [03:26<00:15,  3.08s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7881, Requested 746. Please try again in 4.7025s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  96%|#########6| 96/100 [03:28<00:10,  2.74s/it]groq:openai/gpt-oss-120b:  97%|#########7| 97/100 [03:29<00:06,  2.09s/it]groq:openai/gpt-oss-120b:  98%|#########8| 98/100 [03:32<00:05,  2.53s/it]groq:openai/gpt-oss-120b:  99%|#########9| 99/100 [03:38<00:03,  3.34s/it]groq:openai/gpt-oss-120b: 100%|##########| 100/100 [03:46<00:00,  4.95s/it]groq:openai/gpt-oss-120b: 100%|##########| 100/100 [03:46<00:00,  2.27s/it]
+   accuracy=0.903  cost=$0.0159  avg_latency=3378ms  errors=7
+
+--- gemini:gemini-3.5-flash on truthfulqa_mc  (concurrency=8) ---
+gemini:gemini-3.5-flash:   0%|          | 0/100 [00:00<?, ?it/s]gemini:gemini-3.5-flash:   4%|4         | 4/100 [00:01<00:39,  2.45it/s]gemini:gemini-3.5-flash:   5%|5         | 5/100 [00:01<00:34,  2.79it/s]gemini:gemini-3.5-flash:   7%|7         | 7/100 [00:02<00:25,  3.66it/s]gemini:gemini-3.5-flash:   8%|8         | 8/100 [00:02<00:25,  3.68it/s]gemini:gemini-3.5-flash:  11%|#1        | 11/100 [00:02<00:19,  4.52it/s]gemini:gemini-3.5-flash:  13%|#3        | 13/100 [00:03<00:20,  4.27it/s]gemini:gemini-3.5-flash:  14%|#4        | 14/100 [00:04<00:27,  3.18it/s]gemini:gemini-3.5-flash:  15%|#5        | 15/100 [00:04<00:23,  3.62it/s]gemini:gemini-3.5-flash:  18%|#8        | 18/100 [00:04<00:13,  6.06it/s]gemini:gemini-3.5-flash:  20%|##        | 20/100 [00:04<00:13,  5.85it/s]gemini:gemini-3.5-flash:  21%|##1       | 21/100 [00:04<00:12,  6.10it/s]gemini:gemini-3.5-flash:  22%|##2       | 22/100 [00:06<00:31,  2.45it/s]gemini:gemini-3.5-flash:  23%|##3       | 23/100 [00:06<00:27,  2.79it/s]gemini:gemini-3.5-flash:  24%|##4       | 24/100 [00:06<00:28,  2.67it/s]gemini:gemini-3.5-flash:  25%|##5       | 25/100 [00:06<00:22,  3.28it/s]gemini:gemini-3.5-flash:  27%|##7       | 27/100 [00:07<00:20,  3.60it/s]gemini:gemini-3.5-flash:  28%|##8       | 28/100 [00:07<00:24,  2.96it/s]gemini:gemini-3.5-flash:  29%|##9       | 29/100 [00:08<00:23,  3.02it/s]gemini:gemini-3.5-flash:  32%|###2      | 32/100 [00:09<00:21,  3.09it/s]gemini:gemini-3.5-flash:  33%|###3      | 33/100 [00:09<00:19,  3.40it/s]gemini:gemini-3.5-flash:  35%|###5      | 35/100 [00:09<00:15,  4.21it/s]gemini:gemini-3.5-flash:  37%|###7      | 37/100 [00:10<00:14,  4.35it/s]gemini:gemini-3.5-flash:  38%|###8      | 38/100 [00:10<00:21,  2.89it/s]gemini:gemini-3.5-flash:  39%|###9      | 39/100 [00:11<00:20,  2.95it/s]gemini:gemini-3.5-flash:  42%|####2     | 42/100 [00:11<00:12,  4.46it/s]gemini:gemini-3.5-flash:  43%|####3     | 43/100 [00:12<00:15,  3.60it/s]gemini:gemini-3.5-flash:  44%|####4     | 44/100 [00:12<00:14,  3.90it/s]gemini:gemini-3.5-flash:  45%|####5     | 45/100 [00:12<00:17,  3.13it/s]gemini:gemini-3.5-flash:  46%|####6     | 46/100 [00:12<00:15,  3.42it/s]gemini:gemini-3.5-flash:  48%|####8     | 48/100 [00:13<00:11,  4.63it/s]gemini:gemini-3.5-flash:  50%|#####     | 50/100 [00:13<00:13,  3.71it/s]gemini:gemini-3.5-flash:  52%|#####2    | 52/100 [00:14<00:13,  3.54it/s]gemini:gemini-3.5-flash:  53%|#####3    | 53/100 [00:14<00:11,  3.98it/s]gemini:gemini-3.5-flash:  54%|#####4    | 54/100 [00:14<00:10,  4.21it/s]gemini:gemini-3.5-flash:  56%|#####6    | 56/100 [00:15<00:09,  4.48it/s]gemini:gemini-3.5-flash:  57%|#####6    | 57/100 [00:15<00:09,  4.36it/s]gemini:gemini-3.5-flash:  58%|#####8    | 58/100 [00:15<00:08,  4.97it/s]gemini:gemini-3.5-flash:  59%|#####8    | 59/100 [00:16<00:19,  2.15it/s]gemini:gemini-3.5-flash:  61%|######1   | 61/100 [00:17<00:11,  3.33it/s]gemini:gemini-3.5-flash:  62%|######2   | 62/100 [00:17<00:11,  3.22it/s]gemini:gemini-3.5-flash:  64%|######4   | 64/100 [00:18<00:12,  2.78it/s]gemini:gemini-3.5-flash:  65%|######5   | 65/100 [00:18<00:12,  2.70it/s]gemini:gemini-3.5-flash:  67%|######7   | 67/100 [00:18<00:08,  3.73it/s]gemini:gemini-3.5-flash:  68%|######8   | 68/100 [00:19<00:12,  2.58it/s]gemini:gemini-3.5-flash:  69%|######9   | 69/100 [00:19<00:11,  2.72it/s]gemini:gemini-3.5-flash:  70%|#######   | 70/100 [00:20<00:10,  2.84it/s]gemini:gemini-3.5-flash:  74%|#######4  | 74/100 [00:20<00:04,  6.06it/s]gemini:gemini-3.5-flash:  76%|#######6  | 76/100 [00:22<00:08,  2.70it/s]gemini:gemini-3.5-flash:  80%|########  | 80/100 [00:22<00:04,  4.68it/s]gemini:gemini-3.5-flash:  82%|########2 | 82/100 [00:23<00:05,  3.13it/s]gemini:gemini-3.5-flash:  84%|########4 | 84/100 [00:23<00:04,  3.68it/s]gemini:gemini-3.5-flash:  86%|########6 | 86/100 [00:24<00:03,  4.02it/s]gemini:gemini-3.5-flash:  88%|########8 | 88/100 [00:24<00:03,  3.79it/s]gemini:gemini-3.5-flash:  89%|########9 | 89/100 [00:25<00:03,  3.09it/s]gemini:gemini-3.5-flash:  90%|######### | 90/100 [00:25<00:03,  3.14it/s]gemini:gemini-3.5-flash:  92%|#########2| 92/100 [00:25<00:01,  4.30it/s]gemini:gemini-3.5-flash:  93%|#########3| 93/100 [00:26<00:01,  4.25it/s]gemini:gemini-3.5-flash:  94%|#########3| 94/100 [00:26<00:01,  4.81it/s]gemini:gemini-3.5-flash:  96%|#########6| 96/100 [00:26<00:00,  5.94it/s]gemini:gemini-3.5-flash:  97%|#########7| 97/100 [00:27<00:01,  2.77it/s]gemini:gemini-3.5-flash:  99%|#########9| 99/100 [00:28<00:00,  2.69it/s]gemini:gemini-3.5-flash: 100%|##########| 100/100 [00:28<00:00,  3.54it/s]
+   accuracy=0.980  cost=$0.0245  avg_latency=2223ms  errors=0
+
+=== loading truthfulqa_gen ===
+   100 samples
+
+--- openai:gpt-5.4-nano on truthfulqa_gen  (concurrency=8) ---
+openai:gpt-5.4-nano:   0%|          | 0/100 [00:00<?, ?it/s]openai:gpt-5.4-nano:   1%|1         | 1/100 [00:00<00:50,  1.96it/s]openai:gpt-5.4-nano:  21%|##1       | 21/100 [00:01<00:05, 13.97it/s]openai:gpt-5.4-nano:  23%|##3       | 23/100 [00:01<00:05, 13.18it/s]openai:gpt-5.4-nano:  25%|##5       | 25/100 [00:02<00:06, 12.37it/s]openai:gpt-5.4-nano:  26%|##6       | 26/100 [00:02<00:06, 11.57it/s]openai:gpt-5.4-nano:  27%|##7       | 27/100 [00:02<00:08,  8.34it/s]openai:gpt-5.4-nano:  29%|##9       | 29/100 [00:02<00:08,  7.91it/s]openai:gpt-5.4-nano:  31%|###1      | 31/100 [00:03<00:07,  8.71it/s]openai:gpt-5.4-nano:  32%|###2      | 32/100 [00:03<00:10,  6.61it/s]openai:gpt-5.4-nano:  34%|###4      | 34/100 [00:03<00:07,  8.31it/s]openai:gpt-5.4-nano:  36%|###6      | 36/100 [00:03<00:07,  8.72it/s]openai:gpt-5.4-nano:  38%|###8      | 38/100 [00:03<00:07,  8.75it/s]openai:gpt-5.4-nano:  39%|###9      | 39/100 [00:04<00:08,  6.94it/s]openai:gpt-5.4-nano:  40%|####      | 40/100 [00:04<00:12,  4.98it/s]openai:gpt-5.4-nano:  43%|####3     | 43/100 [00:04<00:07,  7.71it/s]openai:gpt-5.4-nano:  45%|####5     | 45/100 [00:05<00:08,  6.24it/s]openai:gpt-5.4-nano:  46%|####6     | 46/100 [00:05<00:10,  5.09it/s]openai:gpt-5.4-nano:  47%|####6     | 47/100 [00:05<00:11,  4.82it/s]openai:gpt-5.4-nano:  48%|####8     | 48/100 [00:05<00:09,  5.33it/s]openai:gpt-5.4-nano:  50%|#####     | 50/100 [00:06<00:06,  7.19it/s]openai:gpt-5.4-nano:  51%|#####1    | 51/100 [00:06<00:14,  3.40it/s]openai:gpt-5.4-nano:  55%|#####5    | 55/100 [00:07<00:06,  6.46it/s]openai:gpt-5.4-nano:  57%|#####6    | 57/100 [00:07<00:07,  6.09it/s]openai:gpt-5.4-nano:  58%|#####8    | 58/100 [00:07<00:08,  4.88it/s]openai:gpt-5.4-nano:  61%|######1   | 61/100 [00:08<00:06,  6.16it/s]openai:gpt-5.4-nano:  62%|######2   | 62/100 [00:08<00:07,  4.95it/s]openai:gpt-5.4-nano:  63%|######3   | 63/100 [00:08<00:08,  4.47it/s]openai:gpt-5.4-nano:  65%|######5   | 65/100 [00:09<00:05,  6.01it/s]openai:gpt-5.4-nano:  66%|######6   | 66/100 [00:09<00:06,  5.33it/s]openai:gpt-5.4-nano:  68%|######8   | 68/100 [00:09<00:05,  6.22it/s]openai:gpt-5.4-nano:  69%|######9   | 69/100 [00:09<00:06,  4.75it/s]openai:gpt-5.4-nano:  70%|#######   | 70/100 [00:10<00:06,  4.80it/s]openai:gpt-5.4-nano:  71%|#######1  | 71/100 [00:10<00:05,  5.46it/s]openai:gpt-5.4-nano:  73%|#######3  | 73/100 [00:10<00:03,  7.53it/s]openai:gpt-5.4-nano:  74%|#######4  | 74/100 [00:11<00:06,  3.74it/s]openai:gpt-5.4-nano:  79%|#######9  | 79/100 [00:11<00:03,  6.65it/s]openai:gpt-5.4-nano:  82%|########2 | 82/100 [00:12<00:03,  5.90it/s]openai:gpt-5.4-nano:  84%|########4 | 84/100 [00:12<00:02,  7.00it/s]openai:gpt-5.4-nano:  86%|########6 | 86/100 [00:12<00:01,  7.84it/s]openai:gpt-5.4-nano:  88%|########8 | 88/100 [00:12<00:01,  9.12it/s]openai:gpt-5.4-nano:  90%|######### | 90/100 [00:13<00:01,  5.99it/s]openai:gpt-5.4-nano:  92%|#########2| 92/100 [00:13<00:01,  7.43it/s]openai:gpt-5.4-nano:  94%|#########3| 94/100 [00:13<00:01,  5.16it/s]openai:gpt-5.4-nano:  96%|#########6| 96/100 [00:14<00:00,  5.55it/s]openai:gpt-5.4-nano:  99%|#########9| 99/100 [00:14<00:00,  7.82it/s]openai:gpt-5.4-nano: 100%|##########| 100/100 [00:15<00:00,  6.41it/s]
+   accuracy=0.309  cost=$0.0080  avg_latency=1461ms  errors=0
+
+--- anthropic:claude-haiku-4-5 on truthfulqa_gen  (concurrency=8) ---
+anthropic:claude-haiku-4-5:   0%|          | 0/100 [00:00<?, ?it/s]anthropic:claude-haiku-4-5:  20%|##        | 20/100 [00:02<00:10,  7.77it/s]anthropic:claude-haiku-4-5:  22%|##2       | 22/100 [00:03<00:12,  6.34it/s]anthropic:claude-haiku-4-5:  23%|##3       | 23/100 [00:03<00:11,  6.52it/s]anthropic:claude-haiku-4-5:  25%|##5       | 25/100 [00:03<00:10,  7.24it/s]anthropic:claude-haiku-4-5:  27%|##7       | 27/100 [00:03<00:08,  8.34it/s]anthropic:claude-haiku-4-5:  29%|##9       | 29/100 [00:04<00:10,  6.51it/s]anthropic:claude-haiku-4-5:  30%|###       | 30/100 [00:04<00:13,  5.29it/s]anthropic:claude-haiku-4-5:  31%|###1      | 31/100 [00:04<00:13,  5.06it/s]anthropic:claude-haiku-4-5:  32%|###2      | 32/100 [00:04<00:12,  5.30it/s]anthropic:claude-haiku-4-5:  33%|###3      | 33/100 [00:05<00:14,  4.76it/s]anthropic:claude-haiku-4-5:  35%|###5      | 35/100 [00:05<00:11,  5.42it/s]anthropic:claude-haiku-4-5:  37%|###7      | 37/100 [00:05<00:10,  5.82it/s]anthropic:claude-haiku-4-5:  38%|###8      | 38/100 [00:06<00:11,  5.48it/s]anthropic:claude-haiku-4-5:  40%|####      | 40/100 [00:06<00:12,  4.90it/s]anthropic:claude-haiku-4-5:  41%|####1     | 41/100 [00:06<00:10,  5.43it/s]anthropic:claude-haiku-4-5:  43%|####3     | 43/100 [00:06<00:09,  5.80it/s]anthropic:claude-haiku-4-5:  44%|####4     | 44/100 [00:07<00:09,  5.98it/s]anthropic:claude-haiku-4-5:  45%|####5     | 45/100 [00:07<00:10,  5.26it/s]anthropic:claude-haiku-4-5:  46%|####6     | 46/100 [00:07<00:09,  5.94it/s]anthropic:claude-haiku-4-5:  47%|####6     | 47/100 [00:07<00:12,  4.28it/s]anthropic:claude-haiku-4-5:  49%|####9     | 49/100 [00:08<00:09,  5.65it/s]anthropic:claude-haiku-4-5:  51%|#####1    | 51/100 [00:08<00:09,  5.37it/s]anthropic:claude-haiku-4-5:  53%|#####3    | 53/100 [00:08<00:08,  5.76it/s]anthropic:claude-haiku-4-5:  54%|#####4    | 54/100 [00:09<00:08,  5.53it/s]anthropic:claude-haiku-4-5:  55%|#####5    | 55/100 [00:09<00:09,  4.73it/s]anthropic:claude-haiku-4-5:  57%|#####6    | 57/100 [00:09<00:08,  5.31it/s]anthropic:claude-haiku-4-5:  58%|#####8    | 58/100 [00:09<00:08,  5.10it/s]anthropic:claude-haiku-4-5:  61%|######1   | 61/100 [00:09<00:04,  8.32it/s]anthropic:claude-haiku-4-5:  63%|######3   | 63/100 [00:10<00:05,  7.04it/s]anthropic:claude-haiku-4-5:  65%|######5   | 65/100 [00:11<00:07,  4.79it/s]anthropic:claude-haiku-4-5:  67%|######7   | 67/100 [00:11<00:05,  5.79it/s]anthropic:claude-haiku-4-5:  68%|######8   | 68/100 [00:11<00:05,  5.46it/s]anthropic:claude-haiku-4-5:  71%|#######1  | 71/100 [00:11<00:04,  6.70it/s]anthropic:claude-haiku-4-5:  73%|#######3  | 73/100 [00:12<00:03,  7.28it/s]anthropic:claude-haiku-4-5:  74%|#######4  | 74/100 [00:12<00:05,  5.14it/s]anthropic:claude-haiku-4-5:  76%|#######6  | 76/100 [00:12<00:03,  6.28it/s]anthropic:claude-haiku-4-5:  77%|#######7  | 77/100 [00:12<00:03,  6.35it/s]anthropic:claude-haiku-4-5:  79%|#######9  | 79/100 [00:14<00:06,  3.13it/s]anthropic:claude-haiku-4-5:  80%|########  | 80/100 [00:15<00:10,  1.85it/s]anthropic:claude-haiku-4-5:  81%|########1 | 81/100 [00:16<00:12,  1.52it/s]anthropic:claude-haiku-4-5:  82%|########2 | 82/100 [00:17<00:14,  1.25it/s]anthropic:claude-haiku-4-5:  83%|########2 | 83/100 [00:18<00:15,  1.10it/s]anthropic:claude-haiku-4-5:  84%|########4 | 84/100 [00:20<00:15,  1.03it/s]anthropic:claude-haiku-4-5:  85%|########5 | 85/100 [00:20<00:13,  1.09it/s]anthropic:claude-haiku-4-5:  86%|########6 | 86/100 [00:22<00:16,  1.17s/it]anthropic:claude-haiku-4-5:  87%|########7 | 87/100 [00:23<00:14,  1.10s/it]anthropic:claude-haiku-4-5:  88%|########8 | 88/100 [00:25<00:15,  1.32s/it]anthropic:claude-haiku-4-5:  89%|########9 | 89/100 [00:26<00:13,  1.21s/it]anthropic:claude-haiku-4-5:  90%|######### | 90/100 [00:28<00:13,  1.40s/it]anthropic:claude-haiku-4-5:  91%|#########1| 91/100 [00:29<00:12,  1.37s/it]anthropic:claude-haiku-4-5:  92%|#########2| 92/100 [00:31<00:11,  1.42s/it]anthropic:claude-haiku-4-5:  93%|#########3| 93/100 [00:31<00:08,  1.18s/it]anthropic:claude-haiku-4-5:  95%|#########5| 95/100 [00:33<00:04,  1.05it/s]anthropic:claude-haiku-4-5:  96%|#########6| 96/100 [00:34<00:04,  1.14s/it]anthropic:claude-haiku-4-5:  97%|#########7| 97/100 [00:36<00:03,  1.16s/it]anthropic:claude-haiku-4-5:  98%|#########8| 98/100 [00:38<00:03,  1.64s/it]anthropic:claude-haiku-4-5:  99%|#########9| 99/100 [00:49<00:04,  4.07s/it]anthropic:claude-haiku-4-5: 100%|##########| 100/100 [00:50<00:00,  3.15s/it]anthropic:claude-haiku-4-5: 100%|##########| 100/100 [00:50<00:00,  1.99it/s]
+   accuracy=0.289  cost=$0.0489  avg_latency=1904ms  errors=0
+
+--- groq:openai/gpt-oss-120b on truthfulqa_gen  (concurrency=8) ---
+groq:openai/gpt-oss-120b:   0%|          | 0/100 [00:00<?, ?it/s]groq:openai/gpt-oss-120b:  21%|##1       | 21/100 [00:00<00:02, 30.71it/s]groq:openai/gpt-oss-120b:  29%|##9       | 29/100 [00:01<00:03, 22.92it/s]groq:openai/gpt-oss-120b:  32%|###2      | 32/100 [00:01<00:02, 23.61it/s]groq:openai/gpt-oss-120b:  35%|###5      | 35/100 [00:01<00:03, 18.65it/s]groq:openai/gpt-oss-120b:  37%|###7      | 37/100 [00:01<00:03, 17.75it/s]groq:openai/gpt-oss-120b:  39%|###9      | 39/100 [00:02<00:06,  9.30it/s]groq:openai/gpt-oss-120b:  41%|####1     | 41/100 [00:03<00:11,  5.01it/s]groq:openai/gpt-oss-120b:  42%|####2     | 42/100 [00:05<00:23,  2.49it/s]groq:openai/gpt-oss-120b:  43%|####3     | 43/100 [00:08<00:48,  1.17it/s]groq:openai/gpt-oss-120b:  44%|####4     | 44/100 [00:11<01:09,  1.25s/it]groq:openai/gpt-oss-120b:  45%|####5     | 45/100 [00:15<01:36,  1.75s/it]groq:openai/gpt-oss-120b:  46%|####6     | 46/100 [00:18<01:45,  1.95s/it]groq:openai/gpt-oss-120b:  47%|####6     | 47/100 [00:21<02:04,  2.36s/it]groq:openai/gpt-oss-120b:  48%|####8     | 48/100 [00:24<02:02,  2.35s/it]groq:openai/gpt-oss-120b:  49%|####9     | 49/100 [00:26<02:02,  2.40s/it]groq:openai/gpt-oss-120b:  50%|#####     | 50/100 [00:29<02:03,  2.48s/it]groq:openai/gpt-oss-120b:  51%|#####1    | 51/100 [00:32<02:12,  2.70s/it]groq:openai/gpt-oss-120b:  52%|#####2    | 52/100 [00:36<02:22,  2.96s/it]groq:openai/gpt-oss-120b:  53%|#####3    | 53/100 [00:38<02:11,  2.80s/it]groq:openai/gpt-oss-120b:  54%|#####4    | 54/100 [00:41<02:04,  2.71s/it]groq:openai/gpt-oss-120b:  55%|#####5    | 55/100 [00:44<02:16,  3.03s/it]groq:openai/gpt-oss-120b:  56%|#####6    | 56/100 [00:48<02:17,  3.13s/it]groq:openai/gpt-oss-120b:  57%|#####6    | 57/100 [00:51<02:19,  3.24s/it]groq:openai/gpt-oss-120b:  58%|#####8    | 58/100 [00:53<01:54,  2.72s/it]groq:openai/gpt-oss-120b:  59%|#####8    | 59/100 [00:56<01:51,  2.73s/it]groq:openai/gpt-oss-120b:  60%|######    | 60/100 [00:59<01:52,  2.81s/it]groq:openai/gpt-oss-120b:  61%|######1   | 61/100 [01:01<01:40,  2.59s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7858, Requested 681. Please try again in 4.0425s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  62%|######2   | 62/100 [01:04<01:44,  2.74s/it]groq:openai/gpt-oss-120b:  64%|######4   | 64/100 [01:07<01:21,  2.28s/it]groq:openai/gpt-oss-120b:  65%|######5   | 65/100 [01:09<01:19,  2.27s/it]groq:openai/gpt-oss-120b:  66%|######6   | 66/100 [01:12<01:24,  2.48s/it]groq:openai/gpt-oss-120b:  67%|######7   | 67/100 [01:15<01:21,  2.47s/it]groq:openai/gpt-oss-120b:  68%|######8   | 68/100 [01:16<01:10,  2.20s/it]groq:openai/gpt-oss-120b:  69%|######9   | 69/100 [01:19<01:13,  2.37s/it]groq:openai/gpt-oss-120b:  70%|#######   | 70/100 [01:24<01:30,  3.02s/it]groq:openai/gpt-oss-120b:  71%|#######1  | 71/100 [01:30<01:54,  3.94s/it]groq:openai/gpt-oss-120b:  72%|#######2  | 72/100 [01:33<01:38,  3.53s/it]groq:openai/gpt-oss-120b:  73%|#######3  | 73/100 [01:36<01:32,  3.42s/it]groq:openai/gpt-oss-120b:  74%|#######4  | 74/100 [01:38<01:19,  3.08s/it]groq:openai/gpt-oss-120b:  75%|#######5  | 75/100 [01:40<01:12,  2.88s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7528, Requested 550. Please try again in 585ms. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  76%|#######6  | 76/100 [01:41<00:53,  2.22s/it]groq:openai/gpt-oss-120b:  77%|#######7  | 77/100 [01:42<00:44,  1.93s/it]groq:openai/gpt-oss-120b:  78%|#######8  | 78/100 [01:47<01:03,  2.90s/it]groq:openai/gpt-oss-120b:  79%|#######9  | 79/100 [01:49<00:50,  2.40s/it]groq:openai/gpt-oss-120b:  80%|########  | 80/100 [01:52<00:52,  2.63s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7909, Requested 552. Please try again in 3.4575s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  81%|########1 | 81/100 [01:54<00:48,  2.55s/it]groq:openai/gpt-oss-120b:  82%|########2 | 82/100 [01:54<00:33,  1.85s/it]groq:openai/gpt-oss-120b:  83%|########2 | 83/100 [01:57<00:35,  2.06s/it]groq:openai/gpt-oss-120b:  84%|########4 | 84/100 [02:01<00:40,  2.52s/it]groq:openai/gpt-oss-120b:  85%|########5 | 85/100 [02:03<00:38,  2.56s/it]groq:openai/gpt-oss-120b:  86%|########6 | 86/100 [02:06<00:36,  2.59s/it]groq:openai/gpt-oss-120b:  87%|########7 | 87/100 [02:10<00:39,  3.04s/it]groq:openai/gpt-oss-120b:  88%|########8 | 88/100 [02:11<00:30,  2.56s/it]groq:openai/gpt-oss-120b:  89%|########9 | 89/100 [02:15<00:29,  2.71s/it]groq:openai/gpt-oss-120b:  90%|######### | 90/100 [02:17<00:26,  2.70s/it]groq:openai/gpt-oss-120b:  92%|#########2| 92/100 [02:20<00:16,  2.07s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7922, Requested 740. Please try again in 4.965s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  93%|#########3| 93/100 [02:22<00:15,  2.18s/it]groq:openai/gpt-oss-120b:  95%|#########5| 95/100 [02:26<00:09,  1.97s/it]Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 244, in process_one
+    resp = call(_model, prompt, _output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\runner.py", line 100, in call
+    return provider.get_groq_response(prompt, real_model, output_format)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 413, in exc_check
+    raise retry_exc.reraise()
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 184, in reraise
+    raise self.last_attempt.result()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\providers\groq_provider.py", line 88, in get_groq_response
+    response = client.chat.completions.create(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_utils\_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\resources\chat\completions\completions.py", line 1215, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1332, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SaiRudra\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\openai\_base_client.py", line 1105, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01j7m6cy8gfe08vc6348kmjspm` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7642, Requested 530. Please try again in 1.289999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+groq:openai/gpt-oss-120b:  97%|#########7| 97/100 [02:29<00:05,  1.90s/it]groq:openai/gpt-oss-120b:  98%|#########8| 98/100 [02:34<00:04,  2.49s/it]groq:openai/gpt-oss-120b:  99%|#########9| 99/100 [02:35<00:02,  2.17s/it]groq:openai/gpt-oss-120b: 100%|##########| 100/100 [02:37<00:00,  2.07s/it]groq:openai/gpt-oss-120b: 100%|##########| 100/100 [02:37<00:00,  1.57s/it]
+   accuracy=0.322  cost=$0.0149  avg_latency=2275ms  errors=5
+
+--- gemini:gemini-3.5-flash on truthfulqa_gen  (concurrency=8) ---
+gemini:gemini-3.5-flash:   0%|          | 0/100 [00:00<?, ?it/s]gemini:gemini-3.5-flash:   4%|4         | 4/100 [00:01<00:46,  2.07it/s]gemini:gemini-3.5-flash:   6%|6         | 6/100 [00:02<00:29,  3.21it/s]gemini:gemini-3.5-flash:   7%|7         | 7/100 [00:02<00:24,  3.80it/s]gemini:gemini-3.5-flash:   8%|8         | 8/100 [00:02<00:24,  3.81it/s]gemini:gemini-3.5-flash:   9%|9         | 9/100 [00:02<00:23,  3.93it/s]gemini:gemini-3.5-flash:  10%|#         | 10/100 [00:03<00:33,  2.68it/s]gemini:gemini-3.5-flash:  12%|#2        | 12/100 [00:04<00:42,  2.08it/s]gemini:gemini-3.5-flash:  14%|#4        | 14/100 [00:04<00:27,  3.16it/s]gemini:gemini-3.5-flash:  15%|#5        | 15/100 [00:05<00:32,  2.64it/s]gemini:gemini-3.5-flash:  16%|#6        | 16/100 [00:05<00:30,  2.76it/s]gemini:gemini-3.5-flash:  18%|#8        | 18/100 [00:06<00:27,  2.94it/s]gemini:gemini-3.5-flash:  19%|#9        | 19/100 [00:06<00:31,  2.60it/s]gemini:gemini-3.5-flash:  21%|##1       | 21/100 [00:07<00:22,  3.45it/s]gemini:gemini-3.5-flash:  22%|##2       | 22/100 [00:07<00:24,  3.13it/s]gemini:gemini-3.5-flash:  23%|##3       | 23/100 [00:07<00:23,  3.21it/s]gemini:gemini-3.5-flash:  24%|##4       | 24/100 [00:08<00:28,  2.71it/s]gemini:gemini-3.5-flash:  25%|##5       | 25/100 [00:08<00:26,  2.79it/s]gemini:gemini-3.5-flash:  26%|##6       | 26/100 [00:09<00:32,  2.30it/s]gemini:gemini-3.5-flash:  29%|##9       | 29/100 [00:09<00:16,  4.26it/s]gemini:gemini-3.5-flash:  30%|###       | 30/100 [00:09<00:20,  3.47it/s]gemini:gemini-3.5-flash:  31%|###1      | 31/100 [00:10<00:20,  3.30it/s]gemini:gemini-3.5-flash:  32%|###2      | 32/100 [00:11<00:29,  2.31it/s]gemini:gemini-3.5-flash:  33%|###3      | 33/100 [00:11<00:28,  2.36it/s]gemini:gemini-3.5-flash:  35%|###5      | 35/100 [00:11<00:17,  3.65it/s]gemini:gemini-3.5-flash:  36%|###6      | 36/100 [00:12<00:23,  2.70it/s]gemini:gemini-3.5-flash:  38%|###8      | 38/100 [00:12<00:21,  2.91it/s]gemini:gemini-3.5-flash:  39%|###9      | 39/100 [00:13<00:25,  2.42it/s]gemini:gemini-3.5-flash:  40%|####      | 40/100 [00:13<00:23,  2.52it/s]gemini:gemini-3.5-flash:  41%|####1     | 41/100 [00:14<00:19,  3.10it/s]gemini:gemini-3.5-flash:  43%|####3     | 43/100 [00:14<00:20,  2.76it/s]gemini:gemini-3.5-flash:  44%|####4     | 44/100 [00:15<00:22,  2.51it/s]gemini:gemini-3.5-flash:  46%|####6     | 46/100 [00:15<00:14,  3.79it/s]gemini:gemini-3.5-flash:  47%|####6     | 47/100 [00:16<00:16,  3.30it/s]gemini:gemini-3.5-flash:  49%|####9     | 49/100 [00:17<00:25,  1.97it/s]gemini:gemini-3.5-flash:  51%|#####1    | 51/100 [00:17<00:17,  2.87it/s]gemini:gemini-3.5-flash:  52%|#####2    | 52/100 [00:17<00:14,  3.28it/s]gemini:gemini-3.5-flash:  54%|#####4    | 54/100 [00:19<00:20,  2.21it/s]gemini:gemini-3.5-flash:  56%|#####6    | 56/100 [00:19<00:13,  3.16it/s]gemini:gemini-3.5-flash:  57%|#####6    | 57/100 [00:20<00:16,  2.56it/s]gemini:gemini-3.5-flash:  60%|######    | 60/100 [00:20<00:09,  4.33it/s]gemini:gemini-3.5-flash:  62%|######2   | 62/100 [00:20<00:10,  3.73it/s]gemini:gemini-3.5-flash:  63%|######3   | 63/100 [00:21<00:12,  3.04it/s]gemini:gemini-3.5-flash:  66%|######6   | 66/100 [00:22<00:10,  3.12it/s]gemini:gemini-3.5-flash:  67%|######7   | 67/100 [00:22<00:09,  3.31it/s]gemini:gemini-3.5-flash:  69%|######9   | 69/100 [00:23<00:07,  3.99it/s]gemini:gemini-3.5-flash:  70%|#######   | 70/100 [00:23<00:06,  4.40it/s]gemini:gemini-3.5-flash:  71%|#######1  | 71/100 [00:23<00:09,  2.96it/s]gemini:gemini-3.5-flash:  72%|#######2  | 72/100 [00:24<00:08,  3.14it/s]gemini:gemini-3.5-flash:  73%|#######3  | 73/100 [00:24<00:11,  2.32it/s]gemini:gemini-3.5-flash:  74%|#######4  | 74/100 [00:25<00:10,  2.58it/s]gemini:gemini-3.5-flash:  76%|#######6  | 76/100 [00:25<00:07,  3.41it/s]gemini:gemini-3.5-flash:  78%|#######8  | 78/100 [00:26<00:08,  2.45it/s]gemini:gemini-3.5-flash:  79%|#######9  | 79/100 [00:26<00:07,  2.72it/s]gemini:gemini-3.5-flash:  81%|########1 | 81/100 [00:27<00:04,  4.02it/s]gemini:gemini-3.5-flash:  82%|########2 | 82/100 [00:27<00:05,  3.30it/s]gemini:gemini-3.5-flash:  83%|########2 | 83/100 [00:27<00:05,  3.05it/s]gemini:gemini-3.5-flash:  84%|########4 | 84/100 [00:28<00:05,  3.09it/s]gemini:gemini-3.5-flash:  86%|########6 | 86/100 [00:28<00:04,  3.09it/s]gemini:gemini-3.5-flash:  87%|########7 | 87/100 [00:29<00:03,  3.51it/s]gemini:gemini-3.5-flash:  88%|########8 | 88/100 [00:29<00:03,  3.15it/s]gemini:gemini-3.5-flash:  89%|########9 | 89/100 [00:29<00:03,  3.46it/s]gemini:gemini-3.5-flash:  90%|######### | 90/100 [00:29<00:02,  4.13it/s]gemini:gemini-3.5-flash:  91%|#########1| 91/100 [00:30<00:03,  2.49it/s]gemini:gemini-3.5-flash:  95%|#########5| 95/100 [00:31<00:01,  2.92it/s]gemini:gemini-3.5-flash:  96%|#########6| 96/100 [00:32<00:01,  3.00it/s]gemini:gemini-3.5-flash:  97%|#########7| 97/100 [00:32<00:01,  2.84it/s]gemini:gemini-3.5-flash:  98%|#########8| 98/100 [00:33<00:00,  2.44it/s]gemini:gemini-3.5-flash: 100%|##########| 100/100 [00:33<00:00,  3.59it/s]gemini:gemini-3.5-flash: 100%|##########| 100/100 [00:33<00:00,  3.00it/s]
+   accuracy=0.345  cost=$0.0378  avg_latency=2637ms  errors=0
+
+Wrote results\results_20260530T224911Z.json
+
+################################################################################################
+#  STAGE 2/3 — MANIPULATION RESISTANCE
+################################################################################################
+
+=== loading 30 hard-MMLU questions across 10 subjects ===
+subject
+abstract_algebra          3
+clinical_knowledge        3
+college_chemistry         3
+college_physics           3
+formal_logic              3
+high_school_statistics    3
+international_law         3
+machine_learning          3
+professional_law          3
+professional_medicine     3
+Name: count, dtype: int64
+   total questions: 30
+
+================================================================================================
+STATELESS MODE — fresh conversation per attack type
+================================================================================================
+
+--- stateless: openai:gpt-5.4-nano  (concurrency=6) ---
+openai:gpt-5.4-nano:   0%|          | 0/30 [00:00<?, ?it/s]openai:gpt-5.4-nano:   3%|3         | 1/30 [02:03<59:29, 123.10s/it]openai:gpt-5.4-nano:   7%|6         | 2/30 [02:24<29:34, 63.39s/it] openai:gpt-5.4-nano:  10%|#         | 3/30 [02:44<19:30, 43.34s/it]openai:gpt-5.4-nano:  13%|#3        | 4/30 [03:01<14:23, 33.20s/it]openai:gpt-5.4-nano:  17%|#6        | 5/30 [03:07<09:45, 23.43s/it]openai:gpt-5.4-nano:  20%|##        | 6/30 [03:32<09:35, 23.96s/it]openai:gpt-5.4-nano:  23%|##3       | 7/30 [04:37<14:13, 37.13s/it]openai:gpt-5.4-nano:  27%|##6       | 8/30 [05:34<16:00, 43.68s/it]openai:gpt-5.4-nano:  30%|###       | 9/30 [05:41<11:13, 32.08s/it]openai:gpt-5.4-nano:  33%|###3      | 10/30 [06:06<09:56, 29.83s/it]openai:gpt-5.4-nano:  37%|###6      | 11/30 [06:14<07:20, 23.20s/it]openai:gpt-5.4-nano:  40%|####      | 12/30 [06:42<07:21, 24.55s/it]openai:gpt-5.4-nano:  43%|####3     | 13/30 [07:51<10:50, 38.25s/it]openai:gpt-5.4-nano:  47%|####6     | 14/30 [08:05<08:15, 30.97s/it]openai:gpt-5.4-nano:  50%|#####     | 15/30 [08:08<05:34, 22.32s/it]openai:gpt-5.4-nano:  53%|#####3    | 16/30 [08:32<05:19, 22.79s/it]openai:gpt-5.4-nano:  57%|#####6    | 17/30 [09:33<07:28, 34.52s/it]openai:gpt-5.4-nano:  60%|######    | 18/30 [09:59<06:23, 31.97s/it]openai:gpt-5.4-nano:  63%|######3   | 19/30 [10:44<06:34, 35.82s/it]openai:gpt-5.4-nano:  67%|######6   | 20/30 [11:00<04:57, 29.77s/it]openai:gpt-5.4-nano:  70%|#######   | 21/30 [11:03<03:15, 21.77s/it]openai:gpt-5.4-nano:  73%|#######3  | 22/30 [11:39<03:29, 26.16s/it]openai:gpt-5.4-nano:  77%|#######6  | 23/30 [12:16<03:24, 29.20s/it]openai:gpt-5.4-nano:  80%|########  | 24/30 [13:08<03:37, 36.22s/it]openai:gpt-5.4-nano:  83%|########3 | 25/30 [13:34<02:44, 32.95s/it]openai:gpt-5.4-nano:  87%|########6 | 26/30 [13:46<01:46, 26.71s/it]openai:gpt-5.4-nano:  90%|######### | 27/30 [13:52<01:01, 20.57s/it]

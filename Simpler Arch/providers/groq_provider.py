@@ -11,6 +11,7 @@ import time
 from openai import OpenAI
 
 import pricing
+from providers.retry import retry_on_rate_limit
 from schemas import ProviderResponse
 
 # Authoritative prices live in config/pricing.yaml; this dict is the offline
@@ -57,6 +58,7 @@ def _make_strict(node):
     return node
 
 
+@retry_on_rate_limit
 def get_groq_response(prompt, model, output_format, max_tokens=None, temperature=0.0):
     """Call Groq with a Pydantic response_format. Returns dict with parsed answer + metadata.
 
@@ -109,6 +111,7 @@ def get_groq_response(prompt, model, output_format, max_tokens=None, temperature
     )
 
 
+@retry_on_rate_limit
 def get_groq_chat(messages, model, max_tokens=None, temperature=0.0):
     """Free-form chat (no Pydantic). Returns text + metadata.
 

@@ -30,6 +30,7 @@ from providers import (
     openai_provider,
     openrouter_provider,
 )
+from providers.retry import retry_on_rate_limit
 from schemas import ProviderResponse
 
 
@@ -91,6 +92,7 @@ class OpenAIConversation(Conversation):
         self.client = openai_provider._get_client()
         self.conv_id = None  # created lazily on first send
 
+    @retry_on_rate_limit
     def send(self, message, schema, max_tokens=None, temperature=0.0):
         start = time.monotonic()
         if self.conv_id is None:
@@ -141,6 +143,7 @@ class AnthropicConversation(Conversation):
         self.client = anthropic_provider._get_client()
         self.messages = []
 
+    @retry_on_rate_limit
     def send(self, message, schema, max_tokens=4096, temperature=0.0):
         # Anthropic API requires max_tokens — pass a sane default if caller didn't.
         start = time.monotonic()
@@ -196,6 +199,7 @@ class GeminiConversation(Conversation):
         # Gemini contents list: [{"role": "user"|"model", "parts": [{"text": ...}]}]
         self.contents = []
 
+    @retry_on_rate_limit
     def send(self, message, schema, max_tokens=None, temperature=0.0):
         start = time.monotonic()
         self.contents.append({"role": "user", "parts": [{"text": message}]})
@@ -261,6 +265,7 @@ class ChatCompletionsConversation(Conversation):
         self.pricing_fn = pricing_fn
         self.messages = []
 
+    @retry_on_rate_limit
     def send(self, message, schema, max_tokens=2048, temperature=0.0):
         # 2048 default caps OpenRouter credit reservation (charges on reservation, not usage).
         start = time.monotonic()

@@ -9,6 +9,7 @@ import time
 from openai import OpenAI
 
 import pricing
+from providers.retry import retry_on_rate_limit
 from schemas import ProviderResponse
 
 # Per-1M-token pricing (USD)
@@ -38,6 +39,7 @@ def estimate_cost(model, input_tokens, output_tokens):
     return (input_tokens * p["input"] + output_tokens * p["output"]) / 1_000_000
 
 
+@retry_on_rate_limit
 def get_openai_response(prompt, model, output_format, max_tokens=None, temperature=0.0):
     """Call OpenAI Responses API with a Pydantic text_format. Returns dict with parsed answer + metadata.
 
@@ -81,6 +83,7 @@ def get_openai_response(prompt, model, output_format, max_tokens=None, temperatu
     )
 
 
+@retry_on_rate_limit
 def get_openai_chat(messages, model, max_tokens=None, temperature=0.0):
     """Free-form chat (no Pydantic). Returns text + metadata.
 

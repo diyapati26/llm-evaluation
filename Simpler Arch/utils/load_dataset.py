@@ -35,8 +35,10 @@ def load_truthfulqa_data_sample(
     max_samples: int = 20,
     random_state: int = 42,
 ) -> pd.DataFrame:
-    # TruthfulQA only has a 'validation' split (817 questions total)
-    ds = load_dataset("truthful_qa", config, split="validation")
+    # TruthfulQA only has a 'validation' split (817 questions total).
+    # Namespaced id required by recent datasets/huggingface_hub (the legacy
+    # bare id "truthful_qa" raises HfUriError on those versions).
+    ds = load_dataset("truthfulqa/truthful_qa", config, split="validation")
     df = ds.to_pandas()
     return df.sample(n=max_samples, random_state=random_state).reset_index(drop=True)
 

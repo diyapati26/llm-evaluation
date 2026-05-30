@@ -8,6 +8,7 @@ import time
 import anthropic
 
 import pricing
+from providers.retry import retry_on_rate_limit
 from schemas import ProviderResponse
 
 # Authoritative prices live in config/pricing.yaml; this dict is the offline
@@ -36,6 +37,7 @@ def estimate_cost(model, input_tokens, output_tokens):
     return (input_tokens * p["input"] + output_tokens * p["output"]) / 1_000_000
 
 
+@retry_on_rate_limit
 def get_anthropic_response(prompt, model, output_format, max_tokens=4096, temperature=0.0):
     """Call Anthropic with a Pydantic output schema. Returns ProviderResponse.
 
@@ -71,6 +73,7 @@ def get_anthropic_response(prompt, model, output_format, max_tokens=4096, temper
     )
 
 
+@retry_on_rate_limit
 def get_anthropic_chat(messages, model, max_tokens=4096, temperature=0.0):
     """Free-form chat (no Pydantic). Anthropic API requires max_tokens (default 4096)."""
     client = _get_client()
