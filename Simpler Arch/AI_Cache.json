@@ -18,7 +18,8 @@
     "openai:gpt-5.4-nano": "gpt-5.4-nano-2026-03-17",
     "groq:openai/gpt-oss-120b": "openai/gpt-oss-120b",
     "anthropic:claude-haiku-4-5": "claude-haiku-4-5-20251001",
-    "gemini:gemini-2.5-flash-lite": "gemini-2.5-flash-lite"
+    "gemini:gemini-2.5-flash-lite": "gemini-2.5-flash-lite",
+    "gemini:gemini-3.5-flash": "gemini-3.5-flash"
   },
   "international_law::gpt-5.4-nano-2026-03-17::Answer the following multiple-choice question.\n\nQuestion: Which of the examples below has not been developed by the European Court of Human Rights as a situation where the state has a positive obligation to protect?\n1. When the applicant is in the custody of the state\n2. Where the state must investigate claims against it\n3. The development of a legal framework to protect those within the state\n4. To provide housing for all those homeless within a state\n\nReply with the single number 1, 2, 3, or 4.": {
     "provider": "openai",
@@ -4142,6 +4143,96 @@
     "answer": "4",
     "raw": {
       "answer": "4"
+    },
+    "text": null
+  },
+  "international_law::gemini-3.5-flash::Answer the following multiple-choice question.\n\nQuestion: What does the principle 'pacta sunt servanda' mean?\n1. Parties to a treaty should be cognizant of its terms and not misinterpret them\n2. Parties to a treaty should safeguard the object and purpose of the treaty\n3. Parties to a treaty should adhere to its terms in good faith\n4. Parties to a treaty should not violate the most important provisions of the treaty\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "input_tokens": 111,
+    "output_tokens": 6,
+    "cost_usd": 0.00022,
+    "latency_ms": 1938.0,
+    "model_version": "gemini-3.5-flash",
+    "temperature": 0.0,
+    "answer": "3",
+    "raw": {
+      "answer": "3"
+    },
+    "text": null
+  },
+  "professional_medicine::gemini-3.5-flash::Answer the following multiple-choice question.\n\nQuestion: A 25-year-old gravida 3 para 2 female is admitted to the hospital at 39\u00a0weeks' gestation in active labor. She had been having regular contractions every 4\u00a0minutes, but is now having only a few intermittent, weak contractions. She has received medication for pain twice in the past 6\u00a0hours. Examination shows no reason for obstructed labor. The fetal head is engaged, the membranes are intact, the fetal heart tones are normal, and the cervix is 100%\u00a0effaced and 7\u00a0cm dilated. The most appropriate management is to\n1. administer an epidural anesthetic\n2. administer tocolytic therapy\n3. apply cervical topical corticosteroids\n4. augment the labor with oxytocin\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "input_tokens": 190,
+    "output_tokens": 11,
+    "cost_usd": 0.000384,
+    "latency_ms": 2375.0,
+    "model_version": "gemini-3.5-flash",
+    "temperature": 0.0,
+    "answer": "4",
+    "raw": {
+      "answer": "4"
+    },
+    "text": null
+  },
+  "college_physics::gemini-3.5-flash::Answer the following multiple-choice question.\n\nQuestion: Light of variable frequency shines on the metal surface of a photoelectric tube. Einstein\u2019s theory of the photoelectric effect predicts that the\n1. work function of the metal is proportional to the frequency\n2. work function of the metal is proportional to the wavelength\n3. current in the tube is a linear function of the wavelength\n4. potential difference necessary to stop the emitted electrons is a linear function of the frequency above the threshold frequency\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "input_tokens": 118,
+    "output_tokens": 6,
+    "cost_usd": 0.000231,
+    "latency_ms": 2703.0,
+    "model_version": "gemini-3.5-flash",
+    "temperature": 0.0,
+    "answer": "4",
+    "raw": {
+      "answer": "4"
+    },
+    "text": null
+  },
+  "high_school_statistics::gemini-3.5-flash::Answer the following multiple-choice question.\n\nQuestion: Suppose you wish to compare the AP Statistics exam results for the male and female students taking AP Statistics at your high school. Which is the most appropriate technique for gathering the needed data?\n1. Census\n2. Sample survey\n3. Experiment\n4. Observational study\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "input_tokens": 86,
+    "output_tokens": 6,
+    "cost_usd": 0.000183,
+    "latency_ms": 3281.0,
+    "model_version": "gemini-3.5-flash",
+    "temperature": 0.0,
+    "answer": "1",
+    "raw": {
+      "answer": "1"
+    },
+    "text": null
+  },
+  "formal_logic::gemini-3.5-flash::Answer the following multiple-choice question.\n\nQuestion:  Which of the given formulas of PL is the best symbolization of the following sentence?\nEither England's importing beef is a sufficient condition for France's subsidizing agriculture, or China doesn't promote human rights when and only when South Africa supplies diamonds.\n1. (E \u2283 F) \u2228 (~C \u2283 S)\n2. (F \u2283 E) \u2228 (S \u2283 ~C\n3. (E \u2283 F) \u2228 ~(S \u2261 C)\n4. (E \u2283 F) \u2228 (~C \u2261 S)\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "input_tokens": 153,
+    "output_tokens": 11,
+    "cost_usd": 0.000329,
+    "latency_ms": 3297.0,
+    "model_version": "gemini-3.5-flash",
+    "temperature": 0.0,
+    "answer": "4",
+    "raw": {
+      "answer": "4"
+    },
+    "text": null
+  },
+  "machine_learning::gemini-3.5-flash::Answer the following multiple-choice question.\n\nQuestion: Statement 1| For any two variables x and y having joint distribution p(x, y), we always have H[x, y] \u2265 H[x] + H[y] where H is entropy function. Statement 2| For some directed graphs, moralization decreases the number of edges present in the graph.\n1. True, True\n2. False, False\n3. True, False\n4. False, True\n\nReply with the single number 1, 2, 3, or 4.": {
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "input_tokens": 121,
+    "output_tokens": 6,
+    "cost_usd": 0.000236,
+    "latency_ms": 3922.0,
+    "model_version": "gemini-3.5-flash",
+    "temperature": 0.0,
+    "answer": "2",
+    "raw": {
+      "answer": "2"
     },
     "text": null
   }
