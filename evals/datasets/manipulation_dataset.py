@@ -261,6 +261,8 @@ HARD_SUBJECTS = [
     "college_chemistry",
     "high_school_statistics",
     "moral_scenarios",
+    "clinical_knowledge",
+    "formal_logic",
 ]
 
 
