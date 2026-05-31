@@ -1,0 +1,36 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Models: openai:gpt-5.4-nano, anthropic:claude-haiku-4-5, gemini:gemini-3.5-flash
+Results dir: results
+Skipping: benchmark
+
+################################################################################################
+#  STAGE 2/3 — MANIPULATION RESISTANCE
+################################################################################################
+
+=== loading 10 hard-MMLU questions across 10 subjects ===
+subject
+abstract_algebra          1
+clinical_knowledge        1
+college_chemistry         1
+college_physics           1
+formal_logic              1
+high_school_statistics    1
+international_law         1
+machine_learning          1
+professional_law          1
+professional_medicine     1
+Name: count, dtype: int64
+   total questions: 10
+
+================================================================================================
+STATELESS MODE — fresh conversation per attack type
+================================================================================================
+
+--- stateless: openai:gpt-5.4-nano  (concurrency=6) ---
+openai:gpt-5.4-nano:   0%|          | 0/10 [00:00<?, ?it/s]openai:gpt-5.4-nano:  10%|█         | 1/10 [02:14<20:07, 134.13s/it]openai:gpt-5.4-nano:  20%|██        | 2/10 [02:24<08:11, 61.40s/it] openai:gpt-5.4-nano:  30%|███       | 3/10 [02:31<04:16, 36.62s/it]openai:gpt-5.4-nano:  40%|████      | 4/10 [03:12<03:48, 38.08s/it]openai:gpt-5.4-nano:  50%|█████     | 5/10 [03:25<02:25, 29.08s/it]openai:gpt-5.4-nano:  60%|██████    | 6/10 [04:19<02:30, 37.51s/it]openai:gpt-5.4-nano:  70%|███████   | 7/10 [04:52<01:48, 36.06s/it]openai:gpt-5.4-nano:  80%|████████  | 8/10 [05:33<01:15, 37.70s/it]openai:gpt-5.4-nano:  90%|█████████ | 9/10 [05:39<00:27, 27.96s/it]openai:gpt-5.4-nano: 100%|██████████| 10/10 [06:15<00:00, 30.38s/it]openai:gpt-5.4-nano: 100%|██████████| 10/10 [06:15<00:00, 37.57s/it]
+
+--- stateless: anthropic:claude-haiku-4-5  (concurrency=6) ---
+anthropic:claude-haiku-4-5:   0%|          | 0/10 [00:00<?, ?it/s]anthropic:claude-haiku-4-5:  10%|█         | 1/10 [02:48<25:19, 168.89s/it]anthropic:claude-haiku-4-5:  20%|██        | 2/10 [03:09<10:52, 81.58s/it] anthropic:claude-haiku-4-5:  30%|███       | 3/10 [03:13<05:22, 46.05s/it]anthropic:claude-haiku-4-5:  40%|████      | 4/10 [03:19<03:01, 30.25s/it]anthropic:claude-haiku-4-5:  50%|█████     | 5/10 [03:31<01:58, 23.66s/it]anthropic:claude-haiku-4-5:  60%|██████    | 6/10 [03:57<01:37, 24.44s/it]anthropic:claude-haiku-4-5:  70%|███████   | 7/10 [05:43<02:33, 51.17s/it]anthropic:claude-haiku-4-5:  80%|████████  | 8/10 [06:05<01:24, 42.07s/it]anthropic:claude-haiku-4-5:  90%|█████████ | 9/10 [06:51<00:43, 43.27s/it]anthropic:claude-haiku-4-5: 100%|██████████| 10/10 [06:54<00:00, 30.86s/it]anthropic:claude-haiku-4-5: 100%|██████████| 10/10 [06:54<00:00, 41.49s/it]
+
+--- stateless: gemini:gemini-3.5-flash  (concurrency=6) ---
+gemini:gemini-3.5-flash:   0%|          | 0/10 [00:00<?, ?it/s]gemini:gemini-3.5-flash:  10%|█         | 1/10 [04:33<40:58, 273.16s/it]gemini:gemini-3.5-flash:  20%|██        | 2/10 [05:50<21:02, 157.85s/it]gemini:gemini-3.5-flash:  30%|███       | 3/10 [06:14<11:17, 96.83s/it] gemini:gemini-3.5-flash:  40%|████      | 4/10 [06:24<06:14, 62.48s/it]gemini:gemini-3.5-flash:  50%|█████     | 5/10 [07:01<04:26, 53.32s/it]gemini:gemini-3.5-flash:  60%|██████    | 6/10 [08:18<04:06, 61.51s/it]gemini:gemini-3.5-flash:  70%|███████   | 7/10 [12:31<06:11, 123.92s/it]gemini:gemini-3.5-flash:  80%|████████  | 8/10 [12:48<02:59, 89.82s/it] gemini:gemini-3.5-flash:  90%|█████████ | 9/10 [12:52<01:03, 63.16s/it]

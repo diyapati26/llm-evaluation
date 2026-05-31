@@ -13,7 +13,14 @@ Usage:
     python main.py --mode stateful          # manipulation mode override
 """
 import argparse
+import sys
 import traceback
+
+# Force UTF-8 stdout/stderr so Unicode in the reports (−, █, ✓, …) doesn't crash
+# with a cp1252 UnicodeEncodeError when output is redirected to a file on Windows.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8")
 
 from dotenv import load_dotenv
 
