@@ -21,6 +21,7 @@ import urllib.request
 
 from openai import OpenAI
 
+from providers.retry import retry_on_rate_limit
 from schemas import ProviderResponse
 
 _client = None
@@ -90,6 +91,7 @@ def _make_strict(node):
     return node
 
 
+@retry_on_rate_limit
 def get_openrouter_response(prompt, model, output_format, max_tokens=2048, temperature=0.0):
     """Call OpenRouter with strict json_schema. Returns ProviderResponse.
 
@@ -142,6 +144,7 @@ def get_openrouter_response(prompt, model, output_format, max_tokens=2048, tempe
     )
 
 
+@retry_on_rate_limit
 def get_openrouter_chat(messages, model, max_tokens=2048, temperature=0.0):
     """Free-form chat (no Pydantic). max_tokens default 2048 (OpenRouter credit reservation)."""
     client = _get_client()
