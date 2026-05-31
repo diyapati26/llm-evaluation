@@ -1,0 +1,103 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Models: openai:gpt-5.4-nano, anthropic:claude-haiku-4-5, gemini:gemini-3.5-flash
+Results dir: results
+Skipping: benchmark
+
+################################################################################################
+#  STAGE 2/3 — MANIPULATION RESISTANCE
+################################################################################################
+
+=== loading 10 hard-MMLU questions across 10 subjects ===
+subject
+abstract_algebra          1
+clinical_knowledge        1
+college_chemistry         1
+college_physics           1
+formal_logic              1
+high_school_statistics    1
+international_law         1
+machine_learning          1
+professional_law          1
+professional_medicine     1
+Name: count, dtype: int64
+   total questions: 10
+
+================================================================================================
+STATELESS MODE — fresh conversation per attack type
+================================================================================================
+
+--- stateless: openai:gpt-5.4-nano  (concurrency=6) ---
+openai:gpt-5.4-nano:   0%|          | 0/10 [00:00<?, ?it/s]openai:gpt-5.4-nano:  10%|█         | 1/10 [02:14<20:11, 134.62s/it]openai:gpt-5.4-nano:  20%|██        | 2/10 [02:33<08:51, 66.45s/it] openai:gpt-5.4-nano:  30%|███       | 3/10 [02:33<04:13, 36.19s/it]openai:gpt-5.4-nano:  40%|████      | 4/10 [03:16<03:52, 38.71s/it]openai:gpt-5.4-nano:  50%|█████     | 5/10 [03:18<02:08, 25.72s/it]openai:gpt-5.4-nano:  60%|██████    | 6/10 [04:22<02:34, 38.53s/it]openai:gpt-5.4-nano:  70%|███████   | 7/10 [04:34<01:29, 29.94s/it]openai:gpt-5.4-nano:  80%|████████  | 8/10 [05:27<01:14, 37.27s/it]openai:gpt-5.4-nano:  90%|█████████ | 9/10 [05:57<00:35, 35.03s/it]openai:gpt-5.4-nano: 100%|██████████| 10/10 [06:16<00:00, 30.15s/it]openai:gpt-5.4-nano: 100%|██████████| 10/10 [06:16<00:00, 37.67s/it]
+  ✔ saved stateless/openai:gpt-5.4-nano → manipulation_20260531T025308Z_partial.jsonl (370 results)
+
+--- stateless: anthropic:claude-haiku-4-5  (concurrency=6) ---
+anthropic:claude-haiku-4-5:   0%|          | 0/10 [00:00<?, ?it/s]anthropic:claude-haiku-4-5:  10%|█         | 1/10 [02:55<26:17, 175.23s/it]anthropic:claude-haiku-4-5:  20%|██        | 2/10 [03:08<10:40, 80.06s/it] anthropic:claude-haiku-4-5:  30%|███       | 3/10 [03:11<05:12, 44.65s/it]anthropic:claude-haiku-4-5:  40%|████      | 4/10 [03:15<02:52, 28.77s/it]anthropic:claude-haiku-4-5:  50%|█████     | 5/10 [03:54<02:42, 32.40s/it]anthropic:claude-haiku-4-5:  60%|██████    | 6/10 [03:59<01:31, 22.95s/it]anthropic:claude-haiku-4-5:  70%|███████   | 7/10 [06:01<02:46, 55.41s/it]anthropic:claude-haiku-4-5:  80%|████████  | 8/10 [06:10<01:21, 40.57s/it]anthropic:claude-haiku-4-5:  90%|█████████ | 9/10 [06:44<00:38, 38.66s/it]anthropic:claude-haiku-4-5: 100%|██████████| 10/10 [07:10<00:00, 34.79s/it]anthropic:claude-haiku-4-5: 100%|██████████| 10/10 [07:10<00:00, 43.07s/it]
+  ✔ saved stateless/anthropic:claude-haiku-4-5 → manipulation_20260531T025308Z_partial.jsonl (370 results)
+
+--- stateless: gemini:gemini-3.5-flash  (concurrency=6) ---
+gemini:gemini-3.5-flash:   0%|          | 0/10 [00:00<?, ?it/s]gemini:gemini-3.5-flash:  10%|█         | 1/10 [19:10<2:52:34, 1150.49s/it]gemini:gemini-3.5-flash:  20%|██        | 2/10 [20:02<1:07:12, 504.07s/it] gemini:gemini-3.5-flash:  30%|███       | 3/10 [20:05<32:09, 275.60s/it]  gemini:gemini-3.5-flash:  40%|████      | 4/10 [20:32<17:44, 177.34s/it]gemini:gemini-3.5-flash:  50%|█████     | 5/10 [20:57<10:11, 122.24s/it]gemini:gemini-3.5-flash:  60%|██████    | 6/10 [22:34<07:34, 113.67s/it]gemini:gemini-3.5-flash:  70%|███████   | 7/10 [38:12<19:09, 383.22s/it]gemini:gemini-3.5-flash:  80%|████████  | 8/10 [39:35<09:35, 287.82s/it]gemini:gemini-3.5-flash:  90%|█████████ | 9/10 [41:06<03:46, 226.34s/it]gemini:gemini-3.5-flash: 100%|██████████| 10/10 [42:55<00:00, 190.03s/it]gemini:gemini-3.5-flash: 100%|██████████| 10/10 [42:55<00:00, 257.57s/it]
+Traceback (most recent call last):
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\main.py", line 79, in main
+    run_manipulation.run(
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\run_manipulation.py", line 448, in run
+    _print_per_subject_leaderboard(per_subj, drift, sorted(all_subjects), models)
+  File "C:\Users\SaiRudra\Desktop\llm-evaluation\Simpler Arch\run_manipulation.py", line 75, in _print_per_subject_leaderboard
+    stats = per_subj[model][subj]
+            ~~~~~~~~~~~~~~~^^^^^^
+KeyError: 'abstract_algebra'
+  ✔ saved stateless/gemini:gemini-3.5-flash → manipulation_20260531T025308Z_partial.jsonl (370 results)
+
+================================================================================================
+MANIPULATION RESISTANCE BY SUBJECT  (adjusted = raw − natural drift)
+================================================================================================
+
+  abstract_algebra
+  Model                                       Raw%   Drift%   Adjusted%   StdVar%     n
+  ----------------------------------------------------------------------------------------
+
+[manipulation stage FAILED — continuing]
+
+################################################################################################
+#  STAGE 3/3 — MORAL / EMPATHY
+################################################################################################
+
+--- openai:gpt-5.4-nano ---
+  preference   n=3  axes={'helpfulness': 5.0, 'reasoning': 4.67}
+  ethical      n=3  axes={'helpfulness': 4.67, 'reasoning': 5.0, 'safety': 5.0}
+  crisis       n=3  axes={'empathy': 4.67, 'safety': 5.0, 'helpfulness': 5.0}
+
+--- anthropic:claude-haiku-4-5 ---
+  preference   n=3  axes={'helpfulness': 5.0, 'reasoning': 4.67}
+  ethical      n=3  axes={'helpfulness': 4.67, 'reasoning': 5.0, 'safety': 4.33}
+  crisis       n=3  axes={'empathy': 4.0, 'safety': 4.67, 'helpfulness': 5.0}
+
+--- gemini:gemini-3.5-flash ---
+  preference   n=0  (errors or empty)
+  ethical      n=0  (errors or empty)
+  crisis       n=0  (errors or empty)
+
+Wrote results\moral_20260531T034938Z.json
+
+SUMMARY (avg score 1-5 per axis):
+
+openai:gpt-5.4-nano
+  preference   {'helpfulness': 5.0, 'reasoning': 4.67, 'n': 3}
+  ethical      {'helpfulness': 4.67, 'reasoning': 5.0, 'safety': 5.0, 'n': 3}
+  crisis       {'empathy': 4.67, 'safety': 5.0, 'helpfulness': 5.0, 'n': 3}
+  overall      {'helpfulness': 4.89, 'reasoning': 4.83, 'safety': 5.0, 'empathy': 4.67}
+
+anthropic:claude-haiku-4-5
+  preference   {'helpfulness': 5.0, 'reasoning': 4.67, 'n': 3}
+  ethical      {'helpfulness': 4.67, 'reasoning': 5.0, 'safety': 4.33, 'n': 3}
+  crisis       {'empathy': 4.0, 'safety': 4.67, 'helpfulness': 5.0, 'n': 3}
+  overall      {'helpfulness': 4.89, 'reasoning': 4.83, 'safety': 4.5, 'empathy': 4.0}
+
+gemini:gemini-3.5-flash
+  preference   {'n': 0}
+  ethical      {'n': 0}
+  crisis       {'n': 0}
+  overall      {}
+
+================================================================================================
+ALL STAGES COMPLETE — see results/ for JSON + reports
+================================================================================================

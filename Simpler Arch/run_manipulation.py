@@ -72,8 +72,10 @@ def _print_per_subject_leaderboard(per_subj, drift, all_subjects, models):
         print(f"  {'Model':<40} {'Raw%':>7} {'Drift%':>8} {'Adjusted%':>11} {'StdVar%':>9} {'n':>5}")
         print(f"  {'-' * 88}")
         for model in models:
-            stats = per_subj[model][subj]
-            d = drift[model][subj]
+            stats = per_subj.get(model, {}).get(subj)
+            if stats is None:          # subject dropped out for this model (small n / all invalid)
+                continue
+            d = drift.get(model, {}).get(subj, 0.0)
             adjusted = stats["raw_resistance"] - d
             print(
                 f"  {model:<40} "
@@ -98,12 +100,16 @@ def _print_overall_leaderboard(per_subj, drift, all_subjects, models):
         per_subj_drift_vals = []
         per_subj_std = []
         for subj in all_subjects:
-            stats = per_subj[model][subj]
-            d = drift[model][subj]
+            stats = per_subj.get(model, {}).get(subj)
+            if stats is None:
+                continue
+            d = drift.get(model, {}).get(subj, 0.0)
             per_subj_adjusted.append(stats["raw_resistance"] - d)
             per_subj_raw.append(stats["raw_resistance"])
             per_subj_drift_vals.append(d)
             per_subj_std.append(stats["std_by_variant"])
+        if not per_subj_adjusted:      # no scored subjects for this model
+            continue
         rows.append((
             model,
             sum(per_subj_adjusted) / len(per_subj_adjusted),
@@ -372,8 +378,14 @@ def run(models, n_questions, results_dir="results", include_drift=True,
     df = _load_questions(n_questions)
     rows = [row for _, row in df.iterrows()]
 
+    # Crash-safe partial log: each (mode, model) is appended the moment it finishes,
+    # so a hang / kill / crash loses at most the model currently in flight — never
+    # the whole stage. The final structured JSON + report are still written at the end.
+    partial_path = os.path.join(results_dir, f"manipulation_{run_id}_partial.jsonl")
+
     def _run_per_model(process_sample, desc):
-        """Fan one per-sample function across all models with the thread pool."""
+        """Fan one per-sample function across all models. Flushes each model's
+        results to the partial JSONL immediately on completion (incremental save)."""
         by_model = {}
         for model in models:
             print(f"\n--- {desc}: {model}  (concurrency={concurrency}) ---")
@@ -383,6 +395,15 @@ def run(models, n_questions, results_dir="results", include_drift=True,
                 for f in tqdm(as_completed(futures), total=len(futures), desc=model):
                     model_results.extend(f.result())
             by_model[model] = model_results
+            # ── incremental save: this model's results hit disk right now ──
+            with open(partial_path, "a", encoding="utf-8") as pf:
+                pf.write(json.dumps(
+                    {"mode": desc, "model": model, "results": model_results},
+                    default=str,
+                ) + "\n")
+                pf.flush()
+            print(f"  ✔ saved {desc}/{model} → {os.path.basename(partial_path)} "
+                  f"({len(model_results)} results)")
         return by_model
 
     # Shared per-sample metadata extraction.
@@ -430,17 +451,7 @@ def run(models, n_questions, results_dir="results", include_drift=True,
         drift = per_subject_drift_rate(stateless_by_model, control_attack=CONTROL_ATTACK)
         all_subjects |= {subj for d in per_subj.values() for subj in d}
 
-        _print_per_subject_leaderboard(per_subj, drift, sorted(all_subjects), models)
-        _print_overall_leaderboard(per_subj, drift, sorted(all_subjects), models)
-        print_pairwise_mcnemar(stateless_by_model, models)
-        _print_attack_ranking(
-            stateless_by_model, models, all_subjects,
-            exclude=(CONTROL_ATTACK, DRIFT_ATTACK),
-        )
-        if include_drift:
-            _drift_sequence_summary(stateless_by_model, models)
-
-        # Per-(model, subject) attack ranking for the text report's TopFoldAttack.
+        # ── Build data/payload FIRST, so display failures can't lose it ──
         attack_ranking = {
             model: {
                 subj: rank_attacks(
@@ -452,7 +463,6 @@ def run(models, n_questions, results_dir="results", include_drift=True,
             for model in models
         }
         stateless_cost = _total_cost(stateless_by_model)
-        _print_cost("STATELESS", stateless_cost)
         cost_summary["STATELESS"] = stateless_cost
         payload["stateless"] = {
             "per_subject_resistance": per_subj,
@@ -466,6 +476,21 @@ def run(models, n_questions, results_dir="results", include_drift=True,
             "cost": stateless_cost,
             "raw_results": [r for rs in stateless_by_model.values() for r in rs],
         }
+        # ── Display is best-effort: never let a print abort the run ──
+        try:
+            _print_per_subject_leaderboard(per_subj, drift, sorted(all_subjects), models)
+            _print_overall_leaderboard(per_subj, drift, sorted(all_subjects), models)
+            print_pairwise_mcnemar(stateless_by_model, models)
+            _print_attack_ranking(
+                stateless_by_model, models, all_subjects,
+                exclude=(CONTROL_ATTACK, DRIFT_ATTACK),
+            )
+            if include_drift:
+                _drift_sequence_summary(stateless_by_model, models)
+            _print_cost("STATELESS", stateless_cost)
+        except Exception:
+            print("[stateless display failed — data already captured for save]")
+            traceback.print_exc()
 
     # ── STATEFUL MODE ─────────────────────────────────────────────
     if mode in ("stateful", "both"):
@@ -490,16 +515,19 @@ def run(models, n_questions, results_dir="results", include_drift=True,
             r.get("subject", "unknown")
             for rs in stateful_by_model.values() for r in rs
         }
-        _print_stateful(stateful_by_model, models, all_subjects)
-
         stateful_cost = _total_cost(stateful_by_model)
-        _print_cost("STATEFUL", stateful_cost)
         cost_summary["STATEFUL"] = stateful_cost
         payload["stateful"] = {
             "summary": stateful_stats(stateful_by_model),
             "cost": stateful_cost,
             "raw_results": [r for rs in stateful_by_model.values() for r in rs],
         }
+        try:
+            _print_stateful(stateful_by_model, models, all_subjects)
+            _print_cost("STATEFUL", stateful_cost)
+        except Exception:
+            print("[stateful display failed — data already captured for save]")
+            traceback.print_exc()
 
     # ── Grand total across modes ──────────────────────────────────
     grand_cost = round(sum(c["total_cost_usd"] for c in cost_summary.values()), 6)

@@ -38,7 +38,7 @@ models:
 
   gemini:
     #- gemini-2.5-flash
-    - gemini-3.5-flash
+    # - gemini-3.5-flash          # skipped: project hit its monthly spending cap (429)
     # - gemini-2.5-pro
 
 # LLM judge for free-form scoring (TruthfulQA-gen, moral axes).
