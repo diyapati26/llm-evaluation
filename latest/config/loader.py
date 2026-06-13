@@ -32,6 +32,7 @@ EVAL_PATH = _CONFIG_DIR / "eval.yaml"
 PRICING_PATH = _CONFIG_DIR / "pricing.yaml"
 DATASETS_PATH = _CONFIG_DIR / "datasets.yaml"
 SNAPSHOTS_PATH = _CONFIG_DIR / "snapshots.lock.yaml"
+SMOKE_PATH = _CONFIG_DIR / "smoke.yaml"
 
 _lock = threading.Lock()
 _cache: dict = {}
@@ -42,6 +43,11 @@ def _read_yaml(path: Path) -> dict:
         return {}
     with open(path, encoding="utf-8") as f:
         return yaml.safe_load(f) or {}
+
+
+def load_smoke() -> dict:
+    """Smoke-test overrides (config/smoke.yaml). Empty dict if the file is absent."""
+    return _read_yaml(SMOKE_PATH)
 
 
 def _files() -> dict:

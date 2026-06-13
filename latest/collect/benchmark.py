@@ -37,6 +37,7 @@ def run_trial(model, trial, cache, ledger, manifest, snapshot) -> None:
         resp = cached_chat(model, [{"role": "user", "content": trial.question}], ctx=ctx, cache=cache,
                            ledger=ledger, role="subject", condition="gen_answer",
                            schema_name="gen_answer", max_tokens=300, turn_index=0)
-        judge.run_truthfulqa_judges(trial, resp.text or "", model, manifest.judges, ctx, cache, ledger)
+        from latest.providers.router import resolve
+        judge.run_truthfulqa_judges(trial, resp.text or "", resolve(model)[1], manifest.judges, ctx, cache, ledger)
     else:
         raise ValueError(f"unknown benchmark dataset '{trial.dataset}'")

@@ -1,1 +1,49 @@
+# ── Secrets ─────────────────────────────────────────────────────────
+.env
 *.env
+!*.env.example
+
+# ── Python ──────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# ── Virtual environments ────────────────────────────────────────────
+venv/
+.venv/
+env/
+ENV/
+
+# ── Test / type / lint caches ───────────────────────────────────────
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# ── Run outputs (regenerable from config + ledger; per-machine) ─────
+# Includes runs/<id>/ (manifest, trials, ledger, scored, report) and the
+# shared runs/cache/. Force-add a specific report if you want it in git:
+#   git add -f runs/<id>/report/report.md
+runs/
+
+# ── Local model-response caches from the Archive prototypes ─────────
+Archive/**/AI_Cache.json
+Archive/**/results/
+
+# ── Jupyter / notebooks ─────────────────────────────────────────────
+.ipynb_checkpoints/
+
+# ── HuggingFace / model caches that may land in-tree ────────────────
+.cache/
+
+# ── OS / editors ────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

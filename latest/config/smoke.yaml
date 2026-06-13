@@ -1,0 +1,20 @@
+# Smoke-test overrides — `python -m latest.main --smoke` loads this and applies it
+# on top of eval.yaml. The smallest run that still exercises EVERYTHING: every
+# module (manipulation/benchmark/moral), every manipulation mode, every provider
+# path, and the LLM judge. Edit freely to tune your smoke tests.
+#
+# Any value omitted here falls back to eval.yaml; any flag passed on the CLI
+# overrides this file.
+
+models:
+  - anthropic:claude-haiku-4-5
+  - openai:gpt-5.4-nano
+
+modules: [manipulation, benchmark, moral]
+
+subjects: [formal_logic, college_physics]   # 2 hard-MMLU subjects -> 2 questions
+items_per_subject: 1
+variants: 2                                  # cap each attack to 2 phrasing variants
+bench_n: 2                                   # 2 items per benchmark dataset
+moral_per_cat: 1                             # 1 scenario per moral category (covers all axes)
+concurrency: 6

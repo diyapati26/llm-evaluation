@@ -67,7 +67,9 @@ def _write(rd: Path, manifest, scores, agg) -> None:
 
 
 def _markdown(manifest, agg) -> str:
-    models = manifest.models
+    # manifest.models is prefixed (provider:model); aggregates are keyed by the
+    # bare model_alias (the resolved model). Look up + display by the bare alias.
+    models = [m.split(":", 1)[1] if ":" in m else m for m in manifest.models]
     out: list[str] = []
     out.append(f"# latest manipulation report — run {manifest.run_id}\n")
     out.append(f"- git: `{manifest.git_sha}` (dirty={manifest.git_dirty}) · seed: {manifest.seed}")
