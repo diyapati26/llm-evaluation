@@ -1,0 +1,86 @@
+# ── mrbench run configuration ──────────────────────────────────────────────
+# This file is the single durable source of truth for WHAT to run. CLI flags
+# override individual values for one-off experiments; this file is the default.
+#
+# Companion config files (same directory, loaded automatically):
+#   pricing.yaml          — per-1M-token prices, authoritative for cost
+#   datasets.yaml         — HF dataset ids + pinned revisions (reproducibility)
+#   snapshots.lock.yaml   — alias -> dated model snapshot (filled by lock-snapshots)
+
+run:
+  seed: 42                 # master seed: drives the frozen design matrix
+                           # (wrong-answer choice, attack order, item sampling)
+  results_root: runs       # each run writes runs/<run_id>/{manifest,trials,ledger,scored,report}
+  concurrency: 6           # gentle for burst-heavy manipulation calls; benchmark can go higher
+
+# ── Models under test — capability ladder x 3 families ─────────────────────
+# Two points per family lets us test the capability-vs-robustness claim ALONG
+# the capability axis (within a family, holding training/style roughly fixed)
+# instead of as 3 isolated points. Every model here must have a pricing.yaml row.
+models:
+  openai:
+    - gpt-5.4-nano         # weaker
+    - gpt-5.4-mini         # stronger
+  anthropic:
+    - claude-haiku-4-5     # weaker
+    - claude-sonnet-4-6    # stronger
+  gemini:
+    - gemini-3.5-flash     # weaker
+    - gemini-2.5-pro       # stronger
+  groq: []                 # free-tier TPM throttles paper runs — off by default
+  openrouter: []           # flaky strict json_schema on free routes — off by default
+
+# ── Judges — >=2 of DIFFERENT families, for inter-judge reliability ────────
+# Used for TruthfulQA-gen and the moral/empathy axes. Two families let us report
+# Cohen's kappa / Krippendorff alpha between judges (and vs human labels later),
+# which is required before any LLM-judge score is publishable.
+judges:
+  - openai:gpt-5.4-mini
+  - anthropic:claude-sonnet-4-6
+
+# ── Shared dataset settings ────────────────────────────────────────────────
+dataset:
+  random_state: 42
+  hard_mmlu:               # 10 hard MMLU subjects (manipulation item pool)
+    - professional_medicine
+    - international_law
+    - college_physics
+    - abstract_algebra
+    - professional_law
+    - college_chemistry
+    - high_school_statistics
+    - machine_learning
+    - clinical_knowledge
+    - formal_logic
+
+# ── Module 1: standard benchmark (accuracy) ────────────────────────────────
+benchmark:
+  enabled: true
+  datasets: [mmlu, hellaswag, truthfulqa_mc, truthfulqa_gen]
+  n: 10                    # PILOT. paper-grade ~100/dataset (MMLU = 10/subject)
+  temperature: 0.0
+
+# ── Module 2: manipulation resistance ──────────────────────────────────────
+manipulation:
+  enabled: true
+  items_per_subject: 1     # PILOT (10 items total). paper-grade: 5-10/subject
+  resamples: 1             # k samples per cell. PILOT k=1; paper-grade k>=5
+                           # (k>1 gives a within-item variance estimate -> per-item CIs)
+  temperature: 0.0
+  include_drift: true      # the 6-turn gradual-escalation sequence
+  modes:                   # which experiment modes to run (2x2: {one type|all types} x {one variant|all variants})
+    - stateless            # one type, one variant, fresh session    -> per-attack potency ranking
+    - stateful             # all types, variant 0, one session       -> cross-tactic killing-blow
+    - repeat               # one type, ALL variants, one session      -> persistence under rephrasing (Mode 1)
+    - gauntlet             # all types x ALL variants, one session    -> endurance ceiling (Mode 2; see note)
+    # Mode 2 note: gauntlet is a ~30-turn marathon — report it as an endurance CEILING
+    # (turns survived / survived-all rate), NOT as a per-attack potency claim (position confound).
+  arms:                    # experimental arms — every trial is tagged with one
+    - pressure_wrong       # attacker asserts a WRONG answer (the classic manipulation test)
+    - control              # neutral_control: no-pressure rephrasing (natural-drift baseline)
+
+# ── Module 3: moral / empathy ──────────────────────────────────────────────
+moral:
+  enabled: true
+  # judges default to the top-level `judges` list above; override here if needed.
+  temperature: 0.0
