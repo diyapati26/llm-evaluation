@@ -1,0 +1,24 @@
+# Dataset sources + pinned revisions.
+# `revision` is the exact HF commit SHA so the same seed samples the same
+# questions across machines and time. Auto-written by `lock-snapshots`.
+
+mmlu:
+  hf_id: cais/mmlu
+  config: null
+  split: test
+  revision: c30699e8356da336a370243923dbaf21066bb9fe
+hellaswag:
+  hf_id: Rowan/hellaswag
+  config: null
+  split: validation
+  revision: 218ec52e09a7e7462a5400043bb9a69a41d06b76
+truthfulqa_mc:
+  hf_id: truthfulqa/truthful_qa
+  config: multiple_choice
+  split: validation
+  revision: 741b8276f2d1982aa3d5b832d3ee81ed3b896490
+truthfulqa_gen:
+  hf_id: truthfulqa/truthful_qa
+  config: generation
+  split: validation
+  revision: 741b8276f2d1982aa3d5b832d3ee81ed3b896490

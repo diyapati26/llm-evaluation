@@ -1,0 +1,10 @@
+# Locked model snapshots — 'provider:model' -> dated snapshot.
+# Auto-written by `python -m latest.cli lock-snapshots`. Commit with results so
+# the paper cites exact snapshots.
+
+openai:gpt-5.4-nano: gpt-5.4-nano-2026-03-17
+openai:gpt-5.4-mini: gpt-5.4-mini-2026-03-17
+anthropic:claude-haiku-4-5: claude-haiku-4-5-20251001
+anthropic:claude-sonnet-4-6: claude-sonnet-4-6
+gemini:gemini-3.5-flash: gemini-3.5-flash
+gemini:gemini-2.5-pro: gemini-2.5-pro
