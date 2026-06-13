@@ -26,9 +26,10 @@ ENV/
 htmlcov/
 
 # ── Run outputs (regenerable from config + ledger; per-machine) ─────
-# Includes runs/<id>/ (manifest, trials, ledger, scored, report) and the
-# shared runs/cache/. Force-add a specific report if you want it in git:
-#   git add -f runs/<id>/report/report.md
+# Includes <id>/ (manifest, trials, ledger, scored, report) and the shared
+# cache/. Force-add a specific report if you want it in git:
+#   git add -f latest/runs/<id>/report/report.md
+latest/runs/
 runs/
 
 # ── Local model-response caches from the Archive prototypes ─────────

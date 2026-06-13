@@ -1,18 +1,10 @@
-# ── Locked model snapshots — alias -> dated snapshot ───────────────────────
-# Model aliases (gpt-5.4-nano, claude-haiku-4-5, ...) silently remap to dated
-# snapshots that can change without notice, making two runs incomparable. This
-# file pins the exact snapshot each alias resolved to.
-#
-# Populated by `mrbench lock-snapshots` after a run: it reads the model_version
-# each provider returned (recorded on every CallRecord) and writes it here.
-# Commit this file alongside results so the paper cites exact snapshots.
-#
-# null -> not yet locked. The loader warns for any configured model with a null
-# snapshot. These keys use the full `provider:model` form.
+# Locked model snapshots — 'provider:model' -> dated snapshot.
+# Auto-written by `python -m latest.cli lock-snapshots`. Commit with results so
+# the paper cites exact snapshots.
 
-openai:gpt-5.4-nano: null
-openai:gpt-5.4-mini: null
-anthropic:claude-haiku-4-5: null
-anthropic:claude-sonnet-4-6: null
-gemini:gemini-3.5-flash: null
-gemini:gemini-2.5-pro: null
+openai:gpt-5.4-nano: gpt-5.4-nano-2026-03-17
+openai:gpt-5.4-mini: gpt-5.4-mini-2026-03-17
+anthropic:claude-haiku-4-5: claude-haiku-4-5-20251001
+anthropic:claude-sonnet-4-6: claude-sonnet-4-6
+gemini:gemini-3.5-flash: gemini-3.5-flash
+gemini:gemini-2.5-pro: gemini-2.5-pro

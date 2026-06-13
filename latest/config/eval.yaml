@@ -10,7 +10,7 @@
 run:
   seed: 42                 # master seed: drives the frozen design matrix
                            # (wrong-answer choice, attack order, item sampling)
-  results_root: runs       # each run writes runs/<run_id>/{manifest,trials,ledger,scored,report}
+  results_root: latest/runs  # each run writes latest/runs/<run_id>/{manifest,trials,ledger,scored,report}
   concurrency: 6           # gentle for burst-heavy manipulation calls; benchmark can go higher
 
 # ── Models under test — capability ladder x 3 families ─────────────────────

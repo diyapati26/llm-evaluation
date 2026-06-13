@@ -124,6 +124,26 @@ def cmd_verify(args):
         print(f"  [{sev}] {msg}")
 
 
+def cmd_lock(args):
+    """Pin dataset revisions + lock model snapshots for reproducibility."""
+    from latest import lock
+    from latest.config.loader import load_config, reload, validate
+
+    if not args.no_datasets:
+        print("Pinning dataset revisions (querying HuggingFace)...")
+        for name, sha in lock.pin_dataset_revisions().items():
+            print(f"  {name}: {sha}")
+    print("Locking model snapshots (ledger + live probe for any unseen model)...")
+    for pm, snap in lock.lock_model_snapshots(run_id=args.run_id, probe_missing=not args.no_probe).items():
+        print(f"  {pm}: {snap}")
+
+    reload()  # drop the cached config so validate() sees the new files
+    warns = validate(load_config())
+    print(f"\nremaining validate() warnings: {len(warns)}")
+    for w in warns:
+        print(f"  - {w}")
+
+
 def main():
     p = argparse.ArgumentParser(prog="latest")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -151,6 +171,12 @@ def main():
     v.add_argument("--run-id", required=True, dest="run_id")
     v.add_argument("--results-root", default=None, dest="results_root")
     v.set_defaults(func=cmd_verify)
+
+    lk = sub.add_parser("lock-snapshots", help="pin dataset revisions + lock model snapshots")
+    lk.add_argument("--run-id", default=None, dest="run_id", help="source snapshots from this run (default: most recent)")
+    lk.add_argument("--no-datasets", action="store_true", help="skip dataset-revision pinning")
+    lk.add_argument("--no-probe", action="store_true", help="don't make live calls for unseen models")
+    lk.set_defaults(func=cmd_lock)
 
     args = p.parse_args()
     args.func(args)

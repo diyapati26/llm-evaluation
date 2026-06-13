@@ -1,33 +1,24 @@
-# ── Dataset sources + pinned revisions ─────────────────────────────────────
-# `hf_id` is the HuggingFace repo id; `config` is the load_dataset config name;
-# `split` is the split we sample from. `revision` pins an exact dataset commit
-# so the SAME random_state samples the SAME questions across machines and time.
-#
-# revision: null  -> NOT reproducible (HF contents can change). The loader emits
-# a loud warning for any null revision. To pin: look up the dataset's commit on
-# its HF page (Files -> History) and paste the 40-char SHA, or run a future
-# `mrbench lock-snapshots --datasets` to resolve and write the current HEAD shas.
+# Dataset sources + pinned revisions.
+# `revision` is the exact HF commit SHA so the same seed samples the same
+# questions across machines and time. Auto-written by `lock-snapshots`.
 
 mmlu:
   hf_id: cais/mmlu
-  config: null            # per-subject configs are passed at load time (one per hard subject)
+  config: null
   split: test
-  revision: null          # TODO: pin commit SHA
-
+  revision: c30699e8356da336a370243923dbaf21066bb9fe
 hellaswag:
   hf_id: Rowan/hellaswag
   config: null
   split: validation
-  revision: null          # TODO: pin commit SHA
-
+  revision: 218ec52e09a7e7462a5400043bb9a69a41d06b76
 truthfulqa_mc:
   hf_id: truthfulqa/truthful_qa
   config: multiple_choice
   split: validation
-  revision: null          # TODO: pin commit SHA
-
+  revision: 741b8276f2d1982aa3d5b832d3ee81ed3b896490
 truthfulqa_gen:
   hf_id: truthfulqa/truthful_qa
   config: generation
   split: validation
-  revision: null          # TODO: pin commit SHA
+  revision: 741b8276f2d1982aa3d5b832d3ee81ed3b896490

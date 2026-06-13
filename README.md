@@ -6,9 +6,33 @@ three eval modules — **manipulation resistance**, a **standard benchmark**, an
 **moral/empathy** — across multiple providers, and produces every number in the
 paper from a single auditable record of what each model actually said.
 
-> This package (`latest/`) is the clean rewrite. The previous two prototypes live in
-> `Archive/` (`evals/` class-based, `Simpler Arch/` function-based) and are retired.
-> See `ARCHITECTURE_REVIEW.md` for the analysis that motivated this design.
+**`latest/` is the source of truth.** It is the clean rewrite and the only code you
+should run. The repo root holds just this README and `CLAUDE_EFFORT.md`; everything
+else — the package, `requirements.txt`, `pyproject.toml`, the deep-dive docs, and run
+outputs — lives under `latest/`.
+
+### Why `Archive/` was archived, and why `latest/` exists
+
+`Archive/` contains the two original prototypes — `evals/` (class-based, async) and
+`Simpler Arch/` (function-based) — kept for reference only. **Do not run them.** A
+deep review (`latest/ARCHITECTURE_REVIEW.md`) found they were good experiments but
+not publication-grade:
+
+- **Two divergent stacks** computed the "same" metrics differently (regex vs typed
+  answer parsing, different wrong-answer rules, population vs sample std), so neither
+  was authoritative.
+- The manipulation path **re-billed the API on every run** (no caching of multi-turn
+  calls), and a crash could **lose hours of work** (no per-call durability, no resume).
+- The significance test **never actually ran** (it imported `scipy.stats.mcnemar`,
+  which doesn't exist), two of four scoring axes were **silently dead**, and analysis
+  was tangled into a 763-line script that mixed collection, scoring, and printing.
+
+`latest/` consolidates the good ideas (typed structured output, retry, central
+pricing, the multi-turn `Conversation` abstraction) onto a **ledger-first**
+architecture that fixes all of the above by construction: collection and analysis are
+separate, every call is cached + durably logged, and every number traces to a raw
+response. See `latest/ARCHITECTURE_REVIEW.md` for the full analysis and
+`latest/CODEBASE.md` for the file-by-file guide.
 
 ---
 
@@ -39,13 +63,13 @@ paper from a single auditable record of what each model actually said.
 ## 2. Quickstart
 
 ```bash
-pip install -r requirements.txt
+pip install -r latest/requirements.txt
 cp latest/.env.example latest/.env     # then fill in your API keys
 ```
 
 > **Run all commands from the repository root.** The package is invoked as
 > `python -m latest.…`; from elsewhere you'll get `ModuleNotFoundError: No module
-> named 'latest'`. (Optionally `pip install -e .` via the included `pyproject.toml`
+> named 'latest'`. (Optionally `pip install -e ./latest` via `latest/pyproject.toml`
 > to import `latest` from anywhere.)
 
 `.env` keys (only the providers you use are required):

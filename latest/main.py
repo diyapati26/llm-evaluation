@@ -274,8 +274,27 @@ def main() -> int:
     elif _prompt("Run the COMPREHENSIVE run now? (full config/eval.yaml — costs more)", default=False):
         _execute(args, cfg, smoke=False)
 
+    _maybe_lock(cfg)
     print("\nDone.")
     return 0
+
+
+def _maybe_lock(cfg) -> None:
+    """If dataset revisions / model snapshots are unlocked, offer to pin them.
+    Only prompts when there's actually something to lock (no nag once committed)."""
+    from latest.config.loader import load_config, reload, validate
+
+    repro = [w for w in validate(cfg) if "snapshots" in w or "revision" in w]
+    if not repro:
+        return
+    print(f"\n{len(repro)} reproducibility item(s) unlocked (dataset revisions / model snapshots).")
+    if not _prompt("Pin dataset revisions + lock model snapshots now? (recommended before a paper run)", default=False):
+        return
+    from latest import lock
+    lock.pin_dataset_revisions()
+    lock.lock_model_snapshots()
+    reload()
+    print(f"Locked. Remaining warnings: {len(validate(load_config()))}")
 
 
 if __name__ == "__main__":
