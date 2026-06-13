@@ -11,13 +11,15 @@ effort spent — so a future Claude (or human) can pick up with full context. Fo
 | | |
 |---|---|
 | **Date** | 2026-06-13 |
-| **Started** | ~15:47 EDT (first request: "go through the Archive and review both architectures") |
-| **Ended** | ~18:55 EDT (this log) |
+| **Session started** | 2026-06-13 **15:55:43 EDT** (19:55:43 UTC) — session transcript creation time |
+| **Session ended** | 2026-06-13 ~18:57 EDT (~22:57 UTC) — this log |
 | **Duration** | ~3 hours, continuous |
+| **Repo folder created** | 2026-05-30 17:43:24 EDT (the project predates this session) |
 | **Model / mode** | Claude Opus 4.8 (1M context), `ultracode` (xhigh effort + multi-agent workflows) |
-| **Main-thread tokens** | ~788,471 |
+| **Main-thread tokens** | ~815,000 at session end (≈84%+ of the 5-hour budget) |
 | **Sub-agent tokens** | ~3,611,496 (two background workflows) |
 | **Total tokens** | ~4.4M |
+| **API spend (this session)** | **~$0.55 actually billed** (cache misses) out of ~$1.50 of priced work — the content-addressed cache saved ~63% |
 | **Sub-agents spawned** | 65 (32 + 33 across two workflows) |
 | **Outcome** | New `latest/` framework built, smoke-validated end-to-end, adversarially reviewed, 28 issues fixed, fully documented |
 
@@ -96,6 +98,36 @@ Delivered:
 - Review: 28 issues fixed (5 high, ~7 med, ~16 low) — see `latest/CODEBASE.md` §14.
 
 ---
+
+## Cost
+
+### A) Claude (Anthropic) cost of *this session* — the agent's own token usage
+
+Model: **Claude Opus 4.8 (1M context)**. Token usage this session:
+~0.81M main-thread + ~3.61M sub-agent ≈ **~4.4M tokens total**.
+
+At Opus rates (~$5 / 1M input, ~$25 / 1M output), the cost depends on the
+input/output split and prompt-cache savings (Claude Code caches re-sent context,
+which materially lowers the input portion). With a typical read-heavy agentic split
+(~70% input / ~30% output) and no caching, that's ≈ **$45–50**; prompt caching
+brings the effective figure lower. **Treat ~$40–60 as the order-of-magnitude estimate**
+— it is not an exact bill (the precise in/out split and cache-hit ratio aren't fully
+visible from inside the session).
+
+### B) Eval API spend — the model calls the framework made (priced from `latest/config/pricing.yaml`)
+
+Across all session runs (1,492 logged calls; 940 cache hits):
+
+| | |
+|---|---|
+| **Actually billed** (cache misses) | **~$0.55** |
+| Priced work if nothing were cached | ~$1.50 (cache saved ~63%) |
+| Would-be cost by model | claude-haiku-4-5 $1.12 · gpt-5.4-nano $0.25 · claude-sonnet-4-6 $0.11 · gpt-5.4-mini $0.02 |
+
+The first full live smoke (~$0.34) dominated; the 4 later re-runs + the review were
+nearly free on cache. Per-run cost is in each run's `report/report.md` (Cost & tokens
+table). A full `--comprehensive` paper run (6 models, full `n`) will cost more —
+estimate it with the per-call rates in `pricing.yaml` before running.
 
 ## Key decisions (and why)
 

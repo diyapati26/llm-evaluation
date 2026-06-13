@@ -29,20 +29,24 @@ config/*.yaml ─► plan/ ─► trials.parquet ─► collect/ ─► ledger.j
 
 ## 1. Top-level layout
 
+Run everything from the **repo root** (`python -m latest.…`). Only `README.md` and
+`CLAUDE_EFFORT.md` live at the root; `latest/` is the self-contained source of truth.
+
 ```
-llm-evaluation/                 # repo root — run everything from here
-├── README.md                   # quickstart + overview
-├── CODEBASE.md                 # THIS file — the deep dive
-├── ARCHITECTURE_REVIEW.md      # why the rewrite happened (analysis of Archive/)
-├── requirements.txt            # pinned deps
-├── pyproject.toml              # optional `pip install -e .`
-├── .gitignore                  # secrets, caches, runs/
+llm-evaluation/                 # repo root
+├── README.md                   # overview + why Archive/ vs latest/
+├── CLAUDE_EFFORT.md            # session log / handoff
+├── .gitignore                  # secrets, caches, latest/runs/
 ├── Archive/                    # the two retired prototypes (reference only; not imported)
-├── runs/                       # run outputs (gitignored) — one dir per run + shared cache/
-└── latest/                     # THE package
-    ├── main.py  cli.py  env.py  records.py  provenance.py  ledger.py  cache.py
+└── latest/                     # THE project (source of truth)
+    ├── CODEBASE.md             # THIS file — the deep dive
+    ├── ARCHITECTURE_REVIEW.md  # why the rewrite happened (analysis of Archive/)
+    ├── requirements.txt        # pinned deps
+    ├── pyproject.toml          # optional `pip install -e ./latest`
+    ├── main.py  cli.py  env.py  lock.py  records.py  provenance.py  ledger.py  cache.py
     ├── runlog.py  loaders.py
     ├── config/   data/   providers/   plan/   collect/   analysis/   tests/
+    └── runs/                   # run outputs (gitignored) — <run_id>/ + shared cache/
 ```
 
 ---
