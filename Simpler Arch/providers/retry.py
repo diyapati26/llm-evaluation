@@ -21,14 +21,22 @@ _RETRYABLE_MARKERS = (
 )
 
 
+# Hard quota/billing failures are NOT transient — retrying just wastes time
+# backing off against a wall. Fail fast on these even if the HTTP code is 429.
+_HARD_FAIL_MARKERS = ("spend", "spending cap", "billing", "monthly", "exceeded its")
+
+
 def _is_retryable(exc):
+    msg = str(exc).lower()
+    if any(m in msg for m in _HARD_FAIL_MARKERS):
+        return False  # e.g. "exceeded its monthly spending cap" — won't clear on retry
     name = type(exc).__name__.lower()
     if "ratelimit" in name or "overloaded" in name:
         return True
     code = getattr(exc, "status_code", None) or getattr(exc, "code", None)
     if code in (429, 503, 529):
         return True
-    return any(m in str(exc).lower() for m in _RETRYABLE_MARKERS)
+    return any(m in msg for m in _RETRYABLE_MARKERS)
 
 
 # Up to 6 attempts; backoff ~2,4,8,16,32s (capped at 60) with random jitter.

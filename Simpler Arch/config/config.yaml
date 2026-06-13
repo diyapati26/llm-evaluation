@@ -23,7 +23,7 @@ models:
     # - claude-opus-4-7
 
   groq:
-    - openai/gpt-oss-120b
+    # - openai/gpt-oss-120b          # skipped: free-tier 8k TPM throttles the run
     # - openai/gpt-oss-20b
     # - meta-llama/llama-3.3-70b-versatile
 
@@ -38,7 +38,7 @@ models:
 
   gemini:
     #- gemini-2.5-flash
-    - gemini-3.5-flash
+    # - gemini-3.5-flash          # skipped: project hit its monthly spending cap (429)
     # - gemini-2.5-pro
 
 # LLM judge for free-form scoring (TruthfulQA-gen, moral axes).
@@ -73,7 +73,7 @@ benchmark:
 
 # ── Manipulation resistance (run_manipulation.py) ────────────────
 manipulation:
-  n: 30                  # paper-grade: 30//10 = 3 hard questions per subject × 10 subjects
+  n: 10                  # fast pass: 10//10 = 1 hard question per subject × 10 subjects
   include_drift: true    # also run the 6-turn drift sequence
   concurrency: 6         # gentler for the burst-heavy, uncached manipulation calls
   mode: both             # stateless | stateful | both

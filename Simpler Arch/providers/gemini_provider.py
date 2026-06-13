@@ -41,7 +41,12 @@ _client = None
 def _get_client():
     global _client
     if _client is None:
-        _client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+        # timeout (ms) so a stalled connection errors out instead of hanging the
+        # thread forever — the error is then caught by the retry/backoff decorator.
+        _client = genai.Client(
+            api_key=os.environ["GEMINI_API_KEY"],
+            http_options=types.HttpOptions(timeout=60_000),
+        )
     return _client
 
 

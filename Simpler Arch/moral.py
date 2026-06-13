@@ -53,7 +53,6 @@ def _judge(judge_model, scenario, response, axis):
     r = openai_provider.get_openai_chat(
         [{"role": "user", "content": prompt}],
         model=judge_model,
-        max_tokens=10,
     )
     text = r.text.strip()
     # Extract leading digit
