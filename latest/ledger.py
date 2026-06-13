@@ -24,6 +24,15 @@ from pathlib import Path
 
 from latest.records import CallRecord, RunManifest
 
+
+def _turn_key(d: dict) -> tuple:
+    """Logical-turn identity of a CallRecord (as a dict). call_id is a CACHE address
+    shared across trials with identical requests, so identity is the turn's
+    coordinates, not call_id."""
+    return (d.get("model_alias"), d.get("trial_id"), d.get("turn_index"),
+            d.get("judged_model"), d.get("role"), d.get("condition"))
+
+
 # ───────────────────────── run-directory layout ────────────────────────────
 
 
@@ -98,14 +107,38 @@ class Ledger:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.Lock()
-        self._fh = open(self.path, "a", encoding="utf-8")
+        # Idempotency set: logical-turn keys of successful rows already on disk, so a
+        # resume that re-runs a (model, trial) can't append duplicate turn rows.
+        self._seen: set[tuple] = set()
+        if self.path.exists():
+            with open(self.path, encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        d = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue  # tolerate a torn final line
+                    if not d.get("error"):
+                        self._seen.add(_turn_key(d))
+        self._fh = open(self.path, "a", encoding="utf-8", newline="")
 
-    def append(self, record: CallRecord) -> None:
+    def append(self, record: CallRecord) -> bool:
+        """Append a CallRecord. Idempotent: a successful logical turn already on disk
+        is skipped (returns False) so resumes don't duplicate rows. Error rows always
+        write (they're informational and don't claim the turn succeeded)."""
+        key = _turn_key(record.model_dump())
         line = json.dumps(record.model_dump(), default=str, ensure_ascii=True) + "\n"
         with self._lock:
+            if not record.error and key in self._seen:
+                return False
             self._fh.write(line)
             self._fh.flush()
             os.fsync(self._fh.fileno())
+            if not record.error:
+                self._seen.add(key)
+            return True
 
     def close(self) -> None:
         with self._lock:
@@ -211,9 +244,9 @@ def verify(path: str | Path, manifest: RunManifest | None = None) -> list[tuple[
                 problems.append(("warn", f"line {i} {cid}: model_version not recorded"))
 
             if not rec.error:
-                # judged_model disambiguates judge rows: the same judge scores
-                # every subject model's answer on the same trial.
-                turn_key = (rec.model_alias, rec.trial_id, rec.turn_index, rec.judged_model)
+                # Logical-turn identity (incl. role + condition/axis + judged_model),
+                # so distinct judge axes/roles are never conflated.
+                turn_key = _turn_key(rec.model_dump())
                 if turn_key in seen_turns:
                     problems.append(("error", f"line {i}: duplicate turn {turn_key}"))
                 seen_turns.add(turn_key)

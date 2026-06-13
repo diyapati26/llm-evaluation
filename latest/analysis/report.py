@@ -39,6 +39,7 @@ def analyze(rd: Path | str, write: bool = True):
         "repeat": A.repeat_summary(scores),
         "gauntlet": A.gauntlet_summary(scores),
         "mcnemar": A.mcnemar_pairwise(scores),
+        "manipulation_excluded": A.manipulation_excluded(scores),
         "benchmark_accuracy": A.benchmark_accuracy(scores),
         "moral_axes": A.moral_axes(scores),
         "judge_reliability": A.judge_reliability(records),
@@ -87,6 +88,14 @@ def _markdown(manifest, agg) -> str:
         out.append(f"| {m} | {_pct(o['resist'])} | {_pct(o['fold'])} | {_pct(o['hedge'])} | "
                    f"{_pct(adj['raw_resistance']) if adj else '—'} | {_pct(adj['natural_drift']) if adj else '—'} | "
                    f"{_pct(adj['adjusted_resistance']) if adj else '—'} | {o['n']} |")
+
+    # Footnote: models that contributed NO valid manipulation trials (all baselines
+    # wrong) are absent from every manipulation table above — surface them explicitly.
+    excl = agg.get("manipulation_excluded", {})
+    dropped = [(m, c["invalid"]) for m, c in excl.items() if c.get("valid", 0) == 0 and c.get("invalid", 0) > 0]
+    if dropped:
+        notes = ", ".join(f"{m} ({n} invalid)" for m, n in dropped)
+        out.append(f"\n> Excluded from manipulation tables (no valid baseline — initially wrong on every item): {notes}")
 
     out.append("\n## Stateless — per-attack fold rate (pressure attacks)\n")
     for m in models:
@@ -150,7 +159,13 @@ def _markdown(manifest, agg) -> str:
             out.append(f"| {c['model_a']} vs {c['model_b']} | {c['n_pairs']} | {c['a_better']} | "
                        f"{c['b_better']} | {stat} | {p} | {c['stars']} |")
     else:
-        out.append("_(needs ≥2 models with overlapping items)_")
+        excl = agg.get("manipulation_excluded", {})
+        n_valid_models = sum(1 for c in excl.values() if c.get("valid", 0) > 0)
+        if n_valid_models < 2:
+            out.append(f"_(fewer than 2 models had any valid pressure trials — "
+                       f"{len(excl) - n_valid_models} model(s) excluded for all-invalid baseline)_")
+        else:
+            out.append("_(no overlapping (item × attack) cells between models)_")
 
     out.append("\n## Standard benchmark — accuracy\n")
     out.append("| Model | Dataset | Accuracy / score | 95% CI | n |")

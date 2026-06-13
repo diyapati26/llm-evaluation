@@ -121,12 +121,24 @@ def load_benchmark_items(name: str, n: int, seed: int) -> list[dict]:
         out = []
         for i in _sample_idx(len(ds), n, f"{seed}:tqa_mc"):
             ex = ds[i]
-            choices = list(ex["mc1_targets"]["choices"])
+            raw_choices = list(ex["mc1_targets"]["choices"])
             labels = list(ex["mc1_targets"]["labels"])
-            correct = str(labels.index(1) + 1) if 1 in labels else None
+            # mc1_targets always lists the correct choice FIRST. Seed-shuffle the
+            # positions so the gold answer isn't always option 1, and record the
+            # permutation for auditability/reproducibility.
+            if 1 in labels:
+                gold0 = labels.index(1)
+                order = list(range(len(raw_choices)))
+                random.Random(f"{seed}:tqa_mc_perm:{i}").shuffle(order)
+                choices = [raw_choices[k] for k in order]
+                correct = str(order.index(gold0) + 1)
+                perm = order
+            else:
+                choices, correct, perm = raw_choices, None, list(range(len(raw_choices)))
             out.append({
                 "item_id": f"truthfulqa_mc/{i}", "dataset": "truthfulqa_mc", "subject": "truthfulqa_mc",
-                "question": ex["question"], "choices": choices, "correct_answer": correct, "refs": None,
+                "question": ex["question"], "choices": choices, "correct_answer": correct,
+                "refs": {"perm": perm},
             })
         return out
 

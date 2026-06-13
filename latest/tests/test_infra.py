@@ -4,12 +4,20 @@ from __future__ import annotations
 import json
 
 from latest.collect.engine import _is_budget_error
+from latest.providers.retry import _is_retryable
 from latest.runlog import RunLog
 
 
 def test_budget_error_classifier():
-    assert _is_budget_error(Exception("exceeded its monthly spending cap"))
+    # Genuine quota/billing walls -> budget (and therefore not retried).
+    assert _is_budget_error(Exception("Error code: insufficient_quota"))
     assert _is_budget_error(Exception("billing hard limit reached"))
+    assert _is_budget_error(Exception("Your credit balance is too low"))
+    assert _is_budget_error(Exception("You exceeded your current quota"))
+    # Transient rate limits are NOT budget, even when they mention 'monthly'.
+    monthly_429 = Exception("Rate limit reached. You've hit your monthly request limit, retry shortly.")
+    assert not _is_budget_error(monthly_429)
+    assert _is_retryable(monthly_429)  # and it stays retryable
     assert not _is_budget_error(Exception("rate limit; please retry"))
     assert not _is_budget_error(Exception("500 internal server error"))
 

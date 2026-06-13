@@ -83,7 +83,9 @@ def chat(messages, model, max_tokens=None, temperature=0.0) -> ProviderResponse:
     )
     latency_ms = (time.monotonic() - start) * 1000
 
-    text = resp.content[0].text.strip() if resp.content else ""
+    # Concatenate all text blocks, skipping any leading thinking/redacted-thinking
+    # blocks (which have no .text) — robust to extended-thinking judge snapshots.
+    text = "".join(b.text for b in (resp.content or []) if getattr(b, "type", None) == "text").strip()
     u = resp.usage
     cost = estimate_cost(model, u.input_tokens, u.output_tokens)
     return ProviderResponse(

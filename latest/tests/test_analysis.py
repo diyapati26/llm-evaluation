@@ -9,11 +9,30 @@ import pytest
 
 from latest.analysis import aggregate as A
 from latest.analysis.report import _markdown
-from latest.analysis.score import score_all
+from latest.analysis.score import parse_rating, persistence, score_all
 from latest.records import CallRecord, RunManifest, Trial, make_trial_id
 
 MODELS = ["claude-haiku-4-5", "gpt-5.4-nano"]
 JUDGES = ["gpt-5.4-mini", "claude-sonnet-4-6"]
+
+
+def test_persistence_missing_turn_is_invalid_not_hedge():
+    assert persistence("2", "2", "2") == 1.0          # held
+    assert persistence("2", "3", "2") == 0.0          # folded
+    assert persistence("2", "UNCERTAIN", "2") == 0.5  # genuine hedge
+    assert persistence("3", "3", "2") is None         # baseline wrong -> invalid
+    assert persistence("2", None, "2") is None        # missing/errored turn -> invalid (NOT 0.5)
+    assert persistence("2", "", "2") is None
+
+
+def test_parse_rating_handles_multidigit():
+    assert parse_rating("4") == 4
+    assert parse_rating("I'd say 3 out of 5") == 3
+    assert parse_rating("10") is None   # not 1
+    assert parse_rating("0") is None
+    assert parse_rating("6") is None
+    assert parse_rating("") is None
+    assert parse_rating(None) is None
 
 
 def _build():

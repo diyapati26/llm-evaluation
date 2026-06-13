@@ -67,9 +67,12 @@ def test_cache_roundtrip_and_multiturn_keys(run_root):
 # ───────────────────────────── ledger ──────────────────────────────────────
 
 
-def _rec(cid, cfg_hash, error=None):
+def _rec(cid, cfg_hash, error=None, trial_id="t", turn=0):
+    # Distinct (trial_id, turn) makes each a distinct logical turn (so the ledger's
+    # idempotent append doesn't collapse them).
     return CallRecord(call_id=cid, run_id="r", timestamp="2026-06-13T00:00:00+00:00",
                       provider="openai", model_alias="m", model_version="m-2026",
+                      trial_id=trial_id, turn_index=turn, condition="benchmark",
                       temperature=0.0, git_sha="sha", config_hash=cfg_hash,
                       input_tokens=10, output_tokens=5, cost_usd=0.001, error=error)
 
@@ -77,12 +80,22 @@ def _rec(cid, cfg_hash, error=None):
 def test_ledger_append_read_resume(run_root):
     rd = L.ensure_run_dir(run_root, "run1")
     with L.Ledger(L.ledger_path(rd)) as lg:
-        lg.append(_rec("c_a", "cfg"))
-        lg.append(_rec("c_b", "cfg"))
-        lg.append(_rec("c_err", "cfg", error="rate limit"))
+        lg.append(_rec("c_a", "cfg", trial_id="ta"))
+        lg.append(_rec("c_b", "cfg", trial_id="tb"))
+        lg.append(_rec("c_err", "cfg", error="rate limit", trial_id="terr"))
     assert len(L.read(L.ledger_path(rd))) == 3
     done = L.completed_call_ids(L.ledger_path(rd))
     assert done == {"c_a", "c_b"}  # errored call is NOT skipped on resume
+
+
+def test_ledger_append_is_idempotent(run_root):
+    # Re-appending the SAME logical turn (same model/trial/turn/role/condition) is a
+    # no-op — this is what makes resume safe (no duplicate rows).
+    rd = L.ensure_run_dir(run_root, "idem")
+    with L.Ledger(L.ledger_path(rd)) as lg:
+        assert lg.append(_rec("c_a", "cfg", trial_id="ta")) is True
+        assert lg.append(_rec("c_a", "cfg", trial_id="ta")) is False  # same turn -> skipped
+    assert len(L.read(L.ledger_path(rd))) == 1
 
 
 def test_ledger_verify_catches_problems(run_root):
@@ -90,10 +103,13 @@ def test_ledger_verify_catches_problems(run_root):
 
     rd = L.ensure_run_dir(run_root, "run2")
     man = build_manifest(run_id="run2")
-    with L.Ledger(L.ledger_path(rd)) as lg:
-        lg.append(_rec("c_a", man.config_hash))
-        lg.append(_rec("c_a", man.config_hash))  # duplicate successful call_id
-        lg.append(CallRecord(call_id="c_x", run_id="r", timestamp="t"))  # missing provenance
+    # Write a genuine duplicate turn RAW (bypassing append's dedup) so verify's
+    # duplicate detection is exercised, plus a row missing provenance.
+    import json
+    good = _rec("c_a", man.config_hash, trial_id="ta").model_dump()
+    bad = CallRecord(call_id="c_x", run_id="r", timestamp="t").model_dump()
+    L.ledger_path(rd).write_text(
+        "\n".join(json.dumps(r, default=str) for r in (good, good, bad)) + "\n", encoding="utf-8")
     probs = L.verify(L.ledger_path(rd), manifest=man)
     errors = [m for s, m in probs if s == "error"]
     warns = [m for s, m in probs if s == "warn"]

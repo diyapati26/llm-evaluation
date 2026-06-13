@@ -18,12 +18,14 @@ from latest import ledger as L
 from latest.cache import Cache
 from latest.config.loader import snapshot_for
 from latest.provenance import build_manifest
-from latest.providers.retry import _HARD_FAIL_MARKERS
+from latest.providers.retry import _is_hard_fail
 
 
 def _is_budget_error(exc: BaseException) -> bool:
-    """A spend cap / billing / quota wall — retrying or continuing is pointless."""
-    return any(m in str(exc).lower() for m in _HARD_FAIL_MARKERS)
+    """A spend cap / billing / quota wall — shares retry's high-precision classifier
+    so retry and the budget gate can never disagree (a transient 429 that merely
+    mentions a quota stays retryable, not a budget halt)."""
+    return _is_hard_fail(exc)
 
 
 class Progress:
@@ -47,7 +49,7 @@ class Progress:
     def mark(self, model: str, trial_id: str) -> None:
         with self._lock:
             self._done.add((model, trial_id))
-            with open(self.path, "a", encoding="utf-8") as f:
+            with open(self.path, "a", encoding="utf-8", newline="") as f:
                 f.write(json.dumps({"model": model, "trial_id": trial_id}) + "\n")
                 f.flush()
 
@@ -80,6 +82,7 @@ def collect(trials, models, *, run_id, results_root, cfg, concurrency, run_trial
     rd = L.ensure_run_dir(results_root, run_id)
     manifest = build_manifest(cfg, run_id)
     manifest.models = list(models)  # reflect the actual (possibly overridden) model set
+    manifest.modules = sorted({t.module for t in trials})  # reflect what was actually collected
     L.write_manifest(manifest, rd)
 
     cache = Cache(L.cache_dir(results_root))
@@ -92,10 +95,12 @@ def collect(trials, models, *, run_id, results_root, cfg, concurrency, run_trial
         runlog = RunLog(L.run_dir(results_root, run_id) / "run.log.jsonl")
 
     halted = False
+    max_budget_resumes = 3
     try:
         with L.Ledger(L.ledger_path(rd)) as lg:
             for model in models:
                 snapshot = snapshot_for(model)
+                resume_attempts = 0
                 # Retry loop: on a budget wall we pause, ask, and (on resume) re-run
                 # only the still-unfinished trials — completed ones are skipped via progress.
                 while True:
@@ -124,12 +129,30 @@ def collect(trials, models, *, run_id, results_root, cfg, concurrency, run_trial
                                     break
                                 runlog.log("trial_error", level="warn", model=model, trial_id=trial.trial_id,
                                            mode=trial.mode, attack=trial.attack, error=str(e)[:200])
+                    # The `with` block above joined all workers. On a budget halt, mark
+                    # trials that finished cleanly during shutdown so a resume does NOT
+                    # re-run them (which would append duplicate turn rows to the ledger).
+                    if budget_hit:
+                        for fut, trial in futs.items():
+                            if fut.done() and not fut.cancelled() and not progress.is_done(model, trial.trial_id):
+                                try:
+                                    fut.result()
+                                except Exception:  # noqa: BLE001 - the call that hit the wall
+                                    continue
+                                progress.mark(model, trial.trial_id)
+                                done += 1
                     runlog.log("model_progress", model=model, done=done, failed=failed)
                     if not budget_hit:
                         break
                     resume = bool(on_budget(model, "budget/quota exhausted"))
                     runlog.log("budget_decision", model=model, resume=resume)
                     if not resume:
+                        halted = True
+                        break
+                    # Guard against an endless prompt loop if budget wasn't actually restored.
+                    resume_attempts = resume_attempts + 1 if done == 0 else 0
+                    if resume_attempts >= max_budget_resumes:
+                        runlog.log("budget_resume_exhausted", level="error", model=model, attempts=resume_attempts)
                         halted = True
                         break
                 if halted:

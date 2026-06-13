@@ -22,7 +22,7 @@ class RunLog:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.echo = echo
         self._lock = threading.Lock()
-        self._fh = open(self.path, "a", encoding="utf-8")
+        self._fh = open(self.path, "a", encoding="utf-8", newline="")
 
     def log(self, event: str, level: str = "info", **fields) -> dict:
         rec = {"ts": utc_now_iso(), "level": level, "event": event, **fields}

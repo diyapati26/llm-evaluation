@@ -43,6 +43,11 @@ pip install -r requirements.txt
 cp latest/.env.example latest/.env     # then fill in your API keys
 ```
 
+> **Run all commands from the repository root.** The package is invoked as
+> `python -m latest.…`; from elsewhere you'll get `ModuleNotFoundError: No module
+> named 'latest'`. (Optionally `pip install -e .` via the included `pyproject.toml`
+> to import `latest` from anywhere.)
+
 `.env` keys (only the providers you use are required):
 `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`.
 
@@ -127,7 +132,7 @@ latest/
 │
 ├── data/
 │   ├── manipulation_attacks.jsonl   # 7 pressure attacks + neutral_control + incremental_drift (x4 variants)
-│   ├── manipulation_drift.jsonl     # the 5 gradual drift turns
+│   ├── manipulation_drift.jsonl     # 5 escalation turns sent after the baseline (6 turns total)
 │   └── moral_scenarios.jsonl        # 9 scenarios across preference / ethical / crisis
 │
 ├── providers/               # ONE router; uniform client-side history; cache+ledger live in the base

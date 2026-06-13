@@ -19,14 +19,30 @@ _RETRYABLE_MARKERS = (
     "timeout", "timed out",
 )
 
-# Hard quota/billing failures are NOT transient — fail fast even on a 429.
-_HARD_FAIL_MARKERS = ("spend", "spending cap", "billing", "monthly", "exceeded its")
+# Hard quota/billing walls — NOT transient; retrying just backs off against a wall.
+# High-precision phrases only: a bare "monthly"/"spend" would false-match transient
+# 429 bodies like "you've hit your monthly request limit, retry shortly".
+_HARD_FAIL_MARKERS = (
+    "insufficient_quota", "quota exceeded", "exceeded your current quota",
+    "spending cap", "spending limit", "billing hard limit", "credit balance", "hard limit",
+)
+
+
+def _is_hard_fail(exc: BaseException) -> bool:
+    """A genuine quota/billing wall: a hard-fail phrase AND no transient signal.
+
+    The 'and not retryable' gate ensures a rate-limit message that merely mentions
+    a quota in passing still wins as retryable. Shared by the collect engine's
+    budget gate so retry and budget detection can never disagree.
+    """
+    msg = str(exc).lower()
+    return any(m in msg for m in _HARD_FAIL_MARKERS) and not any(m in msg for m in _RETRYABLE_MARKERS)
 
 
 def _is_retryable(exc: BaseException) -> bool:
-    msg = str(exc).lower()
-    if any(m in msg for m in _HARD_FAIL_MARKERS):
+    if _is_hard_fail(exc):
         return False
+    msg = str(exc).lower()
     name = type(exc).__name__.lower()
     if "ratelimit" in name or "overloaded" in name:
         return True

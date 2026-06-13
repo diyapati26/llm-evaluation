@@ -56,9 +56,22 @@ class OpenAIConversation(Conversation):
         resp = client.chat.completions.parse(**kwargs)
         latency_ms = (time.monotonic() - start) * 1000
 
-        parsed = resp.choices[0].message.parsed
+        msg = resp.choices[0].message
+        parsed = msg.parsed
         u = resp.usage
         cost = estimate_cost(self.model, u.prompt_tokens, u.completion_tokens)
+        if parsed is None:
+            # Refusal or finish_reason='length' (truncated JSON): emit a clean
+            # response (raw=None, refusal text) so the ledger records the event
+            # instead of crashing on parsed.model_dump().
+            fr = resp.choices[0].finish_reason
+            return ProviderResponse(
+                provider="openai", model=self.model, model_version=getattr(resp, "model", None),
+                temperature=temperature, answer=None, raw=None,
+                text=getattr(msg, "refusal", None) or f"[no structured output: finish_reason={fr}]",
+                input_tokens=u.prompt_tokens, output_tokens=u.completion_tokens,
+                cost_usd=round(cost, 6), latency_ms=round(latency_ms, 2),
+            )
         return ProviderResponse(
             provider="openai",
             model=self.model,

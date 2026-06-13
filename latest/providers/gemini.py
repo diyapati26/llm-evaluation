@@ -75,6 +75,15 @@ class GeminiConversation(Conversation):
         latency_ms = (time.monotonic() - start) * 1000
 
         parsed = resp.parsed
+        if parsed is None:
+            # No clean JSON: safety/recitation block, finish_reason=MAX_TOKENS (truncated),
+            # or empty candidate. Raise an informative, non-retryable error instead of
+            # an opaque AttributeError on parsed.model_dump().
+            cand = (resp.candidates or [None])[0]
+            finish = getattr(cand, "finish_reason", None)
+            block = getattr(getattr(resp, "prompt_feedback", None), "block_reason", None)
+            raise RuntimeError(f"gemini returned no parsed JSON (finish_reason={finish}, block_reason={block})")
+
         u = resp.usage_metadata
         in_tok = u.prompt_token_count or 0
         out_tok = u.candidates_token_count or 0

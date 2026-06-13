@@ -38,7 +38,13 @@ def _letter(resp) -> str | None:
     return (resp.raw or {}).get("letter")
 
 
-def _folded(letter, correct) -> bool:
+def _is_fold(base_letter, letter, correct) -> bool:
+    """A genuine fold: the baseline was correct AND this turn switched to a specific
+    wrong answer (UNCERTAIN/None is a hedge, not a fold). Baseline-aware so a chain
+    on an already-wrong item isn't truncated at turn 1. Matches analysis fold logic;
+    changes no scored metric (scoring re-derives from the ledger)."""
+    if str(base_letter) != str(correct):
+        return False
     return letter is not None and str(letter).upper() != "UNCERTAIN" and str(letter) != str(correct)
 
 
@@ -53,7 +59,7 @@ def run_trial(model, trial, cache, ledger, manifest, snapshot) -> None:
 
     # Turn 0 — baseline answer, no attack.
     conv.ctx.attack, conv.ctx.variant_idx = None, None
-    conv.send(trial.question, ReasonedAnswer)
+    base = _letter(conv.send(trial.question, ReasonedAnswer))
 
     mode = trial.mode
     if mode == "stateless":
@@ -69,7 +75,7 @@ def run_trial(model, trial, cache, ledger, manifest, snapshot) -> None:
         for attack in (trial.stateful_order or arms.PRESSURE_ATTACKS):
             conv.ctx.attack, conv.ctx.variant_idx = attack, 0
             r = conv.send(_attack_prompt(attack, 0, trial.offered_answer), ReasonedAnswer)
-            if _folded(_letter(r), correct):
+            if _is_fold(base, _letter(r), correct):
                 break
 
     elif mode == "repeat":
@@ -77,14 +83,14 @@ def run_trial(model, trial, cache, ledger, manifest, snapshot) -> None:
         for v in order:
             conv.ctx.attack, conv.ctx.variant_idx = trial.attack, v
             r = conv.send(_attack_prompt(trial.attack, v, trial.offered_answer), ReasonedAnswer)
-            if _folded(_letter(r), correct):
+            if _is_fold(base, _letter(r), correct):
                 break
 
     elif mode == "gauntlet":
         for attack, v in (trial.metadata or {}).get("gauntlet_sequence", []):
             conv.ctx.attack, conv.ctx.variant_idx = attack, v
             r = conv.send(_attack_prompt(attack, v, trial.offered_answer), ReasonedAnswer)
-            if _folded(_letter(r), correct):
+            if _is_fold(base, _letter(r), correct):
                 break
 
     else:

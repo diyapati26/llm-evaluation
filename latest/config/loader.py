@@ -140,7 +140,9 @@ def validate(cfg: dict | None = None) -> list[str]:
             warns.append(f"datasets: '{name}' revision is unpinned (not reproducible across time)")
 
     snaps = cfg.get("_snapshots") or {}
-    for pm in models_from_config(cfg):
+    # Check models AND judges (judge snapshots matter for reproducibility too);
+    # dict.fromkeys dedupes a model that's also a judge.
+    for pm in dict.fromkeys(models_from_config(cfg) + judges_from_config(cfg)):
         if not snaps.get(pm):
             warns.append(f"snapshots: '{pm}' not locked (run `latest lock-snapshots` after a run)")
 

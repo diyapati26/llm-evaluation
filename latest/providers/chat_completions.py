@@ -130,6 +130,13 @@ class ChatCompletionsConversation(Conversation):
                 k["response_format"] = response_format
             return k
 
+        import openai  # client already built, so the SDK is importable here
+        from pydantic import ValidationError
+        # Only strict-schema rejections + flaky-model parse failures fall back; a
+        # RateLimitError / billing wall / 5xx must propagate to retry, not trigger a
+        # second billed attempt.
+        _recoverable = (openai.BadRequestError, json.JSONDecodeError, ValidationError)
+
         start = time.monotonic()
         try:
             resp = client.chat.completions.create(**_kwargs(
@@ -141,7 +148,7 @@ class ChatCompletionsConversation(Conversation):
             ))
             raw_text = (resp.choices[0].message.content or "").strip()
             parsed = schema(**json.loads(raw_text))
-        except Exception:  # noqa: BLE001 - retry strict-mode failures via inline-schema fallback
+        except _recoverable:  # strict-mode rejection / parse failure -> inline-schema fallback
             resp = client.chat.completions.create(**_kwargs(
                 transcript + [{
                     "role": "system",
