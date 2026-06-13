@@ -13,14 +13,14 @@ effort spent — so a future Claude (or human) can pick up with full context. Fo
 | **Date** | 2026-06-13 |
 | **Session started** | 2026-06-13 **15:55:43 EDT** (19:55:43 UTC) — session transcript creation time |
 | **Session ended** | 2026-06-13 ~18:57 EDT (~22:57 UTC) — this log |
-| **Duration** | ~3 hours, continuous |
+| **Duration** | API 3h 56m 31s · wall 3h 14m 49s |
 | **Repo folder created** | 2026-05-30 17:43:24 EDT (the project predates this session) |
 | **Model / mode** | Claude Opus 4.8 (1M context), `ultracode` (xhigh effort + multi-agent workflows) |
-| **Main-thread tokens** | ~815,000 at session end (≈84%+ of the 5-hour budget) |
-| **Sub-agent tokens** | ~3,611,496 (two background workflows) |
-| **Total tokens** | ~4.4M |
-| **API spend (this session)** | **~$0.55 actually billed** (cache misses) out of ~$1.50 of priced work — the content-addressed cache saved ~63% |
-| **Sub-agents spawned** | 65 (32 + 33 across two workflows) |
+| **Claude tokens (Opus 4.8)** | 726.7k input · 1.0M output · 189.1M cache-read · 5.7M cache-write |
+| **Claude session cost (ACTUAL)** | **$168.36** (Opus 4.8 $168.19 + Haiku 4.5 $0.17) |
+| **Code changed** | 6,925 lines added · 232 removed |
+| **Sub-agents spawned** | 65 (32 + 33 across two workflows) — ~26% of total cost |
+| **Eval API spend (separate, user's keys)** | ~$0.55 billed of ~$1.50 priced — cache saved ~63% |
 | **Outcome** | New `latest/` framework built, smoke-validated end-to-end, adversarially reviewed, 28 issues fixed, fully documented |
 
 Timing anchors (git): `rewrite complete` 17:57 EDT · `more changes` 18:10 · `final`
@@ -103,16 +103,17 @@ Delivered:
 
 ### A) Claude (Anthropic) cost of *this session* — the agent's own token usage
 
-Model: **Claude Opus 4.8 (1M context)**. Token usage this session:
-~0.81M main-thread + ~3.61M sub-agent ≈ **~4.4M tokens total**.
+Model: **Claude Opus 4.8 (1M context)**. **Actual billed cost: $168.36.**
 
-At Opus rates (~$5 / 1M input, ~$25 / 1M output), the cost depends on the
-input/output split and prompt-cache savings (Claude Code caches re-sent context,
-which materially lowers the input portion). With a typical read-heavy agentic split
-(~70% input / ~30% output) and no caching, that's ≈ **$45–50**; prompt caching
-brings the effective figure lower. **Treat ~$40–60 as the order-of-magnitude estimate**
-— it is not an exact bill (the precise in/out split and cache-hit ratio aren't fully
-visible from inside the session).
+Breakdown (from Claude Code's session report):
+- Opus 4.8 — 726.7k input · 1.0M output · **189.1M cache-read** · 5.7M cache-write → **$168.19**
+- Haiku 4.5 — 1.2k input · 337 output · 133.5k cache-write → $0.17
+
+The cost is dominated by the **189M cache-read tokens** and 1.0M output, not raw input
+— a consequence of long (>150k) context across a multi-hour, sub-agent-heavy session
+(~26% of cost came from the two review/design workflows' sub-agents). Lesson for next
+time: `/compact` mid-task and prefer cheaper models for simple sub-agents. (My earlier
+in-session estimate of ~$40–60 was far too low — it under-counted cache-read volume.)
 
 ### B) Eval API spend — the model calls the framework made (priced from `latest/config/pricing.yaml`)
 
