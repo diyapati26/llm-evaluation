@@ -1,0 +1,35 @@
+# latest — manipulation-resistance LLM evaluation framework
+# Pinned to lower bounds matching a verified install (Python 3.14, 2026-06).
+
+# ── LLM providers ──────────────────────────────────────────────────
+openai>=2.40.0           # OpenAI + Groq + OpenRouter (OpenAI-compatible)
+anthropic>=0.109.0       # messages.parse structured output
+google-genai>=2.8.0      # Gemini (new SDK, not google-generativeai)
+groq>=1.4.0              # optional; Groq also works via the openai client
+
+# ── Datasets ───────────────────────────────────────────────────────
+datasets>=5.0.0
+huggingface-hub>=1.19.0
+
+# ── Data / artifacts ───────────────────────────────────────────────
+pandas>=2.2.0
+pyarrow>=15.0.0          # trials.parquet / scored.parquet
+numpy>=1.26.0
+
+# ── Scoring ────────────────────────────────────────────────────────
+rouge-score>=0.1.2       # TruthfulQA-gen ROUGE-L
+nltk>=3.9.0              # rouge-score dependency
+
+# ── Statistics (the corrected analysis layer) ──────────────────────
+statsmodels>=0.14.0      # McNemar (fixes the broken scipy.stats.mcnemar import), mixed-effects, FDR
+scipy>=1.10.0
+
+# ── Config / infra ─────────────────────────────────────────────────
+pydantic>=2.0.0
+PyYAML>=6.0.0
+python-dotenv>=1.0.0
+tenacity>=8.0.0
+tqdm>=4.65.0             # progress bars in the collect engine
+
+# ── Testing ────────────────────────────────────────────────────────
+pytest>=7.0.0

@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "latest"
+version = "0.1.0"
+description = "Ledger-first LLM manipulation-resistance evaluation framework"
+requires-python = ">=3.10"
+dynamic = ["dependencies"]
+
+# This file lives inside the `latest/` package dir — the project's source of truth.
+# Primary install: `pip install -r latest/requirements.txt` (from the repo root),
+# then `python -m latest.main`. Editable install: `pip install -e ./latest`.
+# package-dir maps the `latest` import package to this directory.
+
+[tool.setuptools]
+package-dir = { "latest" = "." }
+packages = [
+    "latest",
+    "latest.config",
+    "latest.providers",
+    "latest.plan",
+    "latest.collect",
+    "latest.analysis",
+    "latest.tests",
+]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+[tool.setuptools.package-data]
+latest = ["config/*.yaml", "data/*.jsonl", ".env.example"]
