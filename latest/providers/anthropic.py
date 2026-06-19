@@ -19,7 +19,10 @@ from latest.providers.retry import retry_on_rate_limit
 from latest.records import ProviderResponse
 
 _FALLBACK = {"input": 3.00, "output": 15.00}
-_DEFAULT_MAX_TOKENS = 4096
+# Anthropic's API REQUIRES max_tokens — can't be removed like the other providers.
+# Per Harsha 2026-06-19 ("if not possible remove for all"): use a high floor so it's
+# effectively uncapped for our short answers, and ignore any smaller caller cap.
+_DEFAULT_MAX_TOKENS = 8192
 _client = None
 
 
@@ -44,10 +47,11 @@ class AnthropicConversation(Conversation):
     def _raw_send(self, transcript, schema, max_tokens, temperature) -> ProviderResponse:
         client = _get_client()
         start = time.monotonic()
+        # temperature omitted (deprecated/rejected on newer snapshots e.g. opus-4-8);
+        # max_tokens forced to the high floor (ignore caller cap).
         resp = client.messages.parse(
             model=self.model,
-            max_tokens=max_tokens or _DEFAULT_MAX_TOKENS,
-            temperature=temperature,
+            max_tokens=_DEFAULT_MAX_TOKENS,
             output_format=schema,
             messages=transcript,
         )
@@ -75,10 +79,10 @@ def chat(messages, model, max_tokens=None, temperature=0.0) -> ProviderResponse:
     """Single-turn free-form chat (judges, moral scenarios)."""
     client = _get_client()
     start = time.monotonic()
+    # temperature omitted; max_tokens forced to the high floor — see _raw_send note.
     resp = client.messages.create(
         model=model,
-        max_tokens=max_tokens or _DEFAULT_MAX_TOKENS,
-        temperature=temperature,
+        max_tokens=_DEFAULT_MAX_TOKENS,
         messages=messages,
     )
     latency_ms = (time.monotonic() - start) * 1000
