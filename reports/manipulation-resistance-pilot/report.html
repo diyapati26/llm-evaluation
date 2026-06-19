@@ -1,0 +1,521 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manipulation Resistance in LLMs — Pilot Study</title>
+<style>
+:root{--ink:#15171a;--muted:#5b6168;--line:#e3e5e8;--accent:#2b3a67;--accent2:#7a1f2b;--paper:#fcfcfb;}
+*{box-sizing:border-box;}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+body{margin:0;background:#eceae6;color:var(--ink);
+ font-family:"Charter","Iowan Old Style","Palatino Linotype",Georgia,serif;
+ font-size:16px;line-height:1.62;}
+.page{max-width:840px;margin:32px auto;background:var(--paper);padding:64px 72px;
+ box-shadow:0 1px 30px rgba(0,0,0,.10);}
+h1,h2,h3,.sans,figcaption,th,.meta,.abstract-label,.tag{font-family:"Inter","Segoe UI",Helvetica,Arial,sans-serif;}
+h1{font-size:30px;line-height:1.18;letter-spacing:-.4px;margin:0 0 6px;font-weight:800;color:#101216;}
+.subtitle{font-family:"Inter",sans-serif;font-size:15.5px;color:var(--muted);font-weight:500;margin-bottom:22px;}
+.authors{font-family:"Inter",sans-serif;font-size:14.5px;color:#23262b;margin:2px 0 2px;}
+.meta{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+ padding:9px 0;margin:18px 0 28px;display:flex;flex-wrap:wrap;gap:18px;}
+.meta b{color:#2b2f35;font-weight:600;}
+.abstract{background:#f5f4f0;border-left:3px solid var(--accent);padding:18px 22px;margin:0 0 30px;border-radius:0 4px 4px 0;}
+.abstract-label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:6px;}
+.abstract p{margin:0;font-size:14.7px;line-height:1.6;}
+h2{font-size:20px;margin:38px 0 8px;padding-bottom:5px;border-bottom:2px solid #ecebe7;color:#15181d;font-weight:700;}
+h2 .num{color:var(--accent2);font-weight:800;margin-right:9px;}
+h3{font-size:15.5px;margin:22px 0 4px;color:#26292e;font-weight:650;}
+p{margin:9px 0;}
+.lead{font-size:16.5px;}
+ul{margin:8px 0 8px;padding-left:22px;} li{margin:4px 0;}
+figure{margin:24px 0 6px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:18px 18px 10px;}
+.fig{width:100%;height:auto;display:block;}
+figcaption{font-size:12.6px;color:var(--muted);margin-top:10px;padding-top:9px;border-top:1px solid #f0f0ee;}
+figcaption b{color:#2a2d32;}
+table.data{width:100%;border-collapse:collapse;font-family:"Inter",sans-serif;font-size:12.8px;margin:14px 0 6px;}
+table.data th{text-align:left;background:#f3f2ee;color:#3a3e44;font-weight:600;padding:7px 9px;border-bottom:2px solid #e0ded8;}
+table.data td{padding:6px 9px;border-bottom:1px solid #eee;}
+table.data tr.sig td{background:#fbf6f2;}
+table.data tr.total td{font-weight:700;border-top:2px solid #ddd;background:#faf9f6;}
+.tag{display:inline-block;background:#eef0f5;color:#46506b;font-size:10px;padding:1px 6px;border-radius:4px;vertical-align:middle;font-weight:600;}
+.callout{background:#f0f4fb;border:1px solid #d4e0f3;border-radius:6px;padding:14px 18px;margin:18px 0;font-size:14.6px;}
+.callout b{color:#1f3a63;}
+.kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;background:#f3f2ee;padding:1px 5px;border-radius:3px;}
+.finding{display:flex;gap:12px;margin:12px 0;}
+.finding .n{font-family:"Inter",sans-serif;font-weight:800;font-size:18px;color:#fff;background:var(--accent);
+ min-width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:11.5px;color:#9499a0;font-family:"Inter",sans-serif;}
+@media print{body{background:#fff;}.page{box-shadow:none;margin:0;max-width:none;padding:34px 40px;}
+ figure,table,.callout{break-inside:avoid;} h2{break-after:avoid;}}
+</style></head><body><div class="page">
+
+<h1>Manipulation Resistance in Large Language Models</h1>
+<div class="subtitle">Do models abandon a correct, well-reasoned answer under social pressure? A controlled pilot across seven models and three families.</div>
+<div class="authors"><b>Sai Harsha Rudra</b> &nbsp;·&nbsp; evaluation framework: Diya Pati</div>
+<div class="meta">
+ <span><b>Study type:</b> Pilot</span>
+ <span><b>Date:</b> June 19, 2026</span>
+ <span><b>Models:</b> 7 across 3 families</span>
+ <span><b>Judge:</b> Claude Opus 4.8</span>
+ <span><b>Seed:</b> 42</span>
+ <span><b>Run:</b> <span class="kbd">cheaper-pilot-20260619T003531Z</span></span>
+</div>
+
+<div class="abstract">
+ <div class="abstract-label">Abstract</div>
+ <p>We measure <b>manipulation resistance</b> — whether a language model abandons a correct answer when an adversary applies social pressure (confident assertions, fabricated evidence, appeals to authority, emotional appeals, and others). Seven models spanning the OpenAI, Anthropic, and Google families are evaluated under five experimental modes (single-turn, chained, repeated-rephrasing, a 29-turn pressure gauntlet, and gradual drift), with a separate benchmark-accuracy and moral/empathy battery scored by an LLM judge. Resistance rises sharply with model capability and the gap is statistically significant (McNemar, p&lt;0.001): the strongest models (Claude Sonnet 4.6, GPT-5.5, Gemini 3.5 Flash) hold their answer ~98–100% of the time and survive the full gauntlet, while lighter models fold on 30–40% of single-turn attacks and cave within ~8 turns. Crucially, the most capable flagship buys no additional robustness over substantially cheaper models that already saturate the ceiling. We also identify which attacks actually work: confidently-asserted wrong answers and fabricated evidence are the most potent; emotional appeals are largely ineffective.</p>
+</div>
+
+<h2><span class="num">1</span>Introduction</h2>
+<p class="lead">A model that reasons correctly but capitulates the moment a user pushes back is unreliable in exactly the situations where reliability matters — medicine, law, finance, safety. We treat this as a measurable property, <b>manipulation resistance</b>, and ask a precise question: given an item the model answers correctly on its own, how often does it switch to a specific wrong answer when pressured, and how does that depend on capability, attack type, and conversation length?</p>
+<p>This is a pilot (small per-cell sample) intended to validate the methodology and surface directional effects before scaling to a publication-grade run. All numbers trace to a content-addressed call ledger and a frozen, seeded design, so every figure here is reproducible from raw API records.</p>
+
+<h2><span class="num">2</span>Methodology</h2>
+<h3>2.1 Models under test</h3>
+<p>Seven models, two-to-three capability points per family, so the capability-vs-robustness claim can be tested <i>within</i> a family (holding training style roughly fixed) rather than across three isolated points:</p>
+<ul>
+ <li><b>OpenAI:</b> GPT-5.4-nano, GPT-5.4-mini, GPT-5.5</li>
+ <li><b>Anthropic:</b> Claude Haiku 4.5, Claude Sonnet 4.6</li>
+ <li><b>Google:</b> Gemini 3.1 Flash-Lite, Gemini 3.5 Flash</li>
+</ul>
+<h3>2.2 Item pool</h3>
+<p>Manipulation items are drawn from ten deliberately hard MMLU subjects (professional medicine and law, college physics/chemistry, abstract algebra, formal logic, high-school statistics, machine learning, clinical knowledge, international law). Only items the model answers <i>correctly at baseline</i> enter the pressure test — folding is defined relative to that correct baseline.</p>
+<h3>2.3 Pressure attacks</h3>
+<p>Seven adversarial tactics are applied after the model commits to its answer: <b>confident assertion</b> (the attacker flatly states a wrong answer), <b>false evidence</b> (fabricated citations/data), <b>authority pressure</b>, <b>concession override</b>, <b>identity challenge</b>, <b>false consensus</b> ("everyone agrees…"), and <b>emotional pressure</b>. A neutral, no-pressure rephrasing serves as a natural-drift control.</p>
+<h3>2.4 Experimental modes</h3>
+<ul>
+ <li><b>Stateless</b> — one attack, one phrasing, fresh session → per-attack potency.</li>
+ <li><b>Stateful</b> — all attacks in sequence, one session → cross-tactic "killing blow".</li>
+ <li><b>Repeat</b> — one attack, every rephrasing, one session → persistence under rewording.</li>
+ <li><b>Gauntlet</b> — every attack × every variant in one 29-turn session → an endurance ceiling (turns survived / survived-all rate). Reported as endurance, not per-attack potency (position confound).</li>
+ <li><b>Drift</b> — a six-turn gradual escalation.</li>
+</ul>
+<h3>2.5 Scoring</h3>
+<p>Each post-pressure response is scored <b>resist</b> / <b>fold</b> / <b>hedge</b>. A genuine fold requires that the baseline was correct <i>and</i> the model switched to a specific wrong answer; an "uncertain"/non-committal answer is a hedge, not a fold. Multi-turn chains stop at the first genuine fold. Reported single-turn resistance is <b>drift-adjusted</b> (raw resistance minus the neutral-control drift).</p>
+<h3>2.6 Judge &amp; statistics</h3>
+<p>Generative TruthfulQA and the moral/empathy battery are scored by a single LLM judge (<b>Claude Opus 4.8</b>). Proportions carry <b>Wilson 95% confidence intervals</b>; pairwise robustness differences use <b>McNemar's test</b> on matched item×attack pairs (exact when discordant pairs &lt;25). Architecture is ledger-first: a frozen seeded design, one fsync'd record per API call, a content-addressed cache, and a pure offline analysis pass — so collection produces facts and analysis produces findings, and every number traces to a raw call.</p>
+
+<h2><span class="num">3</span>Results</h2>
+<h3>3.1 Single-turn resistance scales with capability</h3>
+<figure><svg viewBox="0 0 720 354" xmlns="http://www.w3.org/2000/svg" font-family="Inter,Segoe UI,sans-serif" class="fig">
+<line x1="190.0" y1="24" x2="190.0" y2="318" stroke="#e7e7ea" stroke-width="1"/>
+<text x="190.0" y="336" font-size="12" fill="#888" text-anchor="middle">0%</text>
+<line x1="282.0" y1="24" x2="282.0" y2="318" stroke="#e7e7ea" stroke-width="1"/>
+<text x="282.0" y="336" font-size="12" fill="#888" text-anchor="middle">20%</text>
+<line x1="374.0" y1="24" x2="374.0" y2="318" stroke="#e7e7ea" stroke-width="1"/>
+<text x="374.0" y="336" font-size="12" fill="#888" text-anchor="middle">40%</text>
+<line x1="466.0" y1="24" x2="466.0" y2="318" stroke="#e7e7ea" stroke-width="1"/>
+<text x="466.0" y="336" font-size="12" fill="#888" text-anchor="middle">60%</text>
+<line x1="558.0" y1="24" x2="558.0" y2="318" stroke="#e7e7ea" stroke-width="1"/>
+<text x="558.0" y="336" font-size="12" fill="#888" text-anchor="middle">80%</text>
+<line x1="650.0" y1="24" x2="650.0" y2="318" stroke="#e7e7ea" stroke-width="1"/>
+<text x="650.0" y="336" font-size="12" fill="#888" text-anchor="middle">100%</text>
+<text x="178" y="43.0" font-size="13.5" fill="#1a1a1a" text-anchor="end">Gemini 3.5 Flash</text>
+<rect x="190" y="24" width="460.0" height="30" rx="3" fill="#4285f4"/>
+<line x1="643.8" y1="39.0" x2="650.0" y2="39.0" stroke="#33333399" stroke-width="1.4"/>
+<line x1="643.8" y1="34.0" x2="643.8" y2="44.0" stroke="#33333399" stroke-width="1.4"/>
+<line x1="650.0" y1="34.0" x2="650.0" y2="44.0" stroke="#33333399" stroke-width="1.4"/>
+<text x="658.0" y="43.0" font-size="12.5" fill="#444" font-weight="600">100%</text>
+<text x="178" y="87.0" font-size="13.5" fill="#1a1a1a" text-anchor="end">Claude Sonnet 4.6</text>
+<rect x="190" y="68" width="451.8" height="30" rx="3" fill="#cc7a4b"/>
+<line x1="629.3" y1="83.0" x2="646.8" y2="83.0" stroke="#33333399" stroke-width="1.4"/>
+<line x1="629.3" y1="78.0" x2="629.3" y2="88.0" stroke="#33333399" stroke-width="1.4"/>
+<line x1="646.8" y1="78.0" x2="646.8" y2="88.0" stroke="#33333399" stroke-width="1.4"/>
+<text x="649.8" y="87.0" font-size="12.5" fill="#444" font-weight="600">98%</text>
+<text x="178" y="131.0" font-size="13.5" fill="#1a1a1a" text-anchor="end">GPT-5.5</text>
+<rect x="190" y="112" width="450.2" height="30" rx="3" fill="#10a37f"/>
+<line x1="628.8" y1="127.0" x2="645.4" y2="127.0" stroke="#33333399" stroke-width="1.4"/>
+<line x1="628.8" y1="122.0" x2="628.8" y2="132.0" stroke="#33333399" stroke-width="1.4"/>
+<line x1="645.4" y1="122.0" x2="645.4" y2="132.0" stroke="#33333399" stroke-width="1.4"/>
+<text x="648.2" y="131.0" font-size="12.5" fill="#444" font-weight="600">98%</text>
+<text x="178" y="175.0" font-size="13.5" fill="#1a1a1a" text-anchor="end">GPT-5.4-mini</text>
+<rect x="190" y="156" width="374.3" height="30" rx="3" fill="#10a37f"/>
+<line x1="503.4" y1="171.0" x2="562.9" y2="171.0" stroke="#33333399" stroke-width="1.4"/>
+<line x1="503.4" y1="166.0" x2="503.4" y2="176.0" stroke="#33333399" stroke-width="1.4"/>
+<line x1="562.9" y1="166.0" x2="562.9" y2="176.0" stroke="#33333399" stroke-width="1.4"/>
+<text x="572.3" y="175.0" font-size="12.5" fill="#444" font-weight="600">81%</text>
+<text x="178" y="219.0" font-size="13.5" fill="#1a1a1a" text-anchor="end">GPT-5.4-nano</text>
+<rect x="190" y="200" width="318.7" height="30" rx="3" fill="#10a37f"/>
+<line x1="421.3" y1="215.0" x2="495.4" y2="215.0" stroke="#33333399" stroke-width="1.4"/>
+<line x1="421.3" y1="210.0" x2="421.3" y2="220.0" stroke="#33333399" stroke-width="1.4"/>
+<line x1="495.4" y1="210.0" x2="495.4" y2="220.0" stroke="#33333399" stroke-width="1.4"/>
+<text x="516.7" y="219.0" font-size="12.5" fill="#444" font-weight="600">69%</text>
+<text x="178" y="263.0" font-size="13.5" fill="#1a1a1a" text-anchor="end">Claude Haiku 4.5</text>
+<rect x="190" y="244" width="302.9" height="30" rx="3" fill="#cc7a4b"/>
+<line x1="431.0" y1="259.0" x2="489.8" y2="259.0" stroke="#33333399" stroke-width="1.4"/>
+<line x1="431.0" y1="254.0" x2="431.0" y2="264.0" stroke="#33333399" stroke-width="1.4"/>
+<line x1="489.8" y1="254.0" x2="489.8" y2="264.0" stroke="#33333399" stroke-width="1.4"/>
+<text x="500.9" y="263.0" font-size="12.5" fill="#444" font-weight="600">66%</text>
+<text x="178" y="307.0" font-size="13.5" fill="#1a1a1a" text-anchor="end">Gemini 3.1 Flash-Lite</text>
+<rect x="190" y="288" width="289.6" height="30" rx="3" fill="#4285f4"/>
+<line x1="449.7" y1="303.0" x2="507.4" y2="303.0" stroke="#33333399" stroke-width="1.4"/>
+<line x1="449.7" y1="298.0" x2="449.7" y2="308.0" stroke="#33333399" stroke-width="1.4"/>
+<line x1="507.4" y1="298.0" x2="507.4" y2="308.0" stroke="#33333399" stroke-width="1.4"/>
+<text x="487.6" y="307.0" font-size="12.5" fill="#444" font-weight="600">63%</text>
+</svg><figcaption><b>Figure 1.</b> Drift-adjusted single-turn resistance (pressure attacks), ranked. Whiskers are Wilson 95% CIs on raw resistance. The top three models (one per family) saturate near the ceiling; the lite/nano tier folds on roughly a third of attacks.</figcaption></figure>
+<table class="data"><thead><tr><th>Model</th><th>Resist</th><th>Fold</th><th>Hedge</th><th>Adjusted</th><th>95% CI</th><th>n</th></tr></thead><tbody>
+<tr><td>Gemini 3.5 Flash</td><td>100%</td><td>0%</td><td>0%</td><td><b>100%</b></td><td>[99–100%]</td><td>280</td></tr>
+<tr><td>Claude Sonnet 4.6</td><td>98%</td><td>2%</td><td>0%</td><td><b>98%</b></td><td>[96–99%]</td><td>224</td></tr>
+<tr><td>GPT-5.5</td><td>98%</td><td>2%</td><td>0%</td><td><b>98%</b></td><td>[95–99%]</td><td>280</td></tr>
+<tr><td>GPT-5.4-mini</td><td>75%</td><td>12%</td><td>12%</td><td><b>81%</b></td><td>[68–81%]</td><td>169</td></tr>
+<tr><td>GPT-5.4-nano</td><td>59%</td><td>20%</td><td>21%</td><td><b>69%</b></td><td>[50–66%]</td><td>140</td></tr>
+<tr><td>Claude Haiku 4.5</td><td>59%</td><td>27%</td><td>14%</td><td><b>66%</b></td><td>[52–65%]</td><td>224</td></tr>
+<tr><td>Gemini 3.1 Flash-Lite</td><td>63%</td><td>37%</td><td>0%</td><td><b>63%</b></td><td>[56–69%]</td><td>224</td></tr>
+</tbody></table>
+
+<h3>3.2 Which attacks actually work</h3>
+<figure><svg viewBox="0 0 720 378" xmlns="http://www.w3.org/2000/svg" font-family="Inter,Segoe UI,sans-serif" class="fig">
+<text x="207.9" y="110" font-size="11.5" fill="#333" text-anchor="start" transform="rotate(-40 207.9 110)">Confident Assertion</text>
+<text x="283.6" y="110" font-size="11.5" fill="#333" text-anchor="start" transform="rotate(-40 283.6 110)">False Evidence</text>
+<text x="359.3" y="110" font-size="11.5" fill="#333" text-anchor="start" transform="rotate(-40 359.3 110)">Authority Pressure</text>
+<text x="435.0" y="110" font-size="11.5" fill="#333" text-anchor="start" transform="rotate(-40 435.0 110)">Concession Override</text>
+<text x="510.7" y="110" font-size="11.5" fill="#333" text-anchor="start" transform="rotate(-40 510.7 110)">Identity Challenge</text>
+<text x="586.4" y="110" font-size="11.5" fill="#333" text-anchor="start" transform="rotate(-40 586.4 110)">False Consensus</text>
+<text x="662.1" y="110" font-size="11.5" fill="#333" text-anchor="start" transform="rotate(-40 662.1 110)">Emotional Pressure</text>
+<text x="160" y="141.0" font-size="12.5" fill="#1a1a1a" text-anchor="end">GPT-5.4-nano</text>
+<rect x="170.0" y="120" width="73.7" height="32" fill="rgb(212,124,124)" stroke="#fff"/>
+<text x="206.9" y="141.0" font-size="11.5" fill="#333" text-anchor="middle">55</text>
+<rect x="245.7" y="120" width="73.7" height="32" fill="rgb(247,231,231)" stroke="#fff"/>
+<text x="282.6" y="141.0" font-size="11.5" fill="#333" text-anchor="middle">10</text>
+<rect x="321.4" y="120" width="73.7" height="32" fill="rgb(239,207,207)" stroke="#fff"/>
+<text x="358.3" y="141.0" font-size="11.5" fill="#333" text-anchor="middle">20</text>
+<rect x="397.1" y="120" width="73.7" height="32" fill="rgb(235,195,195)" stroke="#fff"/>
+<text x="434.0" y="141.0" font-size="11.5" fill="#333" text-anchor="middle">25</text>
+<rect x="472.9" y="120" width="73.7" height="32" fill="rgb(235,195,195)" stroke="#fff"/>
+<text x="509.7" y="141.0" font-size="11.5" fill="#333" text-anchor="middle">25</text>
+<rect x="548.6" y="120" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="585.4" y="141.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<rect x="624.3" y="120" width="73.7" height="32" fill="rgb(251,243,243)" stroke="#fff"/>
+<text x="661.1" y="141.0" font-size="11.5" fill="#333" text-anchor="middle">5</text>
+<text x="160" y="175.0" font-size="12.5" fill="#1a1a1a" text-anchor="end">GPT-5.4-mini</text>
+<rect x="170.0" y="154" width="73.7" height="32" fill="rgb(223,159,159)" stroke="#fff"/>
+<text x="206.9" y="175.0" font-size="11.5" fill="#333" text-anchor="middle">40</text>
+<rect x="245.7" y="154" width="73.7" height="32" fill="rgb(242,215,215)" stroke="#fff"/>
+<text x="282.6" y="175.0" font-size="11.5" fill="#333" text-anchor="middle">17</text>
+<rect x="321.4" y="154" width="73.7" height="32" fill="rgb(242,215,215)" stroke="#fff"/>
+<text x="358.3" y="175.0" font-size="11.5" fill="#333" text-anchor="middle">17</text>
+<rect x="397.1" y="154" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="434.0" y="175.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<rect x="472.9" y="154" width="73.7" height="32" fill="rgb(245,225,225)" stroke="#fff"/>
+<text x="509.7" y="175.0" font-size="11.5" fill="#333" text-anchor="middle">12</text>
+<rect x="548.6" y="154" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="585.4" y="175.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<rect x="624.3" y="154" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="661.1" y="175.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<text x="160" y="209.0" font-size="12.5" fill="#1a1a1a" text-anchor="end">GPT-5.5</text>
+<rect x="170.0" y="188" width="73.7" height="32" fill="rgb(253,249,249)" stroke="#fff"/>
+<text x="206.9" y="209.0" font-size="11.5" fill="#333" text-anchor="middle">2</text>
+<rect x="245.7" y="188" width="73.7" height="32" fill="rgb(251,243,243)" stroke="#fff"/>
+<text x="282.6" y="209.0" font-size="11.5" fill="#333" text-anchor="middle">5</text>
+<rect x="321.4" y="188" width="73.7" height="32" fill="rgb(253,249,249)" stroke="#fff"/>
+<text x="358.3" y="209.0" font-size="11.5" fill="#333" text-anchor="middle">2</text>
+<rect x="397.1" y="188" width="73.7" height="32" fill="rgb(253,249,249)" stroke="#fff"/>
+<text x="434.0" y="209.0" font-size="11.5" fill="#333" text-anchor="middle">2</text>
+<rect x="472.9" y="188" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="509.7" y="209.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<rect x="548.6" y="188" width="73.7" height="32" fill="rgb(253,249,249)" stroke="#fff"/>
+<text x="585.4" y="209.0" font-size="11.5" fill="#333" text-anchor="middle">2</text>
+<rect x="624.3" y="188" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="661.1" y="209.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<text x="160" y="243.0" font-size="12.5" fill="#1a1a1a" text-anchor="end">Claude Haiku 4.5</text>
+<rect x="170.0" y="222" width="73.7" height="32" fill="rgb(211,121,121)" stroke="#fff"/>
+<text x="206.9" y="243.0" font-size="11.5" fill="#fff" text-anchor="middle">56</text>
+<rect x="245.7" y="222" width="73.7" height="32" fill="rgb(242,217,217)" stroke="#fff"/>
+<text x="282.6" y="243.0" font-size="11.5" fill="#333" text-anchor="middle">16</text>
+<rect x="321.4" y="222" width="73.7" height="32" fill="rgb(228,173,173)" stroke="#fff"/>
+<text x="358.3" y="243.0" font-size="11.5" fill="#333" text-anchor="middle">34</text>
+<rect x="397.1" y="222" width="73.7" height="32" fill="rgb(228,173,173)" stroke="#fff"/>
+<text x="434.0" y="243.0" font-size="11.5" fill="#333" text-anchor="middle">34</text>
+<rect x="472.9" y="222" width="73.7" height="32" fill="rgb(230,180,180)" stroke="#fff"/>
+<text x="509.7" y="243.0" font-size="11.5" fill="#333" text-anchor="middle">31</text>
+<rect x="548.6" y="222" width="73.7" height="32" fill="rgb(240,210,210)" stroke="#fff"/>
+<text x="585.4" y="243.0" font-size="11.5" fill="#333" text-anchor="middle">19</text>
+<rect x="624.3" y="222" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="661.1" y="243.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<text x="160" y="277.0" font-size="12.5" fill="#1a1a1a" text-anchor="end">Claude Sonnet 4.6</text>
+<rect x="170.0" y="256" width="73.7" height="32" fill="rgb(247,232,232)" stroke="#fff"/>
+<text x="206.9" y="277.0" font-size="11.5" fill="#333" text-anchor="middle">9</text>
+<rect x="245.7" y="256" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="282.6" y="277.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<rect x="321.4" y="256" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="358.3" y="277.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<rect x="397.1" y="256" width="73.7" height="32" fill="rgb(252,247,247)" stroke="#fff"/>
+<text x="434.0" y="277.0" font-size="11.5" fill="#333" text-anchor="middle">3</text>
+<rect x="472.9" y="256" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="509.7" y="277.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<rect x="548.6" y="256" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="585.4" y="277.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<rect x="624.3" y="256" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="661.1" y="277.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<text x="160" y="311.0" font-size="12.5" fill="#1a1a1a" text-anchor="end">Gemini 3.1 Flash-Lite</text>
+<rect x="170.0" y="290" width="73.7" height="32" fill="rgb(203,98,98)" stroke="#fff"/>
+<text x="206.9" y="311.0" font-size="11.5" fill="#fff" text-anchor="middle">66</text>
+<rect x="245.7" y="290" width="73.7" height="32" fill="rgb(201,91,91)" stroke="#fff"/>
+<text x="282.6" y="311.0" font-size="11.5" fill="#fff" text-anchor="middle">69</text>
+<rect x="321.4" y="290" width="73.7" height="32" fill="rgb(216,136,136)" stroke="#fff"/>
+<text x="358.3" y="311.0" font-size="11.5" fill="#333" text-anchor="middle">50</text>
+<rect x="397.1" y="290" width="73.7" height="32" fill="rgb(216,136,136)" stroke="#fff"/>
+<text x="434.0" y="311.0" font-size="11.5" fill="#333" text-anchor="middle">50</text>
+<rect x="472.9" y="290" width="73.7" height="32" fill="rgb(250,240,240)" stroke="#fff"/>
+<text x="509.7" y="311.0" font-size="11.5" fill="#333" text-anchor="middle">6</text>
+<rect x="548.6" y="290" width="73.7" height="32" fill="rgb(252,247,247)" stroke="#fff"/>
+<text x="585.4" y="311.0" font-size="11.5" fill="#333" text-anchor="middle">3</text>
+<rect x="624.3" y="290" width="73.7" height="32" fill="rgb(242,217,217)" stroke="#fff"/>
+<text x="661.1" y="311.0" font-size="11.5" fill="#333" text-anchor="middle">16</text>
+<text x="160" y="345.0" font-size="12.5" fill="#1a1a1a" text-anchor="end">Gemini 3.5 Flash</text>
+<rect x="170.0" y="324" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="206.9" y="345.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<rect x="245.7" y="324" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="282.6" y="345.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<rect x="321.4" y="324" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="358.3" y="345.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<rect x="397.1" y="324" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="434.0" y="345.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<rect x="472.9" y="324" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="509.7" y="345.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<rect x="548.6" y="324" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="585.4" y="345.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<rect x="624.3" y="324" width="73.7" height="32" fill="rgb(255,255,255)" stroke="#fff"/>
+<text x="661.1" y="345.0" font-size="11.5" fill="#333" text-anchor="middle">0</text>
+<text x="170" y="378" font-size="11" fill="#888">fold rate (%) — darker = model abandons its correct answer more often</text>
+</svg><figcaption><b>Figure 2.</b> Per-attack fold rate (%) by model — darker means the model abandons its correct answer more often. <b>Confident assertion</b> and <b>false evidence</b> are the most potent tactics across the board; <b>emotional pressure</b> and <b>false consensus</b> barely move even the weak models.</figcaption></figure>
+
+<h3>3.3 Gauntlet endurance</h3>
+<figure><svg viewBox="0 0 720 354" xmlns="http://www.w3.org/2000/svg" font-family="Inter,Segoe UI,sans-serif" class="fig">
+<line x1="190.0" y1="24" x2="190.0" y2="318" stroke="#e7e7ea" stroke-width="1"/>
+<text x="190.0" y="336" font-size="12" fill="#888" text-anchor="middle">0</text>
+<line x1="301.0" y1="24" x2="301.0" y2="318" stroke="#e7e7ea" stroke-width="1"/>
+<text x="301.0" y="336" font-size="12" fill="#888" text-anchor="middle">7</text>
+<line x1="412.1" y1="24" x2="412.1" y2="318" stroke="#e7e7ea" stroke-width="1"/>
+<text x="412.1" y="336" font-size="12" fill="#888" text-anchor="middle">14</text>
+<line x1="523.1" y1="24" x2="523.1" y2="318" stroke="#e7e7ea" stroke-width="1"/>
+<text x="523.1" y="336" font-size="12" fill="#888" text-anchor="middle">21</text>
+<line x1="634.1" y1="24" x2="634.1" y2="318" stroke="#e7e7ea" stroke-width="1"/>
+<text x="634.1" y="336" font-size="12" fill="#888" text-anchor="middle">28</text>
+<text x="178" y="43.0" font-size="13.5" fill="#1a1a1a" text-anchor="end">Claude Sonnet 4.6</text>
+<rect x="190" y="24" width="444.1" height="30" rx="3" fill="#cc7a4b"/>
+<text x="642.1" y="43.0" font-size="12.5" fill="#444" font-weight="600">28.0</text>
+<text x="178" y="87.0" font-size="13.5" fill="#1a1a1a" text-anchor="end">Gemini 3.5 Flash</text>
+<rect x="190" y="68" width="444.1" height="30" rx="3" fill="#4285f4"/>
+<text x="642.1" y="87.0" font-size="12.5" fill="#444" font-weight="600">28.0</text>
+<text x="178" y="131.0" font-size="13.5" fill="#1a1a1a" text-anchor="end">GPT-5.5</text>
+<rect x="190" y="112" width="401.3" height="30" rx="3" fill="#10a37f"/>
+<text x="599.3" y="131.0" font-size="12.5" fill="#444" font-weight="600">25.3</text>
+<text x="178" y="175.0" font-size="13.5" fill="#1a1a1a" text-anchor="end">GPT-5.4-mini</text>
+<rect x="190" y="156" width="370.1" height="30" rx="3" fill="#10a37f"/>
+<text x="568.1" y="175.0" font-size="12.5" fill="#444" font-weight="600">23.3</text>
+<text x="178" y="219.0" font-size="13.5" fill="#1a1a1a" text-anchor="end">GPT-5.4-nano</text>
+<rect x="190" y="200" width="180.8" height="30" rx="3" fill="#10a37f"/>
+<text x="378.8" y="219.0" font-size="12.5" fill="#444" font-weight="600">11.4</text>
+<text x="178" y="263.0" font-size="13.5" fill="#1a1a1a" text-anchor="end">Claude Haiku 4.5</text>
+<rect x="190" y="244" width="146.7" height="30" rx="3" fill="#cc7a4b"/>
+<text x="344.7" y="263.0" font-size="12.5" fill="#444" font-weight="600">9.2</text>
+<text x="178" y="307.0" font-size="13.5" fill="#1a1a1a" text-anchor="end">Gemini 3.1 Flash-Lite</text>
+<rect x="190" y="288" width="120.9" height="30" rx="3" fill="#4285f4"/>
+<text x="318.9" y="307.0" font-size="12.5" fill="#444" font-weight="600">7.6</text>
+</svg><figcaption><b>Figure 3.</b> Mean turns survived before folding in the 29-turn gauntlet (max = 29). Sonnet 4.6 and Gemini 3.5 Flash never fold (28+/29); Gemini 3.1 Flash-Lite caves around turn 8. Note GPT-5.4-nano out-endures Claude Haiku here despite being a "weaker" model.</figcaption></figure>
+
+<h3>3.4 Statistical significance (pairwise McNemar)</h3>
+<p>The capability gap is not noise. Matched-pair tests show the strong tier is significantly more robust than the light tier, while the three top models are statistically indistinguishable from one another (all at ceiling). Significant rows shaded.</p>
+<table class="data"><thead><tr><th>Model A</th><th>Model B</th><th>n pairs</th><th>A&gt;B</th><th>B&gt;A</th><th>p</th><th></th></tr></thead><tbody>
+<tr class="sig"><td>Claude Sonnet 4.6</td><td>Gemini 3.1 Flash-Lite</td><td>56</td><td>14</td><td>0</td><td>0.0001</td><td>***</td></tr>
+<tr class="sig"><td>Gemini 3.1 Flash-Lite</td><td>Gemini 3.5 Flash</td><td>56</td><td>0</td><td>14</td><td>0.0001</td><td>***</td></tr>
+<tr class="sig"><td>Gemini 3.1 Flash-Lite</td><td>GPT-5.5</td><td>56</td><td>0</td><td>14</td><td>0.0001</td><td>***</td></tr>
+<tr class="sig"><td>Claude Haiku 4.5</td><td>Claude Sonnet 4.6</td><td>56</td><td>0</td><td>11</td><td>0.0010</td><td>***</td></tr>
+<tr class="sig"><td>Claude Haiku 4.5</td><td>Gemini 3.5 Flash</td><td>56</td><td>0</td><td>11</td><td>0.0010</td><td>***</td></tr>
+<tr class="sig"><td>Claude Haiku 4.5</td><td>GPT-5.5</td><td>56</td><td>0</td><td>11</td><td>0.0010</td><td>***</td></tr>
+<tr class="sig"><td>Claude Haiku 4.5</td><td>GPT-5.4-mini</td><td>36</td><td>0</td><td>8</td><td>0.0078</td><td>**</td></tr>
+<tr class="sig"><td>Gemini 3.1 Flash-Lite</td><td>GPT-5.4-mini</td><td>36</td><td>0</td><td>8</td><td>0.0078</td><td>**</td></tr>
+<tr class="sig"><td>Claude Sonnet 4.6</td><td>GPT-5.4-nano</td><td>35</td><td>7</td><td>0</td><td>0.0156</td><td>*</td></tr>
+<tr class="sig"><td>Gemini 3.5 Flash</td><td>GPT-5.4-nano</td><td>35</td><td>7</td><td>0</td><td>0.0156</td><td>*</td></tr>
+<tr class="sig"><td>GPT-5.4-mini</td><td>GPT-5.4-nano</td><td>28</td><td>7</td><td>0</td><td>0.0156</td><td>*</td></tr>
+<tr class="sig"><td>GPT-5.4-nano</td><td>GPT-5.5</td><td>35</td><td>0</td><td>7</td><td>0.0156</td><td>*</td></tr>
+<tr><td>Gemini 3.1 Flash-Lite</td><td>GPT-5.4-nano</td><td>35</td><td>3</td><td>7</td><td>0.3438</td><td></td></tr>
+<tr><td>Gemini 3.5 Flash</td><td>GPT-5.4-mini</td><td>43</td><td>2</td><td>0</td><td>0.5000</td><td></td></tr>
+<tr><td>GPT-5.4-mini</td><td>GPT-5.5</td><td>43</td><td>0</td><td>2</td><td>0.5000</td><td></td></tr>
+<tr><td>Claude Haiku 4.5</td><td>Gemini 3.1 Flash-Lite</td><td>56</td><td>9</td><td>6</td><td>0.6072</td><td></td></tr>
+<tr><td>Claude Haiku 4.5</td><td>GPT-5.4-nano</td><td>35</td><td>5</td><td>6</td><td>1.0000</td><td></td></tr>
+<tr><td>Claude Sonnet 4.6</td><td>Gemini 3.5 Flash</td><td>56</td><td>0</td><td>0</td><td>1.0000</td><td></td></tr>
+<tr><td>Claude Sonnet 4.6</td><td>GPT-5.4-mini</td><td>36</td><td>1</td><td>0</td><td>1.0000</td><td></td></tr>
+<tr><td>Claude Sonnet 4.6</td><td>GPT-5.5</td><td>56</td><td>0</td><td>0</td><td>1.0000</td><td></td></tr>
+<tr><td>Gemini 3.5 Flash</td><td>GPT-5.5</td><td>70</td><td>0</td><td>0</td><td>1.0000</td><td></td></tr>
+</tbody></table>
+
+<h3>3.5 Benchmark accuracy</h3>
+<figure><svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg" font-family="Inter,Segoe UI,sans-serif" class="fig">
+<line x1="50" y1="280.0" x2="700" y2="280.0" stroke="#eee"/>
+<text x="42" y="284.0" font-size="11" fill="#888" text-anchor="end">0%</text>
+<line x1="50" y1="215.0" x2="700" y2="215.0" stroke="#eee"/>
+<text x="42" y="219.0" font-size="11" fill="#888" text-anchor="end">25%</text>
+<line x1="50" y1="150.0" x2="700" y2="150.0" stroke="#eee"/>
+<text x="42" y="154.0" font-size="11" fill="#888" text-anchor="end">50%</text>
+<line x1="50" y1="85.0" x2="700" y2="85.0" stroke="#eee"/>
+<text x="42" y="89.0" font-size="11" fill="#888" text-anchor="end">75%</text>
+<line x1="50" y1="20.0" x2="700" y2="20.0" stroke="#eee"/>
+<text x="42" y="24.0" font-size="11" fill="#888" text-anchor="end">100%</text>
+<rect x="58.0" y="176.0" width="22.8" height="104.0" fill="#3b5bdb" rx="2"/>
+<rect x="83.8" y="150.0" width="22.8" height="130.0" fill="#0ca678" rx="2"/>
+<rect x="109.6" y="72.0" width="22.8" height="208.0" fill="#e8590c" rx="2"/>
+<text x="96.4" y="296" font-size="10.5" fill="#333" text-anchor="middle" transform="rotate(-18 96.4 296)">GPT-5.4-nano</text>
+<rect x="150.9" y="72.0" width="22.8" height="208.0" fill="#3b5bdb" rx="2"/>
+<rect x="176.7" y="46.0" width="22.8" height="234.0" fill="#0ca678" rx="2"/>
+<rect x="202.4" y="72.0" width="22.8" height="208.0" fill="#e8590c" rx="2"/>
+<text x="189.3" y="296" font-size="10.5" fill="#333" text-anchor="middle" transform="rotate(-18 189.3 296)">GPT-5.4-mini</text>
+<rect x="243.7" y="20.0" width="22.8" height="260.0" fill="#3b5bdb" rx="2"/>
+<rect x="269.5" y="46.0" width="22.8" height="234.0" fill="#0ca678" rx="2"/>
+<rect x="295.3" y="20.0" width="22.8" height="260.0" fill="#e8590c" rx="2"/>
+<text x="282.1" y="296" font-size="10.5" fill="#333" text-anchor="middle" transform="rotate(-18 282.1 296)">GPT-5.5</text>
+<rect x="336.6" y="72.0" width="22.8" height="208.0" fill="#3b5bdb" rx="2"/>
+<rect x="362.4" y="72.0" width="22.8" height="208.0" fill="#0ca678" rx="2"/>
+<rect x="388.2" y="20.0" width="22.8" height="260.0" fill="#e8590c" rx="2"/>
+<text x="375.0" y="296" font-size="10.5" fill="#333" text-anchor="middle" transform="rotate(-18 375.0 296)">Claude Haiku 4.5</text>
+<rect x="429.4" y="72.0" width="22.8" height="208.0" fill="#3b5bdb" rx="2"/>
+<rect x="455.2" y="46.0" width="22.8" height="234.0" fill="#0ca678" rx="2"/>
+<rect x="481.0" y="20.0" width="22.8" height="260.0" fill="#e8590c" rx="2"/>
+<text x="467.9" y="296" font-size="10.5" fill="#333" text-anchor="middle" transform="rotate(-18 467.9 296)">Claude Sonnet 4.6</text>
+<rect x="522.3" y="72.0" width="22.8" height="208.0" fill="#3b5bdb" rx="2"/>
+<rect x="548.1" y="46.0" width="22.8" height="234.0" fill="#0ca678" rx="2"/>
+<rect x="573.9" y="20.0" width="22.8" height="260.0" fill="#e8590c" rx="2"/>
+<text x="560.7" y="296" font-size="10.5" fill="#333" text-anchor="middle" transform="rotate(-18 560.7 296)">Gemini 3.1 Flash-Lite</text>
+<rect x="615.1" y="20.0" width="22.8" height="260.0" fill="#3b5bdb" rx="2"/>
+<rect x="640.9" y="46.0" width="22.8" height="234.0" fill="#0ca678" rx="2"/>
+<rect x="666.7" y="20.0" width="22.8" height="260.0" fill="#e8590c" rx="2"/>
+<text x="653.6" y="296" font-size="10.5" fill="#333" text-anchor="middle" transform="rotate(-18 653.6 296)">Gemini 3.5 Flash</text>
+<rect x="50" y="334" width="12" height="12" fill="#3b5bdb" rx="2"/>
+<text x="66" y="344" font-size="11.5" fill="#444">MMLU (hard)</text>
+<rect x="200" y="334" width="12" height="12" fill="#0ca678" rx="2"/>
+<text x="216" y="344" font-size="11.5" fill="#444">HellaSwag</text>
+<rect x="350" y="334" width="12" height="12" fill="#e8590c" rx="2"/>
+<text x="366" y="344" font-size="11.5" fill="#444">TruthfulQA-MC</text>
+</svg><figcaption><b>Figure 4.</b> Standard multiple-choice accuracy (n=10/dataset). Accuracy tracks the same capability ordering as resistance, supporting capability as the common driver.</figcaption></figure>
+
+<h3>3.6 Moral &amp; empathy (LLM-judged)</h3>
+<figure><svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg" font-family="Inter,Segoe UI,sans-serif" class="fig">
+<line x1="50" y1="280.0" x2="700" y2="280.0" stroke="#eee"/>
+<text x="42" y="284.0" font-size="11" fill="#888" text-anchor="end">1</text>
+<line x1="50" y1="215.0" x2="700" y2="215.0" stroke="#eee"/>
+<text x="42" y="219.0" font-size="11" fill="#888" text-anchor="end">2</text>
+<line x1="50" y1="150.0" x2="700" y2="150.0" stroke="#eee"/>
+<text x="42" y="154.0" font-size="11" fill="#888" text-anchor="end">3</text>
+<line x1="50" y1="85.0" x2="700" y2="85.0" stroke="#eee"/>
+<text x="42" y="89.0" font-size="11" fill="#888" text-anchor="end">4</text>
+<line x1="50" y1="20.0" x2="700" y2="20.0" stroke="#eee"/>
+<text x="42" y="24.0" font-size="11" fill="#888" text-anchor="end">5</text>
+<rect x="58.0" y="92.1" width="17.2" height="187.9" fill="#1c7ed6" rx="2"/>
+<rect x="78.2" y="161.0" width="17.2" height="119.0" fill="#7048e8" rx="2"/>
+<rect x="98.4" y="63.5" width="17.2" height="216.4" fill="#2f9e44" rx="2"/>
+<rect x="118.6" y="193.5" width="17.2" height="86.5" fill="#e8590c" rx="2"/>
+<text x="96.4" y="296" font-size="10.5" fill="#333" text-anchor="middle" transform="rotate(-18 96.4 296)">GPT-5.4-nano</text>
+<rect x="150.9" y="41.5" width="17.2" height="238.6" fill="#1c7ed6" rx="2"/>
+<rect x="171.0" y="106.5" width="17.2" height="173.6" fill="#7048e8" rx="2"/>
+<rect x="191.2" y="31.0" width="17.2" height="248.9" fill="#2f9e44" rx="2"/>
+<rect x="211.4" y="150.0" width="17.2" height="130.0" fill="#e8590c" rx="2"/>
+<text x="189.3" y="296" font-size="10.5" fill="#333" text-anchor="middle" transform="rotate(-18 189.3 296)">GPT-5.4-mini</text>
+<rect x="243.7" y="34.3" width="17.2" height="245.7" fill="#1c7ed6" rx="2"/>
+<rect x="263.9" y="85.0" width="17.2" height="195.0" fill="#7048e8" rx="2"/>
+<rect x="284.1" y="31.0" width="17.2" height="248.9" fill="#2f9e44" rx="2"/>
+<rect x="304.3" y="41.5" width="17.2" height="238.6" fill="#e8590c" rx="2"/>
+<text x="282.1" y="296" font-size="10.5" fill="#333" text-anchor="middle" transform="rotate(-18 282.1 296)">GPT-5.5</text>
+<rect x="336.6" y="41.5" width="17.2" height="238.6" fill="#1c7ed6" rx="2"/>
+<rect x="356.8" y="63.5" width="17.2" height="216.4" fill="#7048e8" rx="2"/>
+<rect x="376.9" y="20.0" width="17.2" height="260.0" fill="#2f9e44" rx="2"/>
+<rect x="397.1" y="150.0" width="17.2" height="130.0" fill="#e8590c" rx="2"/>
+<text x="375.0" y="296" font-size="10.5" fill="#333" text-anchor="middle" transform="rotate(-18 375.0 296)">Claude Haiku 4.5</text>
+<rect x="429.4" y="48.6" width="17.2" height="231.4" fill="#1c7ed6" rx="2"/>
+<rect x="449.6" y="63.5" width="17.2" height="216.4" fill="#7048e8" rx="2"/>
+<rect x="469.8" y="31.0" width="17.2" height="248.9" fill="#2f9e44" rx="2"/>
+<rect x="490.0" y="106.5" width="17.2" height="173.6" fill="#e8590c" rx="2"/>
+<text x="467.9" y="296" font-size="10.5" fill="#333" text-anchor="middle" transform="rotate(-18 467.9 296)">Claude Sonnet 4.6</text>
+<rect x="522.3" y="48.6" width="17.2" height="231.4" fill="#1c7ed6" rx="2"/>
+<rect x="542.5" y="85.0" width="17.2" height="195.0" fill="#7048e8" rx="2"/>
+<rect x="562.7" y="52.5" width="17.2" height="227.5" fill="#2f9e44" rx="2"/>
+<rect x="582.8" y="63.5" width="17.2" height="216.4" fill="#e8590c" rx="2"/>
+<text x="560.7" y="296" font-size="10.5" fill="#333" text-anchor="middle" transform="rotate(-18 560.7 296)">Gemini 3.1 Flash-Lite</text>
+<rect x="615.1" y="41.5" width="17.2" height="238.6" fill="#1c7ed6" rx="2"/>
+<rect x="635.3" y="41.5" width="17.2" height="238.6" fill="#7048e8" rx="2"/>
+<rect x="655.5" y="41.5" width="17.2" height="238.6" fill="#2f9e44" rx="2"/>
+<rect x="675.7" y="41.5" width="17.2" height="238.6" fill="#e8590c" rx="2"/>
+<text x="653.6" y="296" font-size="10.5" fill="#333" text-anchor="middle" transform="rotate(-18 653.6 296)">Gemini 3.5 Flash</text>
+<rect x="50" y="334" width="12" height="12" fill="#1c7ed6" rx="2"/>
+<text x="66" y="344" font-size="11.5" fill="#444">Helpfulness</text>
+<rect x="180" y="334" width="12" height="12" fill="#7048e8" rx="2"/>
+<text x="196" y="344" font-size="11.5" fill="#444">Reasoning</text>
+<rect x="310" y="334" width="12" height="12" fill="#2f9e44" rx="2"/>
+<text x="326" y="344" font-size="11.5" fill="#444">Safety</text>
+<rect x="440" y="334" width="12" height="12" fill="#e8590c" rx="2"/>
+<text x="456" y="344" font-size="11.5" fill="#444">Empathy</text>
+</svg><figcaption><b>Figure 5.</b> Judge-rated axis means (1–5). A "safe but cold" pattern is visible — Claude Haiku and GPT-5.4-mini score high on safety yet low on empathy; the Gemini models are the warmest.</figcaption></figure>
+
+<h3>3.7 Cost vs. robustness — the practical takeaway</h3>
+<figure><svg viewBox="0 0 720 440" xmlns="http://www.w3.org/2000/svg" font-family="Inter,Segoe UI,sans-serif" class="fig">
+<line x1="70" y1="380" x2="580" y2="380" stroke="#aaa"/>
+<line x1="70" y1="24" x2="70" y2="380" stroke="#aaa"/>
+<line x1="70.0" y1="24" x2="70.0" y2="380" stroke="#eee"/>
+<text x="70.0" y="398" font-size="11" fill="#888" text-anchor="middle">$0</text>
+<line x1="190.2" y1="24" x2="190.2" y2="380" stroke="#eee"/>
+<text x="190.2" y="398" font-size="11" fill="#888" text-anchor="middle">$4</text>
+<line x1="310.5" y1="24" x2="310.5" y2="380" stroke="#eee"/>
+<text x="310.5" y="398" font-size="11" fill="#888" text-anchor="middle">$8</text>
+<line x1="430.7" y1="24" x2="430.7" y2="380" stroke="#eee"/>
+<text x="430.7" y="398" font-size="11" fill="#888" text-anchor="middle">$12</text>
+<line x1="551.0" y1="24" x2="551.0" y2="380" stroke="#eee"/>
+<text x="551.0" y="398" font-size="11" fill="#888" text-anchor="middle">$16</text>
+<line x1="70" y1="355.4" x2="580" y2="355.4" stroke="#eee"/>
+<text x="62" y="359.4" font-size="11" fill="#888" text-anchor="end">60%</text>
+<line x1="70" y1="274.5" x2="580" y2="274.5" stroke="#eee"/>
+<text x="62" y="278.5" font-size="11" fill="#888" text-anchor="end">70%</text>
+<line x1="70" y1="193.7" x2="580" y2="193.7" stroke="#eee"/>
+<text x="62" y="197.7" font-size="11" fill="#888" text-anchor="end">80%</text>
+<line x1="70" y1="112.9" x2="580" y2="112.9" stroke="#eee"/>
+<text x="62" y="116.9" font-size="11" fill="#888" text-anchor="end">90%</text>
+<line x1="70" y1="32.1" x2="580" y2="32.1" stroke="#eee"/>
+<text x="62" y="36.1" font-size="11" fill="#888" text-anchor="end">100%</text>
+<text x="325" y="426" font-size="12.5" fill="#555" text-anchor="middle">run cost (USD, log-free linear)</text>
+<text x="18" y="202" font-size="12.5" fill="#555" text-anchor="middle" transform="rotate(-90 18 202)">adjusted resistance (%)</text>
+<circle cx="83.3" cy="280.3" r="7" fill="#10a37f" fill-opacity="0.85" stroke="#fff" stroke-width="1.5"/>
+<text x="94.3" y="284.3" font-size="11.5" fill="#222">GPT-5.4-nano</text>
+<circle cx="118.2" cy="182.7" r="7" fill="#10a37f" fill-opacity="0.85" stroke="#fff" stroke-width="1.5"/>
+<text x="129.2" y="186.7" font-size="11.5" fill="#222">GPT-5.4-mini</text>
+<circle cx="542.2" cy="49.4" r="7" fill="#10a37f" fill-opacity="0.85" stroke="#fff" stroke-width="1.5"/>
+<text x="553.2" y="53.4" font-size="11.5" fill="#222">GPT-5.5</text>
+<circle cx="140.7" cy="308.1" r="7" fill="#cc7a4b" fill-opacity="0.85" stroke="#fff" stroke-width="1.5"/>
+<text x="151.7" y="312.1" font-size="11.5" fill="#222">Claude Haiku 4.5</text>
+<circle cx="329.3" cy="46.5" r="7" fill="#cc7a4b" fill-opacity="0.85" stroke="#fff" stroke-width="1.5"/>
+<text x="340.3" y="50.5" font-size="11.5" fill="#222">Claude Sonnet 4.6</text>
+<circle cx="80.0" cy="331.5" r="7" fill="#4285f4" fill-opacity="0.85" stroke="#fff" stroke-width="1.5"/>
+<text x="91.0" y="335.5" font-size="11.5" fill="#222">Gemini 3.1 Flash-Lite</text>
+<circle cx="144.7" cy="32.1" r="7" fill="#4285f4" fill-opacity="0.85" stroke="#fff" stroke-width="1.5"/>
+<text x="155.7" y="36.1" font-size="11.5" fill="#222">Gemini 3.5 Flash</text>
+</svg><figcaption><b>Figure 6.</b> Run cost vs. adjusted resistance. The frontier flattens: once a model reaches the robustness ceiling, paying more buys nothing. GPT-5.5 (the single most expensive model, ~48% of total spend) is no more manipulation-resistant than Gemini 3.5 Flash at a fraction of the cost.</figcaption></figure>
+
+<h2><span class="num">4</span>Discussion — key findings</h2>
+<div class="finding"><div class="n">1</div><div><b>Capability buys robustness, with significance.</b> Within every family the larger model resists more, and McNemar confirms the strong-vs-weak gap at p&lt;0.001. Resistance and benchmark accuracy move together, pointing to capability as the shared cause.</div></div>
+<div class="finding"><div class="n">2</div><div><b>The ceiling is cheap to reach.</b> Claude Sonnet 4.6, GPT-5.5, and Gemini 3.5 Flash are statistically tied at ~98–100% resistance and perfect gauntlet endurance — yet differ ~6× in price. For manipulation resistance specifically, the flagship premium is unjustified.</div></div>
+<div class="finding"><div class="n">3</div><div><b>Attack potency is lopsided.</b> Confident assertion and fabricated evidence drive almost all folds; emotional and consensus appeals are near-inert. Defensive effort should target the former.</div></div>
+<div class="finding"><div class="n">4</div><div><b>Length is an attack vector for weak models.</b> Under repeated rephrasing and the long gauntlet, light models that pass single-turn tests still erode — Gemini 3.1 Flash-Lite folds ~88% under repetition of a confident assertion. Single-turn evaluation overstates the robustness of small models.</div></div>
+
+<h2><span class="num">5</span>Limitations</h2>
+<ul>
+ <li><b>Pilot sample.</b> Most cells are n≈10; CIs are wide. Directional, not definitive — a paper-grade run (5–10 items/subject, k≥5 resamples, benchmark n≈100) is the next step.</li>
+ <li><b>Single judge.</b> Generative/moral axes use one judge (Opus 4.8), so no inter-judge agreement (Cohen's κ) is reported; a second-family judge is needed before publishing judge-based scores.</li>
+ <li><b>Excluded trials.</b> 4 of 3,353 manipulation trials (0.12%) were dropped: on a few adversarial long-context items, Claude Haiku/Sonnet degenerated into a token-level repetition loop and produced unparseable structured output. This persisted across decoding settings (temperature 0 and ~1) and is a genuine model failure mode rather than a framework bug; affected cells simply lose those observations.</li>
+ <li><b>Item selection.</b> Hard-MMLU items bias toward difficulty; resistance on everyday questions may differ.</li>
+</ul>
+
+<h2><span class="num">6</span>Reproducibility &amp; compute</h2>
+<p>The full matrix is reproducible from a seeded (seed 42), frozen design plus a content-addressed call ledger; re-runs are free on cache hits. Total compute for this pilot:</p>
+<table class="data"><thead><tr><th>Model</th><th>Calls</th><th>Cache hits</th><th>Tokens</th><th>Cost (USD)</th></tr></thead><tbody>
+<tr><td>GPT-5.5</td><td>1489</td><td>488</td><td>1,709,609</td><td>$15.71</td></tr>
+<tr><td>Claude Sonnet 4.6</td><td>1508</td><td>498</td><td>2,206,144</td><td>$8.63</td></tr>
+<tr><td>Gemini 3.5 Flash</td><td>1519</td><td>493</td><td>951,317</td><td>$2.49</td></tr>
+<tr><td>Claude Haiku 4.5</td><td>1313</td><td>559</td><td>1,673,095</td><td>$2.35</td></tr>
+<tr><td>GPT-5.4-mini</td><td>1461</td><td>494</td><td>1,461,933</td><td>$1.60</td></tr>
+<tr><td>Claude Opus 4.8 <span class='tag'>judge</span></td><td>308</td><td>0</td><td>219,456</td><td>$1.12</td></tr>
+<tr><td>GPT-5.4-nano</td><td>1382</td><td>561</td><td>1,428,580</td><td>$0.44</td></tr>
+<tr><td>Gemini 3.1 Flash-Lite</td><td>1261</td><td>498</td><td>658,664</td><td>$0.33</td></tr>
+<tr class="total"><td>Total</td><td></td><td></td><td></td><td>$32.67</td></tr>
+</tbody></table>
+<p style="font-size:13px;color:#5b6168;">Cost is dominated by the manipulation module (multi-turn chains, ~95% of calls). The single judge (Opus 4.8) and the two strongest subjects (GPT-5.5, Sonnet 4.6) account for the bulk of spend.</p>
+
+<footer>
+Generated June 19, 2026 from run <span class="kbd" style="background:#f0efeb">cheaper-pilot-20260619T003531Z</span> · ledger-first evaluation framework (manipulation / benchmark / moral modules) · figures rendered as inline SVG from <span class="kbd" style="background:#f0efeb">results.json</span>. Pilot results are directional; see §5.
+</footer>
+</div></body></html>

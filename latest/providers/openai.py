@@ -43,14 +43,14 @@ class OpenAIConversation(Conversation):
     @retry_on_rate_limit
     def _raw_send(self, transcript, schema, max_tokens, temperature) -> ProviderResponse:
         client = _get_client()
+        # temperature omitted (uniform default across all models; the newer
+        # reasoning models reject a custom temperature) and no max-token cap
+        # (it choked thinking models mid-JSON) — per Harsha 2026-06-19.
         kwargs = {
             "model": self.model,
             "messages": transcript,
             "response_format": schema,
-            "temperature": temperature,
         }
-        if max_tokens is not None:
-            kwargs["max_completion_tokens"] = max_tokens
 
         start = time.monotonic()
         resp = client.chat.completions.parse(**kwargs)
@@ -90,9 +90,8 @@ class OpenAIConversation(Conversation):
 def chat(messages, model, max_tokens=None, temperature=0.0) -> ProviderResponse:
     """Single-turn free-form chat (judges, moral scenarios)."""
     client = _get_client()
-    kwargs = {"model": model, "messages": messages, "temperature": temperature}
-    if max_tokens is not None:
-        kwargs["max_completion_tokens"] = max_tokens
+    # temperature + max-token cap omitted — see _raw_send note above.
+    kwargs = {"model": model, "messages": messages}
 
     start = time.monotonic()
     resp = client.chat.completions.create(**kwargs)

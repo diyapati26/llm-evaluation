@@ -58,13 +58,12 @@ class GeminiConversation(Conversation):
         from google.genai import types
 
         client = _get_client()
+        # temperature + max_output_tokens omitted (uniform default; the cap was
+        # truncating thinking models mid-JSON → finish_reason=MAX_TOKENS) — Harsha 2026-06-19.
         cfg = {
             "response_mime_type": "application/json",
             "response_schema": schema,
-            "temperature": temperature,
         }
-        if max_tokens is not None:
-            cfg["max_output_tokens"] = max_tokens
 
         start = time.monotonic()
         resp = client.models.generate_content(
@@ -108,9 +107,8 @@ def chat(messages, model, max_tokens=None, temperature=0.0) -> ProviderResponse:
     from google.genai import types
 
     client = _get_client()
-    cfg = {"temperature": temperature}
-    if max_tokens is not None:
-        cfg["max_output_tokens"] = max_tokens
+    # temperature + max_output_tokens omitted — see _raw_send note above.
+    cfg = {}
 
     start = time.monotonic()
     resp = client.models.generate_content(

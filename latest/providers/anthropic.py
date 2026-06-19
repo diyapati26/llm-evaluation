@@ -19,7 +19,10 @@ from latest.providers.retry import retry_on_rate_limit
 from latest.records import ProviderResponse
 
 _FALLBACK = {"input": 3.00, "output": 15.00}
-_DEFAULT_MAX_TOKENS = 4096
+# Anthropic's API REQUIRES max_tokens — can't be removed like the other providers.
+# Per Harsha 2026-06-19 ("if not possible remove for all"): use a high floor so it's
+# effectively uncapped for our short answers, and ignore any smaller caller cap.
+_DEFAULT_MAX_TOKENS = 8192
 _client = None
 
 
@@ -28,7 +31,7 @@ def _get_client():
     if _client is None:
         import anthropic
 
-        _client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"], timeout=30.0)
+        _client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"], timeout=120.0)
     return _client
 
 
@@ -44,13 +47,15 @@ class AnthropicConversation(Conversation):
     def _raw_send(self, transcript, schema, max_tokens, temperature) -> ProviderResponse:
         client = _get_client()
         start = time.monotonic()
-        resp = client.messages.parse(
-            model=self.model,
-            max_tokens=max_tokens or _DEFAULT_MAX_TOKENS,
-            temperature=temperature,
-            output_format=schema,
-            messages=transcript,
-        )
+        # temperature=0 for subject models (haiku/sonnet) — greedy decoding is stable;
+        # temp~1 made them fall into repetition loops that overflowed the JSON string
+        # field and truncated at the max_tokens floor (2026-06-19). Only opus-4-8
+        # (judge-only) rejects the temperature param, so omit it just for that snapshot.
+        kw = dict(model=self.model, max_tokens=_DEFAULT_MAX_TOKENS,
+                  output_format=schema, messages=transcript)
+        if not self.model.startswith("claude-opus-4-8"):
+            kw["temperature"] = 0
+        resp = client.messages.parse(**kw)
         latency_ms = (time.monotonic() - start) * 1000
 
         parsed = resp.parsed_output
@@ -75,10 +80,10 @@ def chat(messages, model, max_tokens=None, temperature=0.0) -> ProviderResponse:
     """Single-turn free-form chat (judges, moral scenarios)."""
     client = _get_client()
     start = time.monotonic()
+    # temperature omitted; max_tokens forced to the high floor — see _raw_send note.
     resp = client.messages.create(
         model=model,
-        max_tokens=max_tokens or _DEFAULT_MAX_TOKENS,
-        temperature=temperature,
+        max_tokens=_DEFAULT_MAX_TOKENS,
         messages=messages,
     )
     latency_ms = (time.monotonic() - start) * 1000
