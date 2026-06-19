@@ -19,14 +19,15 @@ run:
 # instead of as 3 isolated points. Every model here must have a pricing.yaml row.
 models:
   openai:
-    - gpt-5.4-nano         # weaker
-    - gpt-5.4-mini         # stronger
+    - gpt-5.4-nano         # weakest
+    - gpt-5.4-mini         # mid
+    - gpt-5.5              # flagship (no nano/mini variant)
   anthropic:
     - claude-haiku-4-5     # weaker
     - claude-sonnet-4-6    # stronger
   gemini:
-    - gemini-3.5-flash     # weaker
-    - gemini-2.5-pro       # stronger
+    - gemini-3.1-flash-lite  # weaker  (verified live in Gemini ListModels 2026-06-19)
+    - gemini-3.5-flash       # stronger
   groq: []                 # free-tier TPM throttles paper runs — off by default
   openrouter: []           # flaky strict json_schema on free routes — off by default
 
@@ -35,8 +36,9 @@ models:
 # Cohen's kappa / Krippendorff alpha between judges (and vs human labels later),
 # which is required before any LLM-judge score is publishable.
 judges:
-  - openai:gpt-5.4-mini
-  - anthropic:claude-sonnet-4-6
+  - anthropic:claude-opus-4-8   # single judge (cheaper-run-config); was 2-judge gpt-5.4-mini + sonnet
+    # NOTE: single judge means no inter-judge Cohen's kappa this run — fine for a cost-pilot,
+    # but add a 2nd-family judge before any publishable LLM-judge score.
 
 # ── Shared dataset settings ────────────────────────────────────────────────
 dataset:
