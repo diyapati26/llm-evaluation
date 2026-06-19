@@ -31,7 +31,7 @@ def _get_client():
     if _client is None:
         import anthropic
 
-        _client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"], timeout=30.0)
+        _client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"], timeout=120.0)
     return _client
 
 
@@ -47,14 +47,15 @@ class AnthropicConversation(Conversation):
     def _raw_send(self, transcript, schema, max_tokens, temperature) -> ProviderResponse:
         client = _get_client()
         start = time.monotonic()
-        # temperature omitted (deprecated/rejected on newer snapshots e.g. opus-4-8);
-        # max_tokens forced to the high floor (ignore caller cap).
-        resp = client.messages.parse(
-            model=self.model,
-            max_tokens=_DEFAULT_MAX_TOKENS,
-            output_format=schema,
-            messages=transcript,
-        )
+        # temperature=0 for subject models (haiku/sonnet) — greedy decoding is stable;
+        # temp~1 made them fall into repetition loops that overflowed the JSON string
+        # field and truncated at the max_tokens floor (2026-06-19). Only opus-4-8
+        # (judge-only) rejects the temperature param, so omit it just for that snapshot.
+        kw = dict(model=self.model, max_tokens=_DEFAULT_MAX_TOKENS,
+                  output_format=schema, messages=transcript)
+        if not self.model.startswith("claude-opus-4-8"):
+            kw["temperature"] = 0
+        resp = client.messages.parse(**kw)
         latency_ms = (time.monotonic() - start) * 1000
 
         parsed = resp.parsed_output
